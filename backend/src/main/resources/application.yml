@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  packageToScan: Owing
+
+spring:
+#  data:
+#    neo4j:
+#      uri: bolt://localhost:7687
+#      authentication:
+#        username: neo4j
+#        password: 12345678
+#
+
+#  redis:
+#    host: localhost
+#    port: 6379
+#    timeout: 5000
+
+  application:
+    name: spring-ai
+
+  ai:
+    openai:
+      api-key: ${api-key}
+      chat:
+        options:
+          model: gpt-4o
