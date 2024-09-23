@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler extends BaseExceptionHandler {
 
 	@ExceptionHandler
-	public ResponseEntity<ErrorResponse> handleChickenStockException (OwingException e) {
+	public ResponseEntity<ErrorResponse> handleOwingException (OwingException e) {
 		log.error("class: {}, message: {}", e.getClass(), e.getMessage());
 		log.error(Arrays.toString(e.getStackTrace()));
 		return createErrorResponse(e.getErrorCode());
