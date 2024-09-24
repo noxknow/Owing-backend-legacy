@@ -1,4 +1,4 @@
-package com.ddj.owing.casting.entity;
+package com.ddj.owing.casting.domain;
 
 import com.ddj.owing.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;

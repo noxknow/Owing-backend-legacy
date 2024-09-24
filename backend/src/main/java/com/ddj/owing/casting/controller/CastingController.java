@@ -1,6 +1,6 @@
 package com.ddj.owing.casting.controller;
 
-import com.ddj.owing.casting.dto.CastingRequestDto;
+import com.ddj.owing.casting.domain.dto.CastingRequestDto;
 import com.ddj.owing.casting.service.CastingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class CastingController {
 
     private final CastingService castingService;
 
-    @PostMapping("/generate")
+    @PostMapping("/casting/generate")
     public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
         return castingService.generateCharacterImage(castingRequestDto);
     }

@@ -1,6 +1,6 @@
-package com.ddj.owing.casting.dto;
+package com.ddj.owing.casting.domain.dto;
 
-import com.ddj.owing.casting.entity.Casting;
+import com.ddj.owing.casting.domain.Casting;
 
 public record CastingRequestDto(
         String name,

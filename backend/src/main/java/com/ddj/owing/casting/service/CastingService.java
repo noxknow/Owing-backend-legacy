@@ -1,7 +1,7 @@
 package com.ddj.owing.casting.service;
 
-import com.ddj.owing.casting.dto.CastingRequestDto;
-import com.ddj.owing.casting.entity.Casting;
+import com.ddj.owing.casting.domain.dto.CastingRequestDto;
+import com.ddj.owing.casting.domain.Casting;
 import com.ddj.owing.casting.repository.CastingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.api.OpenAiImageApi;
