@@ -1,10 +1,10 @@
 package com.ddj.owing.domain.casting.service;
 
-import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
 import com.ddj.owing.domain.casting.model.Casting;
+import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
+import com.ddj.owing.global.util.OpenAiUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class CastingService {
 
     private final CastingRepository castingRepository;
-    private final OpenAiImageApi openAiImageApi;
+    private final OpenAiUtil openAiUtil;
 
     public ResponseEntity<String> generateCharacterImage(CastingRequestDto castingRequestDto) {
 
         String prompt = createPrompt(castingRequestDto);
-        String imageUrl = createImage(prompt);
+        String imageUrl = openAiUtil.createImage(prompt);
         Casting casting = castingRequestDto.toEntity(imageUrl);
 
         castingRepository.save(casting);
@@ -43,27 +43,5 @@ public class CastingService {
                 castingRequestDto.role(),
                 castingRequestDto.detail()
         );
-    }
-
-    private String createImage(String prompt) {
-
-        OpenAiImageApi.OpenAiImageRequest request = new OpenAiImageApi.OpenAiImageRequest(
-                prompt,
-                OpenAiImageApi.ImageModel.DALL_E_3.getValue(),
-                1,
-                "standard",
-                "url",
-                "1024x1024",
-                "natural",
-                null
-        );
-
-        ResponseEntity<OpenAiImageApi.OpenAiImageResponse> response = openAiImageApi.createImage(request);
-
-        if (response.getBody() != null && !response.getBody().data().isEmpty()) {
-            return response.getBody().data().getFirst().url();
-        } else {
-            throw new RuntimeException("Failed to generate image");
-        }
     }
 }

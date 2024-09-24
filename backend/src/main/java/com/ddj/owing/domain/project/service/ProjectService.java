@@ -3,8 +3,8 @@ package com.ddj.owing.domain.project.service;
 import com.ddj.owing.domain.project.model.Project;
 import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
 import com.ddj.owing.domain.project.repository.ProjectRepository;
+import com.ddj.owing.global.util.OpenAiUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final OpenAiImageApi openAiImageApi;
+    private final OpenAiUtil openAiUtil;
 
     public ResponseEntity<String> generateProjectImage(ProjectRequestDto projectRequestDto) {
 
         String prompt = createPrompt(projectRequestDto);
-        String imageUrl = createImage(prompt);
+        String imageUrl = openAiUtil.createImage(prompt);
         Project project = projectRequestDto.toEntity(imageUrl);
 
         projectRepository.save(project);
@@ -47,27 +47,5 @@ public class ProjectService {
                 projectRequestDto.category(),
                 projectRequestDto.genre()
         );
-    }
-
-    private String createImage(String prompt) {
-
-        OpenAiImageApi.OpenAiImageRequest request = new OpenAiImageApi.OpenAiImageRequest(
-                prompt,
-                OpenAiImageApi.ImageModel.DALL_E_3.getValue(),
-                1,
-                "standard",
-                "url",
-                "1024x1024",
-                "natural",
-                null
-        );
-
-        ResponseEntity<OpenAiImageApi.OpenAiImageResponse> response = openAiImageApi.createImage(request);
-
-        if (response.getBody() != null && !response.getBody().data().isEmpty()) {
-            return response.getBody().data().getFirst().url();
-        } else {
-            throw new RuntimeException("Failed to generate image");
-        }
     }
 }

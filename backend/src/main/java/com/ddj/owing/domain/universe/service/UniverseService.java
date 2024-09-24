@@ -3,8 +3,8 @@ package com.ddj.owing.domain.universe.service;
 import com.ddj.owing.domain.universe.model.Universe;
 import com.ddj.owing.domain.universe.model.dto.UniverseRequestDto;
 import com.ddj.owing.domain.universe.repository.UniverseRepository;
+import com.ddj.owing.global.util.OpenAiUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class UniverseService {
 
     private final UniverseRepository universeRepository;
-    private final OpenAiImageApi openAiImageApi;
+    private final OpenAiUtil openAiUtil;
 
     public ResponseEntity<String> generateUniverseImage(UniverseRequestDto universeRequestDto) {
 
         String prompt = createPrompt(universeRequestDto);
-        String imageUrl = createImage(prompt);
+        String imageUrl = openAiUtil.createImage(prompt);
         Universe universe = universeRequestDto.toEntity(imageUrl);
 
         universeRepository.save(universe);
@@ -39,27 +39,5 @@ public class UniverseService {
                 universeRequestDto.title(),
                 universeRequestDto.description()
         );
-    }
-
-    private String createImage(String prompt) {
-
-        OpenAiImageApi.OpenAiImageRequest request = new OpenAiImageApi.OpenAiImageRequest(
-                prompt,
-                OpenAiImageApi.ImageModel.DALL_E_3.getValue(),
-                1,
-                "standard",
-                "url",
-                "1024x1024",
-                "natural",
-                null
-        );
-
-        ResponseEntity<OpenAiImageApi.OpenAiImageResponse> response = openAiImageApi.createImage(request);
-
-        if (response.getBody() != null && !response.getBody().data().isEmpty()) {
-            return response.getBody().data().getFirst().url();
-        } else {
-            throw new RuntimeException("Failed to generate image");
-        }
     }
 }
