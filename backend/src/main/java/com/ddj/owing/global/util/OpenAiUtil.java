@@ -1,5 +1,8 @@
 package com.ddj.owing.global.util;
 
+import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
+import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
+import com.ddj.owing.domain.universe.model.dto.UniverseRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +32,62 @@ public class OpenAiUtil {
         } else {
             throw new RuntimeException("Failed to generate image");
         }
+    }
+
+    public String createPrompt(CastingRequestDto castingRequestDto) {
+
+        return String.format(
+                "다음 정보에 따라 자세한 캐릭터 설명을 만드세요: 캐릭터 이름: [%s] \n" +
+                        "나이: [%d] \n" +
+                        "성별: [%s] \n" +
+                        "직업/역할: [%s] \n" +
+                        "제공된 세부 정보: [%s] \n" +
+                        "특성: - 스타일: 사실적인 디테일이 있는 캐릭터형 \n" +
+                        "- 배경: 사실적이고 캐릭터의 직업 또는 역할과 관련이 있어야 합니다. \n" +
+                        "캐릭터의 외모, 성격, 주변 환경에 초점을 맞춰 이러한 세부 사항을 통합한 설명 텍스트를 생성하여 생생하고 몰입감 있는 캐릭터 콘셉트를 만들어 주세요.",
+                castingRequestDto.name(),
+                castingRequestDto.age(),
+                castingRequestDto.gender(),
+                castingRequestDto.role(),
+                castingRequestDto.detail()
+        );
+    }
+
+    public String createPrompt(ProjectRequestDto projectRequestDto) {
+
+        return String.format(
+                "다음 정보에 따라 작품의 표지 이미지를 만드세요. 총 4개의 이미지로, 각 이미지는 인생네컷 스타일로 제작되며, 작품의 분위기와 주요 내용을 시각적으로 표현해야 합니다. 다음은 작품의 정보입니다: " +
+                        "작품 제목: [%s] \n" +
+                        "작품 설명: [%s] \n" +
+                        "분류(Category): [%s] \n" +
+                        "장르(Genre): [%s] \n\n" +
+                        "각 이미지는 캐릭터, 배경, 주요 사건, 또는 작품의 분위기를 시각적으로 나타내야 합니다. \n" +
+                        "첫 번째 이미지는 주인공이나 주요 캐릭터를 중심으로 사실적으로 묘사합니다. \n" +
+                        "두 번째 이미지는 작품의 핵심 장면이나 스토리 전개를 시각화합니다. \n" +
+                        "세 번째 이미지는 작품의 전반적인 분위기나 장르적 특성을 반영합니다. \n" +
+                        "네 번째 이미지는 배경이나 상징적인 이미지를 활용하여 작품의 주제를 나타냅니다. \n" +
+                        "이미지 스타일: 각 이미지가 인생네컷처럼 서로 연속된 분위기와 색감을 유지해야 하며, 전반적으로 현실적이면서도 작품의 장르와 분류에 맞는 예술적 디테일을 적용하세요. \n" +
+                        "이미지들은 주로 밝고 선명한 색감을 사용하되, 장르나 분류에 따라 어두운 색상도 적절히 혼합하세요. \n\n" +
+                        "제작된 표지 이미지는 독자의 관심을 끌 수 있도록 세밀하고 몰입감 있게 표현해주세요.",
+                projectRequestDto.title(),
+                projectRequestDto.description(),
+                projectRequestDto.category(),
+                projectRequestDto.genre()
+        );
+    }
+
+    public String createPrompt(UniverseRequestDto universeRequestDto) {
+
+        return String.format(
+                "다음 정보에 따라 작품의 표지 이미지를 만드세요. 작품의 분위기와 주요 내용을 시각적으로 표현해야 합니다. 다음은 작품의 정보입니다: " +
+                        "작품 제목: [%s] \n" +
+                        "작품 설명: [%s] \n" +
+                        "각 이미지는 캐릭터, 배경, 주요 사건, 또는 작품의 분위기를 시각적으로 나타내야 합니다. \n" +
+                        "이미지 스타일: 각 이미지가 인생네컷처럼 서로 연속된 분위기와 색감을 유지해야 하며, 전반적으로 현실적이면서도 작품의 장르와 분류에 맞는 예술적 디테일을 적용하세요. \n" +
+                        "이미지들은 주로 밝고 선명한 색감을 사용하되, 장르나 분류에 따라 어두운 색상도 적절히 혼합하세요. \n\n" +
+                        "제작된 표지 이미지는 독자의 관심을 끌 수 있도록 세밀하고 몰입감 있게 표현해주세요.",
+                universeRequestDto.title(),
+                universeRequestDto.description()
+        );
     }
 }
