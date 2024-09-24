@@ -1,8 +1,8 @@
-package com.ddj.owing.project.domain;
+package com.ddj.owing.domain.project.model;
 
 import com.ddj.owing.global.entity.BaseTimeEntity;
-import com.ddj.owing.project.domain.enums.Category;
-import com.ddj.owing.project.domain.enums.Genre;
+import com.ddj.owing.domain.project.model.enums.Category;
+import com.ddj.owing.domain.project.model.enums.Genre;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +20,8 @@ public class Project extends BaseTimeEntity {
     @Column
     private String title;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -30,6 +31,6 @@ public class Project extends BaseTimeEntity {
     private Genre genre;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String coverImage;
 }

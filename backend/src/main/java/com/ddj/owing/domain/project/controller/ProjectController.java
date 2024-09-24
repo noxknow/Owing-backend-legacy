@@ -1,7 +1,7 @@
-package com.ddj.owing.project.controller;
+package com.ddj.owing.domain.project.controller;
 
-import com.ddj.owing.project.domain.dto.ProjectRequestDto;
-import com.ddj.owing.project.service.ProjectService;
+import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
+import com.ddj.owing.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

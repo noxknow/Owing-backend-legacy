@@ -1,8 +1,8 @@
-package com.ddj.owing.project.domain.dto;
+package com.ddj.owing.domain.project.model.dto;
 
-import com.ddj.owing.project.domain.Project;
-import com.ddj.owing.project.domain.enums.Category;
-import com.ddj.owing.project.domain.enums.Genre;
+import com.ddj.owing.domain.project.model.Project;
+import com.ddj.owing.domain.project.model.enums.Genre;
+import com.ddj.owing.domain.project.model.enums.Category;
 
 public record ProjectRequestDto(
         String title,

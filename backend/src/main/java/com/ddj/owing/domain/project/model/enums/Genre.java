@@ -1,4 +1,4 @@
-package com.ddj.owing.project.domain.enums;
+package com.ddj.owing.domain.project.model.enums;
 
 import lombok.Getter;
 
