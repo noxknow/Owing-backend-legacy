@@ -1,6 +1,6 @@
-package com.ddj.owing.project.repository;
+package com.ddj.owing.domain.project.repository;
 
-import com.ddj.owing.project.domain.Project;
+import com.ddj.owing.domain.project.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

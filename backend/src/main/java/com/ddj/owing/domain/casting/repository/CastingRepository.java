@@ -1,6 +1,6 @@
-package com.ddj.owing.casting.repository;
+package com.ddj.owing.domain.casting.repository;
 
-import com.ddj.owing.casting.domain.Casting;
+import com.ddj.owing.domain.casting.model.Casting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

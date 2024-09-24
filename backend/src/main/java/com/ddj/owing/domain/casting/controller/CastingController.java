@@ -1,7 +1,7 @@
-package com.ddj.owing.casting.controller;
+package com.ddj.owing.domain.casting.controller;
 
-import com.ddj.owing.casting.domain.dto.CastingRequestDto;
-import com.ddj.owing.casting.service.CastingService;
+import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
+import com.ddj.owing.domain.casting.service.CastingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

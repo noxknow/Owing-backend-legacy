@@ -1,8 +1,6 @@
-package com.ddj.owing.project.domain;
+package com.ddj.owing.domain.casting.model;
 
 import com.ddj.owing.global.entity.BaseTimeEntity;
-import com.ddj.owing.project.domain.enums.Category;
-import com.ddj.owing.project.domain.enums.Genre;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,25 +9,28 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Project extends BaseTimeEntity {
+public class Casting extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String title;
+    private String name;
 
     @Column
-    private String description;
+    private Long age;
 
     @Column
-    private Category category;
+    private String gender;
 
     @Column
-    private Genre genre;
+    private String role;
+
+    @Column
+    private String detail;
 
     @Lob
     @Column
-    private String coverImage;
+    private String imageUrl;
 }

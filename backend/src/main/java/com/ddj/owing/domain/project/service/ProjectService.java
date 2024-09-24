@@ -1,8 +1,8 @@
-package com.ddj.owing.project.service;
+package com.ddj.owing.domain.project.service;
 
-import com.ddj.owing.project.domain.Project;
-import com.ddj.owing.project.domain.dto.ProjectRequestDto;
-import com.ddj.owing.project.repository.ProjectRepository;
+import com.ddj.owing.domain.project.model.Project;
+import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
+import com.ddj.owing.domain.project.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.http.ResponseEntity;
