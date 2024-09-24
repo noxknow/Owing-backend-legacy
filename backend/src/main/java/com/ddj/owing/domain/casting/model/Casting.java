@@ -27,10 +27,11 @@ public class Casting extends BaseTimeEntity {
     @Column
     private String role;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String detail;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 }

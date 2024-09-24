@@ -20,7 +20,8 @@ public class Project extends BaseTimeEntity {
     @Column
     private String title;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -30,6 +31,6 @@ public class Project extends BaseTimeEntity {
     private Genre genre;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String coverImage;
 }
