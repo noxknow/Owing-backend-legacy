@@ -1,19 +1,24 @@
 package com.ddj.owing.casting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.ddj.owing.casting.entity.Casting;
 
-@Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CastingRequestDto {
+public record CastingRequestDto(
+        String name,
+        Long age,
+        String gender,
+        String role,
+        String detail
+) {
 
-    private String name;
-    private Long age;
-    private String gender;
-    private String role;
-    private String detail;
+    public Casting toEntity(String imageUrl) {
+
+        return Casting.builder()
+                .name(this.name())
+                .age(this.age())
+                .gender(this.gender())
+                .role(this.role())
+                .detail(this.detail())
+                .imageUrl(imageUrl)
+                .build();
+    }
 }

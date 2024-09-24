@@ -18,7 +18,6 @@ public class CastingController {
 
     @PostMapping("/generate")
     public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
-
         return castingService.generateCharacterImage(castingRequestDto);
     }
 }
