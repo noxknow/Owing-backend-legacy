@@ -31,11 +31,11 @@ public class ProjectService {
             throw ProjectNotFoundException.of(ProjectErrorCode.PROJECT_NOT_FOUND);
         }
 
-        List<ProjectInfoResponseDto> projectInfoResponseDtos = projects.stream()
+        List<ProjectInfoResponseDto> projectInfoResponseDto = projects.stream()
                 .map(ProjectInfoResponseDto::from)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(projectInfoResponseDtos);
+        return ResponseEntity.ok().body(projectInfoResponseDto);
     }
 
     @Transactional
