@@ -8,9 +8,9 @@ springdoc:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/owing
-    username: ${postgres-username}
-    password: ${postgres-password}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/owing
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -20,14 +20,14 @@ spring:
 
   data:
     neo4j:
-      uri: bolt://localhost:7687
+      uri: bolt://${NEO4J_HOST}:${NEO4J_PORT}
       authentication:
-        username: ${neo4j-username}
-        password: ${neo4j-password}
+        username: ${NEO4J_USERNAME}
+        password: ${NEO4J_PASSWORD}
 
   redis:
-    host: localhost
-    port: 6379
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
     timeout: 5000
 
   application:
@@ -35,7 +35,7 @@ spring:
 
   ai:
     openai:
-      api-key: ${api-key}
+      api-key: ${OPENAI_APIKEY}
       chat:
         options:
-          model: gpt-4o
+          model: ${OPENAI_MODEL}
