@@ -7,6 +7,7 @@ import com.ddj.owing.global.util.OpenAiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class UniverseService {
     private final UniverseRepository universeRepository;
     private final OpenAiUtil openAiUtil;
 
+    @Transactional
     public ResponseEntity<String> generateUniverseImage(UniverseRequestDto universeRequestDto) {
 
         String prompt = openAiUtil.createPrompt(universeRequestDto);

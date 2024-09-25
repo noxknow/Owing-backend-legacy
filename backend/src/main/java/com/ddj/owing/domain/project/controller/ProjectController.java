@@ -1,13 +1,13 @@
 package com.ddj.owing.domain.project.controller;
 
+import com.ddj.owing.domain.project.model.dto.ProjectInfoResponseDto;
 import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
 import com.ddj.owing.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProjectController {
 
     private final ProjectService projectService;
+
+    @GetMapping("project/load")
+    public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
+        return projectService.loadProject();
+    }
 
     @PostMapping("/project/generate")
     public ResponseEntity<String> generateProjectImage(@RequestBody ProjectRequestDto projectRequestDto) {

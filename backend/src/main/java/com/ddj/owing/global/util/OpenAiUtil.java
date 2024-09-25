@@ -6,7 +6,9 @@ import com.ddj.owing.domain.universe.model.dto.UniverseRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class OpenAiUtil {
 

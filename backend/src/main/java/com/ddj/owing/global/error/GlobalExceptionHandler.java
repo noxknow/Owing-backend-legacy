@@ -2,6 +2,7 @@ package com.ddj.owing.global.error;
 
 import java.util.Arrays;
 
+import com.ddj.owing.global.error.exception.ProjectNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -59,6 +60,13 @@ public class GlobalExceptionHandler extends BaseExceptionHandler {
 
 	@ExceptionHandler(AuthException.class)
 	public ResponseEntity<ErrorResponse> handleAuthException (AuthException e) {
+		log.error("class: {}, message: {}", e.getClass(), e.getMessage());
+		log.error(Arrays.toString(e.getStackTrace()));
+		return createErrorResponse(e.getErrorCode());
+	}
+
+	@ExceptionHandler(ProjectNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleProjectNotFoundException(ProjectNotFoundException e) {
 		log.error("class: {}, message: {}", e.getClass(), e.getMessage());
 		log.error(Arrays.toString(e.getStackTrace()));
 		return createErrorResponse(e.getErrorCode());
