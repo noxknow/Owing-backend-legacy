@@ -4,6 +4,7 @@ import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.model.Casting;
 import com.ddj.owing.domain.casting.model.CastingNode;
+import com.ddj.owing.domain.casting.model.dto.CastingCreateDto;
 import com.ddj.owing.domain.casting.model.dto.CastingDto;
 import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CastingService {
 
     private final CastingRepository castingRepository;
