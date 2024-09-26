@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.casting.controller;
 
+import com.ddj.owing.domain.casting.model.dto.CastingCreateDto;
 import com.ddj.owing.domain.casting.model.dto.CastingDto;
 import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
 import com.ddj.owing.domain.casting.service.CastingService;
@@ -22,6 +23,12 @@ public class CastingController {
     @GetMapping("/{id}")
     public ResponseEntity<CastingDto> getCastingById(@PathVariable(value = "id") Long id) {
         CastingDto casting = castingService.getCasting(id);
+        return ResponseEntity.ok(casting);
+    }
+
+    @PostMapping
+    public ResponseEntity<CastingDto> createCasting(@RequestBody CastingCreateDto castingCreateDto) {
+        CastingDto casting = castingService.createCasting(castingCreateDto);
         return ResponseEntity.ok(casting);
     }
 }

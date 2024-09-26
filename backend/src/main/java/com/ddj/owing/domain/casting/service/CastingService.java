@@ -42,9 +42,21 @@ public class CastingService {
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
         return CastingDto.from(castingNode);
     }
+
     public CastingDto getCasting(String name) {
         CastingNode castingNode = castingNodeRepository.findOneByName(name)
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
         return CastingDto.from(castingNode);
+    }
+
+    @Transactional
+    public CastingDto createCasting(CastingCreateDto castingCreateDto) {
+        Casting casting = castingCreateDto.toEntity();
+        Casting savedCasting = castingRepository.save(casting);
+
+        CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
+        CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+
+        return CastingDto.from(savedCastingNode);
     }
 }
