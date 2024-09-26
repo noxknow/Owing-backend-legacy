@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record CastingDto(
+        Long id,
         String name,
         Long age,
         String gender,
@@ -16,6 +17,7 @@ public record CastingDto(
 
     public static CastingDto from(CastingNode castingNode) {
         return CastingDto.builder()
+                .id(castingNode.getId())
                 .name(castingNode.getName())
                 .age(castingNode.getAge())
                 .gender(castingNode.getGender())
@@ -24,8 +26,10 @@ public record CastingDto(
                 .imageUrl(castingNode.getImageUrl())
                 .build();
     }
+
     public static CastingDto from(Casting casting) {
         return CastingDto.builder()
+                .id(casting.getId())
                 .name(casting.getName())
                 .age(casting.getAge())
                 .gender(casting.getGender())

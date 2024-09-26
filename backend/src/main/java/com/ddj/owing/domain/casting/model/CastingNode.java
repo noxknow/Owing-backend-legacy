@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.casting.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.SoftDelete;
@@ -10,6 +11,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @Node("Cast")
 public class CastingNode {
     @Id
+    @NotNull
     private Long id;
     private String name;
     private Long age;
