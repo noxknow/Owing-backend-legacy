@@ -34,15 +34,15 @@ public class Casting extends BaseTimeEntity {
 
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    private String coverImage;
 
-    public void update(String name, Long age, String gender, String role, String detail, String imageUrl) {
+    public void update(String name, Long age, String gender, String role, String detail, String coverImage) {
         this.name = name;
         this.age = age;
         this.gender = gender;
         this.role = role;
         this.detail = detail;
-        this.imageUrl = imageUrl;
+        this.coverImage = coverImage;
     }
 
 }

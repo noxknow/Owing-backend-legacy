@@ -7,6 +7,7 @@ import com.ddj.owing.domain.project.repository.ProjectRepository;
 import com.ddj.owing.global.error.code.ProjectErrorCode;
 import com.ddj.owing.global.error.exception.ProjectNotFoundException;
 import com.ddj.owing.global.util.OpenAiUtil;
+import com.ddj.owing.global.util.Parser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,8 @@ public class ProjectService {
     public ResponseEntity<String> generateProjectImage(ProjectRequestDto projectRequestDto) {
 
         String prompt = openAiUtil.createPrompt(projectRequestDto);
-        String imageUrl = openAiUtil.createImage(prompt);
+        String jsonString = openAiUtil.createImage(prompt);
+        String imageUrl = Parser.extractUrl(jsonString);
         Project project = projectRequestDto.toEntity(imageUrl);
 
         projectRepository.save(project);
