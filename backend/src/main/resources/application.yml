@@ -19,7 +19,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   data:
     neo4j:
@@ -42,3 +42,4 @@ spring:
       chat:
         options:
           model: ${OPENAI_MODEL}
+

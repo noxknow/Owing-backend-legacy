@@ -4,35 +4,30 @@ import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
 import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ai.openai.api.OpenAiImageApi;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ai.image.ImageMessage;
+import org.springframework.ai.image.ImageModel;
+import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.image.ImageResponse;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
 public class OpenAiUtil {
 
-    private final OpenAiImageApi openAiImageApi;
+    private final ImageModel imageModel;
 
     public String createImage(String prompt) {
 
-        OpenAiImageApi.OpenAiImageRequest request = new OpenAiImageApi.OpenAiImageRequest(
-                prompt,
-                OpenAiImageApi.ImageModel.DALL_E_3.getValue(),
-                1,
-                "standard",
-                "url",
-                "1024x1024",
-                "natural",
-                null
-        );
+        ImageMessage imageMessage = new ImageMessage(prompt, 1.0f);
+        ImagePrompt imagePrompt = new ImagePrompt(Collections.singletonList(imageMessage), null);
+        ImageResponse response = imageModel.call(imagePrompt);
 
-        ResponseEntity<OpenAiImageApi.OpenAiImageResponse> response = openAiImageApi.createImage(request);
-
-        if (response.getBody() != null && !response.getBody().data().isEmpty()) {
-            return response.getBody().data().getFirst().url();
+        if (response.getResults() != null && !response.getResults().isEmpty()) {
+            return response.getResult().getOutput().toString();
         } else {
-            throw new RuntimeException("Failed to generate image");
+            throw new RuntimeException("이미지 생성에 실패했습니다");
         }
     }
 
@@ -46,7 +41,9 @@ public class OpenAiUtil {
                         "제공된 세부 정보: [%s] \n" +
                         "특성: - 스타일: 사실적인 디테일이 있는 캐릭터형 \n" +
                         "- 배경: 사실적이고 캐릭터의 직업 또는 역할과 관련이 있어야 합니다. \n" +
-                        "캐릭터의 외모, 성격, 주변 환경에 초점을 맞춰 이러한 세부 사항을 통합한 설명 텍스트를 생성하여 생생하고 몰입감 있는 캐릭터 콘셉트를 만들어 주세요.",
+                        "캐릭터의 외모, 성격, 주변 환경에 초점을 맞춰 이러한 세부 사항을 통합한 설명 텍스트를 생성하여 생생하고 몰입감 있는 캐릭터 콘셉트를 만들어 주세요. \n" +
+                        "이때, 1개의 이미지만 나오도록 해줘. \n" +
+                        "그리고 캐릭터의 옷까지 보이는 얼굴 이미지 오직 한개만 보이게 하고, 캐릭터의 다른 정보는 이미지에 나타나지 않도록 해줘.",
                 castingRequestDto.name(),
                 castingRequestDto.age(),
                 castingRequestDto.gender(),
@@ -81,13 +78,13 @@ public class OpenAiUtil {
     public String createPrompt(UniverseRequestDto universeRequestDto) {
 
         return String.format(
-                "다음 정보에 따라 작품의 표지 이미지를 만드세요. 작품의 분위기와 주요 내용을 시각적으로 표현해야 합니다. 다음은 작품의 정보입니다: " +
+                "다음 정보에 따라 작품의 표지 일러스트레이션 이미지를 만드세요. 작품의 분위기와 주요 내용을 시각적으로 표현해야 합니다. 다음은 작품의 정보입니다 " +
                         "작품 제목: [%s] \n" +
                         "작품 설명: [%s] \n" +
-                        "각 이미지는 캐릭터, 배경, 주요 사건, 또는 작품의 분위기를 시각적으로 나타내야 합니다. \n" +
-                        "이미지 스타일: 각 이미지가 인생네컷처럼 서로 연속된 분위기와 색감을 유지해야 하며, 전반적으로 현실적이면서도 작품의 장르와 분류에 맞는 예술적 디테일을 적용하세요. \n" +
-                        "이미지들은 주로 밝고 선명한 색감을 사용하되, 장르나 분류에 따라 어두운 색상도 적절히 혼합하세요. \n\n" +
-                        "제작된 표지 이미지는 독자의 관심을 끌 수 있도록 세밀하고 몰입감 있게 표현해주세요.",
+                        "이미지는 캐릭터, 배경, 주요 사건, 또는 작품의 분위기를 시각적으로 나타내야 합니다. \n" +
+                        "이미지 스타일: 전반적으로 현실적이면서도 작품의 장르와 분류에 맞는 예술적 디테일을 적용하세요. \n" +
+                        "이미지는 주로 밝고 선명한 색감을 사용하되, 장르나 분류에 따라 어두운 색상도 적절히 혼합하세요. \n\n" +
+                        "이미지는 하나이고, 제작된 표지 이미지는 독자의 관심을 끌 수 있도록 세밀하고 몰입감 있게 표현해주세요.",
                 universeRequestDto.title(),
                 universeRequestDto.description()
         );
