@@ -30,4 +30,13 @@ public class CastingNode {
         this.detail = detail;
         this.imageUrl = imageUrl;
     }
+
+    public void update(String name, Long age, String gender, String role, String detail, String imageUrl) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.role = role;
+        this.detail = detail;
+        this.imageUrl = imageUrl;
+    }
 }

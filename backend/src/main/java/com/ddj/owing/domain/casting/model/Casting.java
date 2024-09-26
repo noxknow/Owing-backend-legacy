@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.casting.model;
 
+import com.ddj.owing.domain.casting.model.dto.CastingUpdateDto;
 import com.ddj.owing.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,4 +35,14 @@ public class Casting extends BaseTimeEntity {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
+
+    public void update(String name, Long age, String gender, String role, String detail, String imageUrl) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.role = role;
+        this.detail = detail;
+        this.imageUrl = imageUrl;
+    }
+
 }

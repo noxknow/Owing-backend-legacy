@@ -3,6 +3,7 @@ package com.ddj.owing.domain.casting.controller;
 import com.ddj.owing.domain.casting.model.dto.CastingCreateDto;
 import com.ddj.owing.domain.casting.model.dto.CastingDto;
 import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
+import com.ddj.owing.domain.casting.model.dto.CastingUpdateDto;
 import com.ddj.owing.domain.casting.service.CastingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class CastingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CastingDto> getCastingById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<CastingDto> getCastingById(@PathVariable Long id) {
         CastingDto casting = castingService.getCasting(id);
         return ResponseEntity.ok(casting);
     }
@@ -29,6 +30,12 @@ public class CastingController {
     @PostMapping
     public ResponseEntity<CastingDto> createCasting(@RequestBody CastingCreateDto castingCreateDto) {
         CastingDto casting = castingService.createCasting(castingCreateDto);
+        return ResponseEntity.ok(casting);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CastingDto> updateCasting(@PathVariable Long id, @RequestBody CastingUpdateDto castingUpdateDto) {
+        CastingDto casting = castingService.updateCasting(id, castingUpdateDto);
         return ResponseEntity.ok(casting);
     }
 }
