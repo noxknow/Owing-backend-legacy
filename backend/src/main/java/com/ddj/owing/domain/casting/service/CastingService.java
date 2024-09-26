@@ -88,4 +88,11 @@ public class CastingService {
 
         return CastingDto.from(updatedCastingNode);
     }
+
+    @Transactional
+    public void deleteCasting(Long id) {
+        // TODO: soft delete
+        castingRepository.deleteById(id);
+        castingNodeRepository.deleteById(id);
+    }
 }

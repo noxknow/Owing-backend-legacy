@@ -38,4 +38,10 @@ public class CastingController {
         CastingDto casting = castingService.updateCasting(id, castingUpdateDto);
         return ResponseEntity.ok(casting);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCasting(@PathVariable Long id) {
+        castingService.deleteCasting(id);
+        return ResponseEntity.ok().build();
+    }
 }
