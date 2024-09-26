@@ -33,5 +33,5 @@ public class Casting extends BaseTimeEntity {
 
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    private String coverImage;
 }
