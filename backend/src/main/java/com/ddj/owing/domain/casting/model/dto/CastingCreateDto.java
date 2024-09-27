@@ -21,7 +21,7 @@ public record CastingCreateDto(
                 .gender(gender)
                 .role(role)
                 .detail(detail)
-                .imageUrl(imageUrl)
+                .coverImage(imageUrl)
                 .build();
     }
 
