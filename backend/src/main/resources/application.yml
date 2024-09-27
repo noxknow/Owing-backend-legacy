@@ -21,12 +21,11 @@ spring:
     hibernate:
       ddl-auto: create
 
-  data:
-    neo4j:
-      uri: bolt://${NEO4J_HOST}:${NEO4J_PORT}
-      authentication:
-        username: ${NEO4J_USERNAME}
-        password: ${NEO4J_PASSWORD}
+  neo4j:
+    uri: bolt://${NEO4J_HOST}:${NEO4J_PORT}
+    authentication:
+      username: ${NEO4J_USERNAME}
+      password: ${NEO4J_PASSWORD}
 
   redis:
     host: ${REDIS_HOST}
