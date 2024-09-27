@@ -35,7 +35,7 @@ public record CastingDto(
                 .gender(casting.getGender())
                 .role(casting.getRole())
                 .detail(casting.getDetail())
-                .imageUrl(casting.getImageUrl())
+                .imageUrl(casting.getCoverImage())
                 .build();
     }
 }
