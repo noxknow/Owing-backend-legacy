@@ -25,4 +25,9 @@ public class UniverseFolderController {
     public ResponseEntity<List<UniverseFolder>> getAllFolders() {
         return universeFolderService.getAllFolders();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UniverseFolder> getFolderById(@PathVariable("id") Long id) {
+        return universeFolderService.getFolderById(id);
+    }
 }
