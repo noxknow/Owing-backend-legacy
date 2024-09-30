@@ -5,6 +5,12 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
+    /**
+     * 주어진 문자열에서 URL 을 추출하는 메서드
+     *
+     * @param input URL 을 포함한 문자열
+     * @return 추출된 URL 문자열, URL 이 없으면 null
+     */
     public static String extractUrl(String input) {
 
         String urlPattern = "url='([^']*)'";

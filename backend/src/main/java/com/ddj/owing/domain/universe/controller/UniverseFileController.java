@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/universe")
+@RequestMapping("/api/universe/file")
 public class UniverseFileController {
 
     private final UniverseFileService universeFileService;

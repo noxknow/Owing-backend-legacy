@@ -19,15 +19,27 @@ public class UniverseFileService {
     private final UniverseFileRepository universeFileRepository;
     private final OpenAiUtil openAiUtil;
 
+    /**
+     * 주어진 ID로 UniverseFile 정보를 로드하는 메서드 (읽기 전용)
+     *
+     * @param id 조회할 파일의 고유 ID
+     * @return 조회된 UniverseFile 객체를 ResponseEntity 로 감싸서 반환
+     */
     @Transactional(readOnly = true)
     public ResponseEntity<UniverseFile> loadUniverseInfo(Long id) {
 
         UniverseFile universeFile = universeFileRepository.findById(id)
-                .orElseThrow(() -> UniverseFileException.of(UniverseFileErrorCode.UNIVERSE_NOT_FOUND));
+                .orElseThrow(() -> UniverseFileException.of(UniverseFileErrorCode.UNIVERSE_FILE_NOT_FOUND));
 
         return ResponseEntity.ok(universeFile);
     }
 
+    /**
+     * OpenAI API 를 이용해 Universe 파일 이미지를 생성하는 메서드
+     *
+     * @param universeFileRequestDto 파일 생성 요청을 담은 DTO
+     * @return 생성된 이미지의 URL 을 ResponseEntity 로 반환
+     */
     @Transactional
     public ResponseEntity<String> generateUniverseImage(UniverseFileRequestDto universeFileRequestDto) {
 

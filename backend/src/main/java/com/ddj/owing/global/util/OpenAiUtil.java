@@ -18,6 +18,12 @@ public class OpenAiUtil {
 
     private final ImageModel imageModel;
 
+    /**
+     * OpenAI API 를 이용해 이미지를 생성하는 메서드
+     *
+     * @param prompt 생성할 이미지에 대한 설명
+     * @return 생성된 이미지 URL
+     */
     public String createImage(String prompt) {
 
         ImageMessage imageMessage = new ImageMessage(prompt, 1.0f);
@@ -31,6 +37,12 @@ public class OpenAiUtil {
         }
     }
 
+    /**
+     * CastingRequestDto 를 기반으로 캐릭터 설명 프롬프트를 생성하는 메서드
+     *
+     * @param castingRequestDto 캐릭터 정보가 담긴 DTO
+     * @return 생성된 캐릭터 설명 프롬프트
+     */
     public String createPrompt(CastingRequestDto castingRequestDto) {
 
         return String.format(
@@ -52,6 +64,12 @@ public class OpenAiUtil {
         );
     }
 
+    /**
+     * ProjectRequestDto 를 기반으로 작품 표지 이미지를 위한 프롬프트를 생성하는 메서드
+     *
+     * @param projectRequestDto 작품 정보가 담긴 DTO
+     * @return 생성된 작품 표지 이미지 프롬프트
+     */
     public String createPrompt(ProjectRequestDto projectRequestDto) {
 
         return String.format(
@@ -75,6 +93,12 @@ public class OpenAiUtil {
         );
     }
 
+    /**
+     * UniverseFileRequestDto 를 기반으로 작품 세계관 일러스트레이션 이미지를 위한 프롬프트를 생성하는 메서드
+     *
+     * @param universeFileRequestDto 작품 정보가 담긴 DTO
+     * @return 생성된 작품 세계관 일러스트레이션 프롬프트
+     */
     public String createPrompt(UniverseFileRequestDto universeFileRequestDto) {
 
         return String.format(
