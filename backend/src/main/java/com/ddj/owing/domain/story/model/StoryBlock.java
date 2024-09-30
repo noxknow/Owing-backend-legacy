@@ -3,11 +3,14 @@ package com.ddj.owing.domain.story.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SoftDelete;
+import org.hibernate.type.SqlTypes;
 
 import com.ddj.owing.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,11 +32,16 @@ public class StoryBlock extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(columnDefinition = "CHAR(36)")
+	private String uuid;
+
 	private String type;
-	// @Column(columnDefinition = "jsonb")
+	@JdbcTypeCode(SqlTypes.JSON)
+	@Column(columnDefinition = "jsonb")
 	private String props;
-	// @Column(columnDefinition = "jsonb")
-	private String content;
+	@JdbcTypeCode(SqlTypes.JSON)
+	@Column(columnDefinition = "jsonb")
+	private List<Content> contents;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "parent_id")
 	private StoryBlock parentBlock;
@@ -48,20 +56,20 @@ public class StoryBlock extends BaseTimeEntity {
 	private StoryPlot storyPlot;
 
 	@Builder
-	public StoryBlock(String type, String props, String content, StoryBlock parentBlock, Integer position,
+	public StoryBlock(String type, String props, List<Content> contents, StoryBlock parentBlock, Integer position,
 		StoryPlot storyPlot) {
 		this.type = type;
 		this.props = props;
-		this.content = content;
+		this.contents = contents;
 		this.parentBlock = parentBlock;
 		this.position = position;
 		this.storyPlot = storyPlot;
 	}
 
-	public void update(String type, String props, String content) {
+	public void update(String type, String props, List<Content> contents) {
 		this.type = type;
 		this.props = props;
-		this.content = content;
+		this.contents = contents;
 	}
 
 	public void updatePosition(Integer newPosition) {
