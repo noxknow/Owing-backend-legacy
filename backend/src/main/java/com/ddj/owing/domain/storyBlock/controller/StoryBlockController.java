@@ -29,26 +29,26 @@ public class StoryBlockController {
 	private final StoryBlockService storyBlockService;
 
 	@GetMapping
-	public ResponseEntity<List<StoryBlockDto>> getAllStories(@RequestParam Long plotId) {
+	public ResponseEntity<List<StoryBlockDto>> getStoryBlockList(@RequestParam Long plotId) {
 		List<StoryBlockDto> stories = storyBlockService.getStoryBlockList(plotId);
 		return ResponseEntity.ok(stories);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<StoryBlockDto> getStoryById(@PathVariable Long id) {
+	public ResponseEntity<StoryBlockDto> getStoryBlock(@PathVariable Long id) {
 		StoryBlockDto storyFolder = storyBlockService.getStoryBlock(id);
 		return ResponseEntity.ok(storyFolder);
 	}
 
 	@PostMapping
-	public ResponseEntity<StoryBlockDto> createStory(@RequestBody StoryBlockCreateDto storyFolderDto) {
+	public ResponseEntity<StoryBlockDto> createStoryBlock(/*@Valid*/ @RequestBody StoryBlockCreateDto storyFolderDto) {
 		StoryBlockDto createdStory = storyBlockService.createStoryBlock(storyFolderDto);
 		return ResponseEntity.ok(createdStory);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<StoryBlockDto> updateStory(@PathVariable Long id,
-		@RequestBody StoryBlockUpdateDto storyBlockUpdateDto) {
+	public ResponseEntity<StoryBlockDto> updateStoryBlock(@PathVariable Long id,
+		/*@Valid*/ @RequestBody StoryBlockUpdateDto storyBlockUpdateDto) {
 		StoryBlockDto updatedStory = storyBlockService.updateStoryBlock(id, storyBlockUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
@@ -61,7 +61,7 @@ public class StoryBlockController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteStory(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteStoryBlock(@PathVariable Long id) {
 		storyBlockService.deleteStoryBlock(id);
 		return ResponseEntity.noContent().build();
 	}

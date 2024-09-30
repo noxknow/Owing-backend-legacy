@@ -23,32 +23,33 @@ import com.ddj.owing.domain.storyFolder.model.dto.StoryFolderUpdateDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/story")
+@RequestMapping("/api/storyFolder")
 @RequiredArgsConstructor
 public class StoryFolderController {
 	private final StoryFolderService storyFolderService;
 
 	@GetMapping
-	public ResponseEntity<List<StoryFolderDto>> getAllStories(@RequestParam Long projectId) {
+	public ResponseEntity<List<StoryFolderDto>> getStoryFolderList(@RequestParam Long projectId) {
 		List<StoryFolderDto> stories = storyFolderService.getStoryFolderList(projectId);
 		return ResponseEntity.ok(stories);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<StoryFolderDto> getStoryById(@PathVariable Long id) {
+	public ResponseEntity<StoryFolderDto> getStoryFolder(@PathVariable Long id) {
 		StoryFolderDto storyFolder = storyFolderService.getStoryFolder(id);
 		return ResponseEntity.ok(storyFolder);
 	}
 
 	@PostMapping
-	public ResponseEntity<StoryFolderDto> createStory(@RequestBody StoryFolderCreateDto storyFolderDto) {
+	public ResponseEntity<StoryFolderDto> createStoryFolder(/*@Valid*/
+		@RequestBody StoryFolderCreateDto storyFolderDto) {
 		StoryFolderDto createdStory = storyFolderService.createStoryFolder(storyFolderDto);
 		return ResponseEntity.ok(createdStory);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<StoryFolderDto> updateStory(@PathVariable Long id,
-		@RequestBody StoryFolderUpdateDto storyFolderUpdateDto) {
+	public ResponseEntity<StoryFolderDto> updateStoryFolder(@PathVariable Long id,
+		/*@Valid*/ @RequestBody StoryFolderUpdateDto storyFolderUpdateDto) {
 		StoryFolderDto updatedStory = storyFolderService.updateStoryFolder(id, storyFolderUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
@@ -61,7 +62,7 @@ public class StoryFolderController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteStory(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteStoryFolder(@PathVariable Long id) {
 		storyFolderService.deleteStoryFolder(id);
 		return ResponseEntity.noContent().build();
 	}
