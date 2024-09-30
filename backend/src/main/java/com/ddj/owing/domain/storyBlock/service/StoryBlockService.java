@@ -1,16 +1,16 @@
 package com.ddj.owing.domain.storyBlock.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ddj.owing.domain.storyBlock.model.StoryBlock;
 import com.ddj.owing.domain.storyBlock.error.code.StoryBlockErrorCode;
 import com.ddj.owing.domain.storyBlock.error.exception.StoryBlockException;
-import com.ddj.owing.domain.storyBlock.model.StoryBlock;
 import com.ddj.owing.domain.storyBlock.model.dto.StoryBlockCreateDto;
 import com.ddj.owing.domain.storyBlock.model.dto.StoryBlockDto;
+import com.ddj.owing.domain.storyBlock.model.dto.StoryBlockPositionUpdateDto;
 import com.ddj.owing.domain.storyBlock.model.dto.StoryBlockUpdateDto;
 import com.ddj.owing.domain.storyBlock.repository.StoryBlockRepository;
 import com.ddj.owing.domain.storyPlot.error.code.StoryPlotErrorCode;
@@ -26,6 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class StoryBlockService {
 	private final StoryBlockRepository storyBlockRepository;
 	private final StoryPlotRepository storyPlotRepository;
+
+	private StoryBlock findById(Long id) {
+		return storyBlockRepository.findById(id)
+			.orElseThrow(() -> StoryBlockException.of(StoryBlockErrorCode.BLOCK_NOT_FOUND));
+	}
 
 	public List<StoryBlockDto> getStoryBlockList(Long plotId) {
 		List<StoryBlock> storyBlockList = storyBlockRepository.findTopLevelBlocksByPlotId(plotId);
@@ -75,4 +80,38 @@ public class StoryBlockService {
 		storyBlockRepository.deleteById(id);
 	}
 
+	@Transactional
+	public StoryBlockDto updateStoryBlockPosition(Long id, StoryBlockPositionUpdateDto dto) {
+		StoryBlock storyBlock = findById(id);
+
+		StoryBlock oldParentBlock = storyBlock.getParentBlock();
+		StoryBlock newParentBlock = findById(dto.parentBlockId());
+
+		Integer oldPosition = storyBlock.getPosition();
+		Integer newPosition = dto.position();
+
+		if(oldParentBlock.getId().equals(dto.parentBlockId()) && oldPosition.equals(newPosition)){
+			return StoryBlockDto.from(storyBlock);
+		}
+
+		if (newPosition < 1 || newPosition > newParentBlock.getChildren().size() + 1) {
+			throw StoryBlockException.of(StoryBlockErrorCode.INVALID_POSITION);
+		}
+
+		if(oldParentBlock.getId().equals(dto.parentBlockId())){
+			if (newPosition < oldPosition) {
+				storyBlockRepository.decrementPositionBetween(oldPosition, newPosition, oldParentBlock.getId());
+			} else {
+				storyBlockRepository.incrementPositionBetween(newPosition, oldPosition - 1, oldParentBlock.getId());
+			}
+		} else {
+			storyBlockRepository.decrementPositionAfter(oldPosition, oldParentBlock.getId());
+			storyBlockRepository.incrementPositionAfter(newPosition, newParentBlock.getId());
+			storyBlock.updateParentBlock(newParentBlock);
+		}
+
+		storyBlock.updatePosition(newPosition);
+		return StoryBlockDto.from(storyBlockRepository.save(storyBlock));
+
+	}
 }

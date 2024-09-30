@@ -8,7 +8,9 @@ import lombok.Getter;
 
 @Getter
 public enum StoryBlockErrorCode implements OwingErrorCode {
-	BLOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "001", "블록을 찾을 수 없습니다.");
+	BLOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "001", "블록을 찾을 수 없습니다."),
+	INVALID_POSITION(HttpStatus.BAD_REQUEST, "002", "위치가 올바르지 않습니다."),
+	;
 
 	private final HttpStatus status;
 	private final String code;

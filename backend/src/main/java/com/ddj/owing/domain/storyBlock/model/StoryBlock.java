@@ -59,11 +59,17 @@ public class StoryBlock extends BaseTimeEntity {
 		this.storyPlot = storyPlot;
 	}
 
-	public void update(String type, String props, String content, Integer position, StoryBlock parentBlock) {
+	public void update(String type, String props, String content) {
 		this.type = type;
 		this.props = props;
 		this.content = content;
-		this.position = position;
+	}
+
+	public void updatePosition(Integer newPosition) {
+		this.position = newPosition;
+	}
+
+	public void updateParentBlock(StoryBlock parentBlock) {
 		this.parentBlock = parentBlock;
 	}
 }
