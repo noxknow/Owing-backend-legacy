@@ -39,4 +39,14 @@ public class UniverseFolderService {
         return ResponseEntity.ok(universeFolderRepository.findById(id)
                 .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND)));
     }
+
+    @Transactional
+    public ResponseEntity<Void> deleteFolder(Long id) {
+
+        UniverseFolder universeFolder = universeFolderRepository.findById(id)
+                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
+        universeFolderRepository.delete(universeFolder);
+
+        return ResponseEntity.ok().build();
+    }
 }
