@@ -45,9 +45,12 @@ public class StoryFolder extends BaseTimeEntity {
 		this.position = position;
 	}
 
-	public void update(String name, String description, Integer position) {
+	public void update(String name, String description) {
 		this.name = name;
 		this.description = description;
+	}
+
+	public void updatePosition(Integer position) {
 		this.position = position;
 	}
 }

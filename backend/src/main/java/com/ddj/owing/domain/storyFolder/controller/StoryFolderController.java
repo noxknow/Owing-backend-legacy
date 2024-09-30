@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ddj.owing.domain.storyFolder.model.dto.StoryFolderCreateDto;
 import com.ddj.owing.domain.storyFolder.model.dto.StoryFolderDto;
-import com.ddj.owing.domain.storyFolder.model.dto.StoryFolderUpdateDto;
+import com.ddj.owing.domain.storyFolder.model.dto.StoryFolderPositionUpdateDto;
 import com.ddj.owing.domain.storyFolder.service.StoryFolderService;
+import com.ddj.owing.domain.storyFolder.model.dto.StoryFolderUpdateDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +50,13 @@ public class StoryFolderController {
 	public ResponseEntity<StoryFolderDto> updateStory(@PathVariable Long id,
 		@RequestBody StoryFolderUpdateDto storyFolderUpdateDto) {
 		StoryFolderDto updatedStory = storyFolderService.updateStoryFolder(id, storyFolderUpdateDto);
+		return ResponseEntity.ok(updatedStory);
+	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity<StoryFolderDto> updateStoryFolderPosition(@PathVariable Long id,
+		@RequestBody StoryFolderPositionUpdateDto storyFolderPositionUpdateDto) {
+		StoryFolderDto updatedStory = storyFolderService.updateStoryFolderPosition(id, storyFolderPositionUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
