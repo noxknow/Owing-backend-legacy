@@ -2,7 +2,7 @@ package com.ddj.owing.global.util;
 
 import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
 import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
-import com.ddj.owing.domain.universe.model.dto.UniverseRequestDto;
+import com.ddj.owing.domain.universe.model.dto.UniverseFileRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.image.ImageMessage;
 import org.springframework.ai.image.ImageModel;
@@ -75,7 +75,7 @@ public class OpenAiUtil {
         );
     }
 
-    public String createPrompt(UniverseRequestDto universeRequestDto) {
+    public String createPrompt(UniverseFileRequestDto universeFileRequestDto) {
 
         return String.format(
                 "다음 정보에 따라 작품의 표지 일러스트레이션 이미지를 만드세요. 작품의 분위기와 주요 내용을 시각적으로 표현해야 합니다. 다음은 작품의 정보입니다 " +
@@ -85,8 +85,8 @@ public class OpenAiUtil {
                         "이미지 스타일: 전반적으로 현실적이면서도 작품의 장르와 분류에 맞는 예술적 디테일을 적용하세요. \n" +
                         "이미지는 주로 밝고 선명한 색감을 사용하되, 장르나 분류에 따라 어두운 색상도 적절히 혼합하세요. \n\n" +
                         "이미지는 하나이고, 제작된 표지 이미지는 독자의 관심을 끌 수 있도록 세밀하고 몰입감 있게 표현해주세요.",
-                universeRequestDto.title(),
-                universeRequestDto.description()
+                universeFileRequestDto.title(),
+                universeFileRequestDto.description()
         );
     }
 }

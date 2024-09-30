@@ -4,8 +4,8 @@ import com.ddj.owing.domain.project.model.Project;
 import com.ddj.owing.domain.project.model.dto.ProjectInfoResponseDto;
 import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
 import com.ddj.owing.domain.project.repository.ProjectRepository;
-import com.ddj.owing.global.error.code.ProjectErrorCode;
-import com.ddj.owing.global.error.exception.ProjectNotFoundException;
+import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
+import com.ddj.owing.domain.project.error.exception.ProjectException;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,14 @@ public class ProjectService {
         List<Project> projects = projectRepository.findTop3ByOrderByUpdatedAtDesc();
 
         if (projects.isEmpty()) {
-            throw ProjectNotFoundException.of(ProjectErrorCode.PROJECT_NOT_FOUND);
+            throw ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND);
         }
 
         List<ProjectInfoResponseDto> projectInfoResponseDto = projects.stream()
                 .map(ProjectInfoResponseDto::from)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(projectInfoResponseDto);
+        return ResponseEntity.ok(projectInfoResponseDto);
     }
 
     @Transactional
@@ -49,6 +49,6 @@ public class ProjectService {
 
         projectRepository.save(project);
 
-        return ResponseEntity.ok().body(imageUrl);
+        return ResponseEntity.ok(imageUrl);
     }
 }
