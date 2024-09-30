@@ -34,24 +34,25 @@ public class StoryBlockService {
 
 	public List<StoryBlockDto> getStoryBlockList(Long plotId) {
 		List<StoryBlock> storyBlockList = storyBlockRepository.findTopLevelBlocksByPlotId(plotId);
-		return storyBlockList.stream().map(StoryBlockDto::from).collect(Collectors.toList());
+		return storyBlockList.stream().map(StoryBlockDto::from).toList();
 	}
 
 	public StoryBlockDto getStoryBlock(Long id) {
-		StoryBlock block = storyBlockRepository.findById(id)
-			.orElseThrow(() -> StoryBlockException.of(StoryBlockErrorCode.BLOCK_NOT_FOUND));
+		StoryBlock block = findById(id);
 		return StoryBlockDto.from(block);
 	}
 
 	@Transactional
 	public StoryBlockDto createStoryBlock(StoryBlockCreateDto storyBlockCreateDto) {
-		StoryBlock parentBlock = storyBlockCreateDto.parentBlockId() != null ?
-			storyBlockRepository.findById(storyBlockCreateDto.parentBlockId())
-				.orElseThrow(() -> StoryBlockException.of(StoryBlockErrorCode.BLOCK_NOT_FOUND)) : null;
+		StoryBlock parentBlock =
+			storyBlockCreateDto.parentBlockId() != null ? findById(storyBlockCreateDto.parentBlockId()) : null;
+
 		StoryPlot storyPlot = storyPlotRepository.findById(storyBlockCreateDto.storyPlotId())
 			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NOT_FOUND));
 
-		StoryBlock newBlock = storyBlockCreateDto.toEntity(storyPlot, parentBlock);
+		Integer position = storyBlockRepository.findMaxOrderByStoryPlotId(storyBlockCreateDto.storyPlotId()) + 1;
+
+		StoryBlock newBlock = storyBlockCreateDto.toEntity(storyPlot, parentBlock, position);
 		return StoryBlockDto.from(storyBlockRepository.save(newBlock));
 	}
 
@@ -59,24 +60,16 @@ public class StoryBlockService {
 	public StoryBlockDto updateStoryBlock(Long id, StoryBlockUpdateDto storyBlockUpdateDto) {
 		// todo: projectId & permission check
 		// todo: validation
-		// todo: order update
-		StoryBlock storyBlock = storyBlockRepository.findById(id)
-			.orElseThrow(() -> StoryBlockException.of(StoryBlockErrorCode.BLOCK_NOT_FOUND));
-
-		StoryBlock parentBlock = storyBlockUpdateDto.parentBlockId() != null ?
-			storyBlockRepository.findById(storyBlockUpdateDto.parentBlockId())
-				.orElseThrow(() -> StoryBlockException.of(StoryBlockErrorCode.BLOCK_NOT_FOUND)) : null;
-		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), storyBlockUpdateDto.content(),
-			storyBlockUpdateDto.position(),
-			parentBlock);
+		StoryBlock storyBlock = findById(id);
+		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), storyBlockUpdateDto.content());
 
 		return StoryBlockDto.from(storyBlockRepository.save(storyBlock));
 	}
 
 	@Transactional
 	public void deleteStoryBlock(Long id) {
-		StoryBlock storyBlock = storyBlockRepository.findById(id)
-			.orElseThrow(() -> StoryBlockException.of(StoryBlockErrorCode.BLOCK_NOT_FOUND));
+		StoryBlock storyBlock = findById(id);
+		storyBlockRepository.decrementPositionAfter(storyBlock.getPosition(), storyBlock.getStoryPlot().getId());
 		storyBlockRepository.deleteById(id);
 	}
 

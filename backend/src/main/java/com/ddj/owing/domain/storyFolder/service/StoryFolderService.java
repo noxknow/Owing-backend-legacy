@@ -29,18 +29,23 @@ public class StoryFolderService {
 
 	public List<StoryFolderDto> getStoryFolderList(Long projectId) {
 		// todo: permission
-		return storyFolderRepository.findByProjectId(projectId).stream().map(StoryFolderDto::from).toList();
+		return storyFolderRepository.findAllByProjectIdOrderByPositionAsc(projectId)
+			.stream()
+			.map(StoryFolderDto::from)
+			.toList();
 	}
 
 	public StoryFolderDto getStoryFolder(Long id) {
-		StoryFolder folder = storyFolderRepository.findById(id)
-			.orElseThrow(() -> StoryFolderException.of(StoryFolderErrorCode.FOLDER_NOT_FOUND));
+		// todo: permission
+		StoryFolder folder = findById(id);
 		return StoryFolderDto.from(folder);
 	}
 
 	@Transactional
 	public StoryFolderDto createStoryFolder(StoryFolderCreateDto storyFolderCreateDto) {
-		StoryFolder storyFolder = storyFolderCreateDto.toEntity();
+		// todo: permission
+		Integer position = storyFolderRepository.findMaxOrderByProjectId(storyFolderCreateDto.projectId()) + 1;
+		StoryFolder storyFolder = storyFolderCreateDto.toEntity(position);
 		return StoryFolderDto.from(storyFolderRepository.save(storyFolder));
 	}
 
@@ -48,19 +53,17 @@ public class StoryFolderService {
 	public StoryFolderDto updateStoryFolder(Long id, StoryFolderUpdateDto storyFolderUpdateDto) {
 		// todo: projectId & permission check
 		// todo: validation
-		// todo: order update
-		StoryFolder storyFolder = storyFolderRepository.findById(id)
-			.orElseThrow(() -> StoryFolderException.of(StoryFolderErrorCode.FOLDER_NOT_FOUND));
-		storyFolder.update(storyFolderUpdateDto.name(), storyFolderUpdateDto.description(),
-			storyFolderUpdateDto.position());
+		StoryFolder storyFolder = findById(id);
+		storyFolder.update(storyFolderUpdateDto.name(), storyFolderUpdateDto.description());
 
 		return StoryFolderDto.from(storyFolderRepository.save(storyFolder));
 	}
 
 	@Transactional
 	public void deleteStoryFolder(Long id) {
-		StoryFolder storyFolder = storyFolderRepository.findById(id)
-			.orElseThrow(() -> StoryFolderException.of(StoryFolderErrorCode.FOLDER_NOT_FOUND));
+		StoryFolder storyFolder = findById(id);
+		storyFolderRepository.decrementPositionAfter(storyFolder.getPosition(), storyFolder.getProjectId());
+
 		storyFolderRepository.deleteById(id);
 	}
 

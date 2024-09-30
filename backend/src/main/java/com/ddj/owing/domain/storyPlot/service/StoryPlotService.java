@@ -34,12 +34,14 @@ public class StoryPlotService {
 
 	public List<StoryPlotDto> getStoryPlotList(Long folderId) {
 		// todo: permission
-		return storyPlotRepository.findByStoryFolderId(folderId).stream().map(StoryPlotDto::from).toList();
+		return storyPlotRepository.findByStoryFolderIdOrderByPositionAsc(folderId)
+			.stream()
+			.map(StoryPlotDto::from)
+			.toList();
 	}
 
 	public StoryPlotDto getStoryPlot(Long id) {
-		StoryPlot plot = storyPlotRepository.findById(id)
-			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NOT_FOUND));
+		StoryPlot plot = findById(id);
 		return StoryPlotDto.from(plot);
 	}
 
@@ -47,7 +49,10 @@ public class StoryPlotService {
 	public StoryPlotDto createStoryPlot(StoryPlotCreateDto storyPlotCreateDto) {
 		StoryFolder storyFolder = storyFolderRepository.findById(storyPlotCreateDto.folderId())
 			.orElseThrow(() -> StoryFolderException.of(StoryFolderErrorCode.FOLDER_NOT_FOUND));
-		StoryPlot storyPlot = storyPlotCreateDto.toEntity(storyFolder);
+
+		Integer position = storyPlotRepository.findMaxOrderByStoryFolderId(storyPlotCreateDto.folderId()) + 1;
+
+		StoryPlot storyPlot = storyPlotCreateDto.toEntity(storyFolder, position);
 		return StoryPlotDto.from(storyPlotRepository.save(storyPlot));
 	}
 
@@ -55,19 +60,16 @@ public class StoryPlotService {
 	public StoryPlotDto updateStoryPlot(Long id, StoryPlotUpdateDto storyPlotUpdateDto) {
 		// todo: projectId & permission check
 		// todo: validation
-		// todo: order update
-		StoryPlot storyPlot = storyPlotRepository.findById(id)
-			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NOT_FOUND));
-		storyPlot.update(storyPlotUpdateDto.name(), storyPlotUpdateDto.description(),
-			storyPlotUpdateDto.position());
+		StoryPlot storyPlot = findById(id);
+		storyPlot.update(storyPlotUpdateDto.name(), storyPlotUpdateDto.description());
 
 		return StoryPlotDto.from(storyPlotRepository.save(storyPlot));
 	}
 
 	@Transactional
 	public void deleteStoryPlot(Long id) {
-		StoryPlot storyPlot = storyPlotRepository.findById(id)
-			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NOT_FOUND));
+		StoryPlot storyPlot = findById(id);
+		storyPlotRepository.decrementPositionAfter(storyPlot.getPosition(), storyPlot.getStoryFolder().getId());
 		storyPlotRepository.deleteById(id);
 	}
 
