@@ -3,13 +3,15 @@ package com.ddj.owing.domain.universe.model;
 import com.ddj.owing.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Builder
 @Getter
+@SoftDelete
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Universe extends BaseTimeEntity {
+public class UniverseFile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

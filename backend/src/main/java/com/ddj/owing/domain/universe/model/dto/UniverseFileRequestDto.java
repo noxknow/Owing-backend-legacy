@@ -1,15 +1,15 @@
 package com.ddj.owing.domain.universe.model.dto;
 
-import com.ddj.owing.domain.universe.model.Universe;
+import com.ddj.owing.domain.universe.model.UniverseFile;
 
-public record UniverseRequestDto(
+public record UniverseFileRequestDto(
         String title,
         String description
 ) {
 
-    public Universe toEntity(String imageUrl) {
+    public UniverseFile toEntity(String imageUrl) {
 
-        return Universe.builder()
+        return UniverseFile.builder()
                 .title(title)
                 .description(description)
                 .coverImage(imageUrl)
