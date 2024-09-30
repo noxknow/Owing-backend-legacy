@@ -1,9 +1,9 @@
 package com.ddj.owing.domain.storyPlot.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record StoryPlotUpdateDto(
-	String name,
-	String description,
-	Integer position,
-	Long folderId
+	@NotBlank String name,
+	String description
 ) {
 }

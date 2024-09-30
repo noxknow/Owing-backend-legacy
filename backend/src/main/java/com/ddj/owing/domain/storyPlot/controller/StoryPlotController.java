@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ddj.owing.domain.storyPlot.model.dto.StoryPlotCreateDto;
 import com.ddj.owing.domain.storyPlot.model.dto.StoryPlotDto;
+import com.ddj.owing.domain.storyPlot.model.dto.StoryPlotPositionUpdateDto;
 import com.ddj.owing.domain.storyPlot.model.dto.StoryPlotUpdateDto;
 import com.ddj.owing.domain.storyPlot.service.StoryPlotService;
 
@@ -48,6 +50,13 @@ public class StoryPlotController {
 	public ResponseEntity<StoryPlotDto> updateStory(@PathVariable Long id,
 		@RequestBody StoryPlotUpdateDto storyPlotUpdateDto) {
 		StoryPlotDto updatedStory = storyPlotService.updateStoryPlot(id, storyPlotUpdateDto);
+		return ResponseEntity.ok(updatedStory);
+	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity<StoryPlotDto> updateStoryPlotPosition(@PathVariable Long id,
+		@RequestBody StoryPlotPositionUpdateDto storyPlotPositionUpdateDto) {
+		StoryPlotDto updatedStory = storyPlotService.updateStoryPlotPosition(id, storyPlotPositionUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 

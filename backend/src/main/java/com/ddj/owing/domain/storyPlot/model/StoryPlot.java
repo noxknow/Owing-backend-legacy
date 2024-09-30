@@ -55,9 +55,16 @@ public class StoryPlot extends BaseTimeEntity {
 		this.storyFolder = storyFolder;
 	}
 
-	public void update(String name, String description, Integer position) {
+	public void update(String name, String description) {
 		this.name = name;
 		this.description = description;
+	}
+
+	public void updatePosition(Integer position) {
 		this.position = position;
+	}
+
+	public void updateFolder(StoryFolder newFolder) {
+		this.storyFolder = newFolder;
 	}
 }
