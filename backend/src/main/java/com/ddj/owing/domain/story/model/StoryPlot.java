@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.hibernate.annotations.SoftDelete;
 
-import com.ddj.owing.domain.story.model.StoryBlock;
-import com.ddj.owing.domain.story.model.StoryFolder;
 import com.ddj.owing.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.CascadeType;
@@ -37,7 +35,7 @@ public class StoryPlot extends BaseTimeEntity {
 	private Integer position;
 
 	@Column(columnDefinition = "int default 0")
-	private Integer textCount = 0;
+	private int textCount;
 
 	@ManyToOne
 	@JoinColumn(name = "story_folder_id")
@@ -47,7 +45,7 @@ public class StoryPlot extends BaseTimeEntity {
 	private List<StoryBlock> storyBlocks = new ArrayList<>();
 
 	@Builder
-	StoryPlot(String name, String description, Integer position, Integer textCount, StoryFolder storyFolder) {
+	StoryPlot(String name, String description, Integer position, int textCount, StoryFolder storyFolder) {
 		this.name = name;
 		this.description = description;
 		this.position = position;
@@ -66,5 +64,9 @@ public class StoryPlot extends BaseTimeEntity {
 
 	public void updateFolder(StoryFolder newFolder) {
 		this.storyFolder = newFolder;
+	}
+
+	public void updateTextCount(int textCount) {
+		this.textCount += textCount;
 	}
 }

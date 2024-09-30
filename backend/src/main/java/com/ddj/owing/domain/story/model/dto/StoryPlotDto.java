@@ -8,7 +8,8 @@ import lombok.Builder;
 public record StoryPlotDto(
 	String name,
 	String description,
-	Integer position
+	Integer position,
+	int textCount
 ) {
 
 	public static StoryPlotDto from(StoryPlot storyPlot) {
@@ -16,6 +17,7 @@ public record StoryPlotDto(
 			.name(storyPlot.getName())
 			.description(storyPlot.getDescription())
 			.position(storyPlot.getPosition())
+			.textCount(storyPlot.getTextCount())
 			.build();
 	}
 

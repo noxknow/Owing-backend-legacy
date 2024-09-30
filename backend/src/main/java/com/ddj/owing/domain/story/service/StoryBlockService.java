@@ -5,17 +5,19 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ddj.owing.domain.story.model.StoryBlock;
 import com.ddj.owing.domain.story.error.code.StoryBlockErrorCode;
+import com.ddj.owing.domain.story.error.code.StoryPlotErrorCode;
 import com.ddj.owing.domain.story.error.exception.StoryBlockException;
+import com.ddj.owing.domain.story.error.exception.StoryPlotException;
+import com.ddj.owing.domain.story.model.Content;
+import com.ddj.owing.domain.story.model.StoryBlock;
+import com.ddj.owing.domain.story.model.StoryPlot;
+import com.ddj.owing.domain.story.model.dto.ContentDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockCreateDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockPositionUpdateDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryBlockRepository;
-import com.ddj.owing.domain.story.error.code.StoryPlotErrorCode;
-import com.ddj.owing.domain.story.error.exception.StoryPlotException;
-import com.ddj.owing.domain.story.model.StoryPlot;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,10 @@ public class StoryBlockService {
 		return StoryBlockDto.from(block);
 	}
 
+	public int getTextCount(List<Content> contents) {
+		return contents.stream().mapToInt(content -> content.getText().length()).sum();
+	}
+
 	@Transactional
 	public StoryBlockDto createStoryBlock(StoryBlockCreateDto storyBlockCreateDto) {
 		StoryBlock parentBlock =
@@ -53,6 +59,10 @@ public class StoryBlockService {
 		Integer position = storyBlockRepository.findMaxOrderByStoryPlotId(storyBlockCreateDto.storyPlotId()) + 1;
 
 		StoryBlock newBlock = storyBlockCreateDto.toEntity(storyPlot, parentBlock, position);
+		int textCount = getTextCount(newBlock.getContents());
+
+		storyPlot.updateTextCount(textCount);
+
 		return StoryBlockDto.from(storyBlockRepository.save(newBlock));
 	}
 
@@ -61,9 +71,11 @@ public class StoryBlockService {
 		// todo: projectId & permission check
 		// todo: validation
 		StoryBlock storyBlock = findById(id);
-		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), storyBlockUpdateDto.content());
 		List<Content> contents = storyBlockUpdateDto.contents().stream().map(ContentDto::toEntity).toList();
+		int textCountDiff = getTextCount(contents) - getTextCount(storyBlock.getContents());
+
 		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), contents);
+		storyBlock.getStoryPlot().updateTextCount(textCountDiff);
 
 		return StoryBlockDto.from(storyBlockRepository.save(storyBlock));
 	}
@@ -71,7 +83,10 @@ public class StoryBlockService {
 	@Transactional
 	public void deleteStoryBlock(Long id) {
 		StoryBlock storyBlock = findById(id);
+
 		storyBlockRepository.decrementPositionAfter(storyBlock.getPosition(), storyBlock.getStoryPlot().getId());
+		int textCount = getTextCount(storyBlock.getContents());
+		storyBlock.getStoryPlot().updateTextCount(-textCount);
 		storyBlockRepository.deleteById(id);
 	}
 
