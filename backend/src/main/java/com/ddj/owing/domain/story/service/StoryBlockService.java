@@ -62,6 +62,8 @@ public class StoryBlockService {
 		// todo: validation
 		StoryBlock storyBlock = findById(id);
 		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), storyBlockUpdateDto.content());
+		List<Content> contents = storyBlockUpdateDto.contents().stream().map(ContentDto::toEntity).toList();
+		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), contents);
 
 		return StoryBlockDto.from(storyBlockRepository.save(storyBlock));
 	}

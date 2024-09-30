@@ -10,7 +10,7 @@ import lombok.Builder;
 public record StoryBlockDto(
 	String type,
 	String props,
-	String content,
+	List<ContentDto> content,
 	Long parentBlockId,
 	Integer position,
 	Long storyPlotId,
@@ -21,7 +21,7 @@ public record StoryBlockDto(
 		return StoryBlockDto.builder()
 			.type(storyBlock.getType())
 			.props(storyBlock.getProps())
-			.content(storyBlock.getContent())
+			.content(storyBlock.getContents().stream().map(ContentDto::from).toList())
 			.parentBlockId(storyBlock.getParentBlock() == null ? null : storyBlock.getParentBlock().getId())
 			.position(storyBlock.getPosition())
 			.storyPlotId(storyBlock.getStoryPlot().getId())
