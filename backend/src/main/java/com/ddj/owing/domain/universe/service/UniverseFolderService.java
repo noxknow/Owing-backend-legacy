@@ -1,5 +1,7 @@
 package com.ddj.owing.domain.universe.service;
 
+import com.ddj.owing.domain.universe.error.code.UniverseFolderErrorCode;
+import com.ddj.owing.domain.universe.error.exception.UniverseFolderException;
 import com.ddj.owing.domain.universe.model.UniverseFolder;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderCreateDto;
 import com.ddj.owing.domain.universe.repository.UniverseFolderRepository;
@@ -29,5 +31,12 @@ public class UniverseFolderService {
     public ResponseEntity<List<UniverseFolder>> getAllFolders() {
 
         return ResponseEntity.ok(universeFolderRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<UniverseFolder> getFolderById(Long id) {
+
+        return ResponseEntity.ok(universeFolderRepository.findById(id)
+                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND)));
     }
 }
