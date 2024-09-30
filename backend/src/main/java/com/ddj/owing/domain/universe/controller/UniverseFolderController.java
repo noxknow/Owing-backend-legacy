@@ -30,4 +30,9 @@ public class UniverseFolderController {
     public ResponseEntity<UniverseFolder> getFolderById(@PathVariable("id") Long id) {
         return universeFolderService.getFolderById(id);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteFolder(@PathVariable("id") Long id) {
+        return universeFolderService.deleteFolder(id);
+    }
 }
