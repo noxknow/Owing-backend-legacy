@@ -1,5 +1,6 @@
-package com.ddj.owing.global.error.code;
+package com.ddj.owing.domain.project.error.code;
 
+import com.ddj.owing.global.error.code.OwingErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
