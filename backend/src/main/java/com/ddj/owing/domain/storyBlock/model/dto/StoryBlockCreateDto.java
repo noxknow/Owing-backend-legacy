@@ -8,11 +8,10 @@ public record StoryBlockCreateDto(
 	String props,
 	String content,
 	Long parentBlockId,
-	Integer position,
 	Long storyPlotId
 ) {
 
-	public StoryBlock toEntity(StoryPlot storyPlot, StoryBlock parentBlock) {
+	public StoryBlock toEntity(StoryPlot storyPlot, StoryBlock parentBlock, Integer position) {
 		return StoryBlock.builder()
 			.type(type)
 			.props(props)

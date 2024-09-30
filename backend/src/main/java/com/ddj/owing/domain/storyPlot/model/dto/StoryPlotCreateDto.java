@@ -3,14 +3,16 @@ package com.ddj.owing.domain.storyPlot.model.dto;
 import com.ddj.owing.domain.storyFolder.model.StoryFolder;
 import com.ddj.owing.domain.storyPlot.model.StoryPlot;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record StoryPlotCreateDto(
-	String name,
+	@NotBlank String name,
 	String description,
-	Integer position,
-	Long folderId
+	@NotNull Long folderId
 ) {
 
-	public StoryPlot toEntity(StoryFolder storyFolder) {
+	public StoryPlot toEntity(StoryFolder storyFolder, Integer position) {
 		return StoryPlot.builder()
 			.name(name)
 			.description(description)
