@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.casting.model;
 
+import com.ddj.owing.global.entity.BaseTimeGraph;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class CastingNode {
+public class CastingNode extends BaseTimeGraph {
     @Id
     @NotNull
     private Long id;

@@ -110,8 +110,10 @@ public class CastingService {
 
     @Transactional
     public void deleteCasting(Long id) {
-        // TODO: soft delete
         castingRepository.deleteById(id);
-        castingNodeRepository.deleteById(id);
+        CastingNode castingNode = castingNodeRepository.findById(id)
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
+        castingNode.delete();
+        castingNodeRepository.save(castingNode);
     }
 }
