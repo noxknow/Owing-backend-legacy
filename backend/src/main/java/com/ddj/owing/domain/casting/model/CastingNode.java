@@ -49,6 +49,15 @@ public class CastingNode extends BaseTimeGraph {
         targetCastingNode.inConnections.add(inConnection);
     }
 
+    public void updateConnectionName(Long connectionId, CastingNode targetNode, String relationName) {
+        this.getOutConnections().stream()
+                .filter(connection -> connection.getId().equals(connectionId))
+                .forEach(target -> target.updateName(relationName));
+        targetNode.getOutConnections().stream()
+                .filter(connection -> connection.getId().equals(connectionId))
+                .forEach(target -> target.updateName(relationName));
+    }
+
     public void updateInfo(String name, Long age, String gender, String role, String imageUrl) {
         this.name = name;
         this.age = age;
