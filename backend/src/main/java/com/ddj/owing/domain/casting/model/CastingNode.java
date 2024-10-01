@@ -21,17 +21,15 @@ public class CastingNode extends BaseTimeGraph {
     private Long age;
     private String gender;
     private String role;
-    private String detail;
     private String imageUrl;
     private Integer coordX;
     private Integer coordY;
 
-    public void updateInfo(String name, Long age, String gender, String role, String detail, String imageUrl) {
+    public void updateInfo(String name, Long age, String gender, String role, String imageUrl) {
         this.name = name;
         this.age = age;
         this.gender = gender;
         this.role = role;
-        this.detail = detail;
         this.imageUrl = imageUrl;
     }
 

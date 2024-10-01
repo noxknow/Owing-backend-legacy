@@ -36,7 +36,6 @@ public record CastingCreateDto(
                 .age(age)
                 .gender(gender)
                 .role(role)
-                .detail(detail)
                 .imageUrl(imageUrl)
                 .coordX(coordX)
                 .coordY(coordY)

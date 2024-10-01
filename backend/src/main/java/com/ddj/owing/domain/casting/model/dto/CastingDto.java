@@ -24,7 +24,6 @@ public record CastingDto(
                 .age(castingNode.getAge())
                 .gender(castingNode.getGender())
                 .role(castingNode.getRole())
-                .detail(castingNode.getDetail())
                 .imageUrl(castingNode.getImageUrl())
                 .coordX(castingNode.getCoordX())
                 .coordY(castingNode.getCoordY())

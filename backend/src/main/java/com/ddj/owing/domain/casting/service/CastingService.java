@@ -38,15 +38,9 @@ public class CastingService {
     }
 
     public CastingDto getCasting(Long id) {
-        CastingNode castingNode = castingNodeRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
-        return CastingDto.from(castingNode);
-    }
-
-    public CastingDto getCasting(String name) {
-        CastingNode castingNode = castingNodeRepository.findOneByName(name)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
-        return CastingDto.from(castingNode);
+        Casting casting = castingRepository.findById(id)
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+        return CastingDto.from(casting);
     }
 
     @Transactional
@@ -80,7 +74,6 @@ public class CastingService {
                 castingInfoUpdateDto.age(),
                 castingInfoUpdateDto.name(),
                 castingInfoUpdateDto.role(),
-                castingInfoUpdateDto.detail(),
                 castingInfoUpdateDto.imageUrl()
         );
         CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
