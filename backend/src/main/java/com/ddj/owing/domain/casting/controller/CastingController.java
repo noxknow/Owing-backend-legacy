@@ -47,4 +47,10 @@ public class CastingController {
         castingService.deleteCasting(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/relationship")
+    public ResponseEntity createRelationship(CastingConnectionCreateDto castingConnectionCreateDto) {
+        castingService.createConnection(castingConnectionCreateDto);
+        return ResponseEntity.ok().build();
+    }
 }

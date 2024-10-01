@@ -4,6 +4,8 @@ import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.model.Casting;
 import com.ddj.owing.domain.casting.model.CastingNode;
+import com.ddj.owing.domain.casting.model.CastingRelationship;
+import com.ddj.owing.domain.casting.model.ConnectionType;
 import com.ddj.owing.domain.casting.model.dto.*;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -109,4 +112,26 @@ public class CastingService {
         castingNode.delete();
         castingNodeRepository.save(castingNode);
     }
+
+    /**
+     * Casting간 Relation을 생성하는 메서드
+     *
+     * @param connectionCreateDto
+     * connectionType()을 통해 단방향, 양방향 지정
+     */
+    @Transactional
+    public void createConnection(CastingConnectionCreateDto connectionCreateDto) {
+        CastingNode fromCasting = castingNodeRepository.findById(connectionCreateDto.fromId())
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+        CastingNode toCasting = castingNodeRepository.findById(connectionCreateDto.toId())
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+
+        fromCasting.addConnection(toCasting, connectionCreateDto.name());
+        if (ConnectionType.BIDIRECTIONAL.equals(connectionCreateDto.connectionType())) {
+            toCasting.addConnection(fromCasting, connectionCreateDto.name());
+        }
+
+        castingNodeRepository.save(fromCasting);
+    }
+
 }
