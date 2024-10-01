@@ -1,9 +1,6 @@
 package com.ddj.owing.domain.casting.controller;
 
-import com.ddj.owing.domain.casting.model.dto.CastingCreateDto;
-import com.ddj.owing.domain.casting.model.dto.CastingDto;
-import com.ddj.owing.domain.casting.model.dto.CastingRequestDto;
-import com.ddj.owing.domain.casting.model.dto.CastingUpdateDto;
+import com.ddj.owing.domain.casting.model.dto.*;
 import com.ddj.owing.domain.casting.service.CastingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,7 @@ public class CastingController {
 
     private final CastingService castingService;
 
-    @PostMapping("/generate")
+    @PostMapping("/generate/cover-image")
     public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
         return castingService.generateCharacterImage(castingRequestDto);
     }
@@ -33,9 +30,15 @@ public class CastingController {
         return ResponseEntity.ok(casting);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CastingDto> updateCasting(@PathVariable Long id, @RequestBody CastingUpdateDto castingUpdateDto) {
-        CastingDto casting = castingService.updateCasting(id, castingUpdateDto);
+    @PutMapping("/{id}/info")
+    public ResponseEntity<CastingDto> updateCastingInfo(@PathVariable Long id, @RequestBody CastingInfoUpdateDto castingInfoUpdateDto) {
+        CastingDto casting = castingService.updateCastingInfo(id, castingInfoUpdateDto);
+        return ResponseEntity.ok(casting);
+    }
+
+    @PutMapping("/{id}/coord")
+    public ResponseEntity<CastingDto> updateCastingCoord(@PathVariable Long id, @RequestBody CastingCoordUpdateDto castingCoordUpdateDto) {
+        CastingDto casting = castingService.updateCastingCoord(id, castingCoordUpdateDto);
         return ResponseEntity.ok(casting);
     }
 

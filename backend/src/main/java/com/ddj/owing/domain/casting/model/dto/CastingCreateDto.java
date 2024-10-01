@@ -11,7 +11,9 @@ public record CastingCreateDto(
         String gender,
         String role,
         String detail,
-        String imageUrl
+        String imageUrl,
+        Integer coordX,
+        Integer coordY
 ) {
 
     public Casting toEntity() {
@@ -22,6 +24,8 @@ public record CastingCreateDto(
                 .role(role)
                 .detail(detail)
                 .coverImage(imageUrl)
+                .coordX(coordX)
+                .coordY(coordY)
                 .build();
     }
 
@@ -32,8 +36,9 @@ public record CastingCreateDto(
                 .age(age)
                 .gender(gender)
                 .role(role)
-                .detail(detail)
                 .imageUrl(imageUrl)
+                .coordX(coordX)
+                .coordY(coordY)
                 .build();
     }
 }

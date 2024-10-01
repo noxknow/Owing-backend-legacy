@@ -1,6 +1,6 @@
 package com.ddj.owing.domain.casting.model.dto;
 
-public record CastingUpdateDto (
+public record CastingInfoUpdateDto(
         String name,
         Long age,
         String gender,
