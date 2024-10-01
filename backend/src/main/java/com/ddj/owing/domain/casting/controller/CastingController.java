@@ -49,8 +49,8 @@ public class CastingController {
     }
 
     @PostMapping("/relationship")
-    public ResponseEntity createRelationship(CastingConnectionCreateDto castingConnectionCreateDto) {
-        castingService.createConnection(castingConnectionCreateDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CastingRelationshipDto> createRelationship(CastingConnectionCreateDto castingConnectionCreateDto) {
+        CastingRelationshipDto castingRelationshipDto = castingService.createConnection(castingConnectionCreateDto);
+        return ResponseEntity.ok(castingRelationshipDto);
     }
 }
