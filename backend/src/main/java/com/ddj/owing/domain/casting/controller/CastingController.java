@@ -13,7 +13,7 @@ public class CastingController {
 
     private final CastingService castingService;
 
-    @PostMapping("/generate")
+    @PostMapping("/generate/cover-image")
     public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
         return castingService.generateCharacterImage(castingRequestDto);
     }

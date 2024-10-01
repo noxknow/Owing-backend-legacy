@@ -12,7 +12,9 @@ public record CastingDto(
         String gender,
         String role,
         String detail,
-        String imageUrl
+        String imageUrl,
+        Integer coordX,
+        Integer coordY
 ) {
 
     public static CastingDto from(CastingNode castingNode) {
@@ -24,6 +26,8 @@ public record CastingDto(
                 .role(castingNode.getRole())
                 .detail(castingNode.getDetail())
                 .imageUrl(castingNode.getImageUrl())
+                .coordX(castingNode.getCoordX())
+                .coordY(castingNode.getCoordY())
                 .build();
     }
 
@@ -36,6 +40,8 @@ public record CastingDto(
                 .role(casting.getRole())
                 .detail(casting.getDetail())
                 .imageUrl(casting.getCoverImage())
+                .coordX(casting.getCoordX())
+                .coordY(casting.getCoordY())
                 .build();
     }
 }
