@@ -18,7 +18,7 @@ public class CastingRelationship {
     private Long id;
 
     private String uuid;
-    private String name;
+    private String label;
     private Long sourceId;
     private Long targetId;
     private ConnectionHandle sourceHandle;
@@ -27,9 +27,9 @@ public class CastingRelationship {
     @TargetNode
     private CastingNode castingNode;
 
-    CastingRelationship(String uuid, String name, CastingNode castingNode, Long sourceId, String sourceHandleStr, Long targetId, String targetHandleStr) {
+    CastingRelationship(String uuid, String label, CastingNode castingNode, Long sourceId, String sourceHandleStr, Long targetId, String targetHandleStr) {
         this.uuid = uuid;
-        this.name = name;
+        this.label = label;
         this.castingNode = castingNode;
 
         this.sourceId = sourceId;
@@ -39,10 +39,10 @@ public class CastingRelationship {
         this.targetHandle = ConnectionHandle.of(targetHandleStr);
     }
 
-    public void updateName(String name) {
-        if (!StringUtils.hasText(name)) {
+    public void updateLabel(String label) {
+        if (!StringUtils.hasText(label)) {
             throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
         }
-        this.name = name;
+        this.label = label;
     }
 }

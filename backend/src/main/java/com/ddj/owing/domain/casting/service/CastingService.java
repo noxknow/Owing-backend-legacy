@@ -16,9 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -135,7 +132,7 @@ public class CastingService {
             sourceCasting.addConnection(
                     connectionCreateDto.uuid(),
                     targetCasting,
-                    connectionCreateDto.name(),
+                    connectionCreateDto.label(),
                     connectionCreateDto.sourceHandleStr(),
                     connectionCreateDto.targetHandleStr()
             );
@@ -143,7 +140,7 @@ public class CastingService {
             sourceCasting.addBiConnection(
                     connectionCreateDto.uuid(),
                     targetCasting,
-                    connectionCreateDto.name(),
+                    connectionCreateDto.label(),
                     connectionCreateDto.sourceHandleStr(),
                     connectionCreateDto.targetHandleStr()
             );
@@ -156,7 +153,7 @@ public class CastingService {
 
         CastingRelationship castingRelationship = connections.stream()
                 .filter(conn -> conn.getCastingNode().getId().equals(connectionCreateDto.targetId()))
-                .filter(conn -> conn.getName().equals(connectionCreateDto.name()))
+                .filter(conn -> conn.getLabel().equals(connectionCreateDto.label()))
                 .findFirst()
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND));
 
@@ -186,9 +183,9 @@ public class CastingService {
         boolean isNameUpdated = false;
         switch (connectionUpdateDto.connectionType()) {
             case ConnectionType.DIRECTIONAL ->
-                    isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name()).isPresent();
+                    isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.label()).isPresent();
             case ConnectionType.BIDIRECTIONAL ->
-                    isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name()).isPresent();
+                    isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.label()).isPresent();
         }
 
         if (!isNameUpdated) {

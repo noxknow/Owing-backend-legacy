@@ -6,7 +6,7 @@ public record CastingConnectionCreateDto(
         String uuid,
         Long sourceId,
         Long targetId,
-        String name,
+        String label,
         ConnectionType connectionType,
         String sourceHandleStr,
         String targetHandleStr

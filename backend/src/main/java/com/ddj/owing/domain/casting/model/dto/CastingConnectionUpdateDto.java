@@ -5,7 +5,7 @@ import com.ddj.owing.domain.casting.model.ConnectionType;
 public record CastingConnectionUpdateDto (
         Long fromId,
         Long toId,
-        String name,
+        String label,
         ConnectionType connectionType
 ){
 }
