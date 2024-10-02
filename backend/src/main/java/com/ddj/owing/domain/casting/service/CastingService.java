@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -168,8 +171,7 @@ public class CastingService {
     /**
      * connectionType에 따라 단방향, 양방향 관계 이름을 변경.
      * @param uuid
-     * neo4j에 쿼리를 직접 실행하기 때문에 사용하지 않음.
-     * 추후 객체 수준에서 이름을 변경할 수 있다면 사용.
+     * relationship 지정에 사용
      * @param connectionUpdateDto
      * @return
      * 관계 id, 시작객체 id, 끝객체 id, connectionType이 포함된 CastingRelationshipDto
@@ -181,11 +183,16 @@ public class CastingService {
         CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.toId())
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
+        boolean isNameUpdated = false;
         switch (connectionUpdateDto.connectionType()) {
             case ConnectionType.DIRECTIONAL ->
-                    castingNodeRepository.updateDirectionalConnectionName(fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name());
+                    isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name()).isPresent();
             case ConnectionType.BIDIRECTIONAL ->
-                    castingNodeRepository.updateBidirectionalConnectionName(fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name());
+                    isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name()).isPresent();
+        }
+
+        if (!isNameUpdated) {
+            throw CastingException.of(CastingErrorCode.CONNECTION_NAME_UPDATE_FAIL);
         }
 
         return new CastingRelationshipDto(
