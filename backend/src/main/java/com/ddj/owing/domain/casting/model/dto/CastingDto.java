@@ -2,6 +2,7 @@ package com.ddj.owing.domain.casting.model.dto;
 
 import com.ddj.owing.domain.casting.model.Casting;
 import com.ddj.owing.domain.casting.model.CastingNode;
+import com.ddj.owing.domain.casting.model.Position;
 import lombok.Builder;
 
 @Builder
@@ -13,8 +14,7 @@ public record CastingDto(
         String role,
         String detail,
         String imageUrl,
-        Integer coordX,
-        Integer coordY
+        Position position
 ) {
 
     public static CastingDto from(CastingNode castingNode) {
@@ -25,8 +25,7 @@ public record CastingDto(
                 .gender(castingNode.getGender())
                 .role(castingNode.getRole())
                 .imageUrl(castingNode.getImageUrl())
-                .coordX(castingNode.getCoordX())
-                .coordY(castingNode.getCoordY())
+                .position(new Position(castingNode.getCoordX(), castingNode.getCoordY()))
                 .build();
     }
 
@@ -39,8 +38,7 @@ public record CastingDto(
                 .role(casting.getRole())
                 .detail(casting.getDetail())
                 .imageUrl(casting.getCoverImage())
-                .coordX(casting.getCoordX())
-                .coordY(casting.getCoordY())
+                .position(new Position(casting.getCoordX(), casting.getCoordY()))
                 .build();
     }
 }
