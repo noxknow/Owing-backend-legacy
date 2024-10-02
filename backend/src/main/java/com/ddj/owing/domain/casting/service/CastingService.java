@@ -34,7 +34,7 @@ public class CastingService {
 
         castingRepository.save(casting);
 
-        return ResponseEntity.ok().body(imageUrl);
+        return ResponseEntity.ok(imageUrl);
     }
 
     public CastingDto getCasting(Long id) {
