@@ -137,7 +137,7 @@ public class CastingService {
         CastingRelationship castingRelationship = outConnections.stream()
                 .filter(connection -> connection.getCastingNode().getId().equals(connectionCreateDto.toId()))
                 .filter(connection -> connection.getName().equals(connectionCreateDto.name()))
-                .findAny()
+                .findFirst()
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND));
 
         return new CastingRelationshipDto(
@@ -148,4 +148,34 @@ public class CastingService {
         );
     }
 
+    /**
+     * connectionType에 따라 단방향, 양방향 관계 이름을 변경.
+     * @param id
+     * neo4j에 쿼리를 직접 실행하기 때문에 사용하지 않음.
+     * 추후 객체 수준에서 이름을 변경할 수 있다면 사용.
+     * @param connectionUpdateDto
+     * @return
+     * 관계 id, 시작객체 id, 끝객체 id, connectionType이 포함된 CastingRelationshipDto
+     */
+    @Transactional
+    public CastingRelationshipDto updateConnectionName(Long id, CastingConnectionUpdateDto connectionUpdateDto) {
+        CastingNode fromCasting = castingNodeRepository.findById(connectionUpdateDto.fromId())
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+        CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.toId())
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+
+        switch (connectionUpdateDto.connectionType()) {
+            case ConnectionType.DIRECTIONAL ->
+                    castingNodeRepository.updateDirectionalConnectionName(fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name());
+            case ConnectionType.BIDIRECTIONAL ->
+                    castingNodeRepository.updateBidirectionalConnectionName(fromCasting.getId(), toCasting.getId(), connectionUpdateDto.name());
+        }
+
+        return new CastingRelationshipDto(
+                id,
+                connectionUpdateDto.fromId(),
+                connectionUpdateDto.toId(),
+                connectionUpdateDto.connectionType()
+        );
+    }
 }
