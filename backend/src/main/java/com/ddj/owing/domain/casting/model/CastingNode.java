@@ -35,15 +35,15 @@ public class CastingNode extends BaseTimeGraph {
     @Relationship(type = "CONNECTION_BY", direction = Relationship.Direction.INCOMING)
     private Set<CastingRelationship> inConnections;
 
-    public void addConnection(String uuid, CastingNode targetCastingNode, String relationName) {
+    public void addConnection(String uuid, CastingNode targetCastingNode, String relationName, String sourceHandleStr, String targetHandleStr) {
         if (ObjectUtils.isEmpty(targetCastingNode)) {
             throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
         }
 
-        CastingRelationship outConnection = new CastingRelationship(uuid, relationName, targetCastingNode);
+        CastingRelationship outConnection = new CastingRelationship(uuid, relationName, targetCastingNode, sourceHandleStr, targetHandleStr);
         this.outConnections.add(outConnection);
 
-        CastingRelationship inConnection = new CastingRelationship(uuid, relationName, this);
+        CastingRelationship inConnection = new CastingRelationship(uuid, relationName, this, sourceHandleStr, targetHandleStr);
         targetCastingNode.inConnections.add(inConnection);
     }
 

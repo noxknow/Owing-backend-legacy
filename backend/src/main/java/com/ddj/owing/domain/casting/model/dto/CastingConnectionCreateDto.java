@@ -4,9 +4,11 @@ import com.ddj.owing.domain.casting.model.ConnectionType;
 
 public record CastingConnectionCreateDto(
         String uuid,
-        Long fromId,
-        Long toId,
+        Long sourceId,
+        Long targetId,
         String name,
-        ConnectionType connectionType
+        ConnectionType connectionType,
+        String sourceHandleStr,
+        String targetHandleStr
 ) {
 }

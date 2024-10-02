@@ -17,14 +17,18 @@ public class CastingRelationship {
 
     private String uuid;
     private String name;
+    private ConnectionHandle sourceHandle;
+    private ConnectionHandle targetHandle;
 
     @TargetNode
     private CastingNode castingNode;
 
-    CastingRelationship(String uuid, String name, CastingNode castingNode) {
+    CastingRelationship(String uuid, String name, CastingNode castingNode, String sourceHandleStr, String targetHandleStr) {
         this.uuid = uuid;
         this.name = name;
         this.castingNode = castingNode;
+        this.sourceHandle = ConnectionHandle.of(sourceHandleStr);
+        this.targetHandle = ConnectionHandle.of(targetHandleStr);
     }
 
     public void updateName(String name) {

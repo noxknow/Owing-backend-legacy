@@ -122,28 +122,40 @@ public class CastingService {
      */
     @Transactional
     public CastingRelationshipDto createConnection(CastingConnectionCreateDto connectionCreateDto) {
-        CastingNode fromCasting = castingNodeRepository.findById(connectionCreateDto.fromId())
+        CastingNode sourceCasting = castingNodeRepository.findById(connectionCreateDto.sourceId())
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        CastingNode toCasting = castingNodeRepository.findById(connectionCreateDto.toId())
+        CastingNode targetCasting = castingNodeRepository.findById(connectionCreateDto.targetId())
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
-        fromCasting.addConnection(connectionCreateDto.uuid(), toCasting, connectionCreateDto.name());
+        sourceCasting.addConnection(
+                connectionCreateDto.uuid(),
+                targetCasting,
+                connectionCreateDto.name(),
+                connectionCreateDto.sourceHandleStr(),
+                connectionCreateDto.targetHandleStr()
+        );
         if (ConnectionType.BIDIRECTIONAL.equals(connectionCreateDto.connectionType())) {
-            toCasting.addConnection(connectionCreateDto.uuid(), fromCasting, connectionCreateDto.name());
+            targetCasting.addConnection(
+                    connectionCreateDto.uuid(),
+                    sourceCasting,
+                    connectionCreateDto.name(),
+                    connectionCreateDto.sourceHandleStr(),
+                    connectionCreateDto.targetHandleStr()
+            );
         }
 
-        CastingNode updatedCastingNode = castingNodeRepository.save(fromCasting);
+        CastingNode updatedCastingNode = castingNodeRepository.save(sourceCasting);
         Set<CastingRelationship> outConnections = updatedCastingNode.getOutConnections();
         CastingRelationship castingRelationship = outConnections.stream()
-                .filter(connection -> connection.getCastingNode().getId().equals(connectionCreateDto.toId()))
+                .filter(connection -> connection.getCastingNode().getId().equals(connectionCreateDto.targetId()))
                 .filter(connection -> connection.getName().equals(connectionCreateDto.name()))
                 .findFirst()
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND));
 
         return new CastingRelationshipDto(
                 castingRelationship.getUuid(),
-                connectionCreateDto.fromId(),
-                connectionCreateDto.toId(),
+                connectionCreateDto.sourceId(),
+                connectionCreateDto.targetId(),
                 connectionCreateDto.connectionType()
         );
     }
