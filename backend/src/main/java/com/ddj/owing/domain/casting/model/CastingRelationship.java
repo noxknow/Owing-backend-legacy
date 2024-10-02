@@ -2,7 +2,6 @@ package com.ddj.owing.domain.casting.model;
 
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,17 +19,23 @@ public class CastingRelationship {
 
     private String uuid;
     private String name;
+    private Long sourceId;
+    private Long targetId;
     private ConnectionHandle sourceHandle;
     private ConnectionHandle targetHandle;
 
     @TargetNode
     private CastingNode castingNode;
 
-    CastingRelationship(String uuid, String name, CastingNode castingNode, String sourceHandleStr, String targetHandleStr) {
+    CastingRelationship(String uuid, String name, CastingNode castingNode, Long sourceId, String sourceHandleStr, Long targetId, String targetHandleStr) {
         this.uuid = uuid;
         this.name = name;
         this.castingNode = castingNode;
+
+        this.sourceId = sourceId;
         this.sourceHandle = ConnectionHandle.of(sourceHandleStr);
+
+        this.targetId = targetId;
         this.targetHandle = ConnectionHandle.of(targetHandleStr);
     }
 

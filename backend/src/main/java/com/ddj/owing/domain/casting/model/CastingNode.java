@@ -29,22 +29,46 @@ public class CastingNode extends BaseTimeGraph {
     private Integer coordX;
     private Integer coordY;
 
-    @Relationship(type = "CONNECTION_BY", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "CONNECTION", direction = Relationship.Direction.OUTGOING)
     private Set<CastingRelationship> outConnections;
 
-    @Relationship(type = "CONNECTION_BY", direction = Relationship.Direction.INCOMING)
-    private Set<CastingRelationship> inConnections;
+    @Relationship(type = "BI_CONNECTION", direction = Relationship.Direction.OUTGOING)
+    private Set<CastingRelationship> outBiConnections;
+
+    @Relationship(type = "BI_CONNECTION", direction = Relationship.Direction.INCOMING)
+    private Set<CastingRelationship> inBiConnections;
 
     public void addConnection(String uuid, CastingNode targetCastingNode, String relationName, String sourceHandleStr, String targetHandleStr) {
         if (ObjectUtils.isEmpty(targetCastingNode)) {
             throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
         }
 
-        CastingRelationship outConnection = new CastingRelationship(uuid, relationName, targetCastingNode, sourceHandleStr, targetHandleStr);
+        CastingRelationship outConnection = new CastingRelationship(
+                uuid, relationName, targetCastingNode,
+                this.id, sourceHandleStr,
+                targetCastingNode.getId(), targetHandleStr
+        );
         this.outConnections.add(outConnection);
+    }
 
-        CastingRelationship inConnection = new CastingRelationship(uuid, relationName, this, sourceHandleStr, targetHandleStr);
-        targetCastingNode.inConnections.add(inConnection);
+    public void addBiConnection(String uuid, CastingNode targetCastingNode, String relationName, String sourceHandleStr, String targetHandleStr) {
+        if (ObjectUtils.isEmpty(targetCastingNode)) {
+            throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
+        }
+
+        CastingRelationship outBiConnection = new CastingRelationship(
+                uuid, relationName, targetCastingNode,
+                this.id, sourceHandleStr,
+                targetCastingNode.getId(), targetHandleStr
+        );
+        CastingRelationship inBiConnection = new CastingRelationship(
+                uuid, relationName, this,
+                this.id, sourceHandleStr,
+                targetCastingNode.getId(), targetHandleStr
+        );
+
+        this.outBiConnections.add(outBiConnection);
+        targetCastingNode.inBiConnections.add(inBiConnection);
     }
 
     @Deprecated

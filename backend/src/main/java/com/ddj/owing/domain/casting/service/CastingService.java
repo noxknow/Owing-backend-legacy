@@ -127,17 +127,19 @@ public class CastingService {
         CastingNode targetCasting = castingNodeRepository.findById(connectionCreateDto.targetId())
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
-        sourceCasting.addConnection(
-                connectionCreateDto.uuid(),
-                targetCasting,
-                connectionCreateDto.name(),
-                connectionCreateDto.sourceHandleStr(),
-                connectionCreateDto.targetHandleStr()
-        );
-        if (ConnectionType.BIDIRECTIONAL.equals(connectionCreateDto.connectionType())) {
-            targetCasting.addConnection(
+        boolean isDirectional = ConnectionType.DIRECTIONAL.equals(connectionCreateDto.connectionType());
+        if (isDirectional) {
+            sourceCasting.addConnection(
                     connectionCreateDto.uuid(),
-                    sourceCasting,
+                    targetCasting,
+                    connectionCreateDto.name(),
+                    connectionCreateDto.sourceHandleStr(),
+                    connectionCreateDto.targetHandleStr()
+            );
+        } else {
+            sourceCasting.addBiConnection(
+                    connectionCreateDto.uuid(),
+                    targetCasting,
                     connectionCreateDto.name(),
                     connectionCreateDto.sourceHandleStr(),
                     connectionCreateDto.targetHandleStr()
@@ -145,10 +147,13 @@ public class CastingService {
         }
 
         CastingNode updatedCastingNode = castingNodeRepository.save(sourceCasting);
-        Set<CastingRelationship> outConnections = updatedCastingNode.getOutConnections();
-        CastingRelationship castingRelationship = outConnections.stream()
-                .filter(connection -> connection.getCastingNode().getId().equals(connectionCreateDto.targetId()))
-                .filter(connection -> connection.getName().equals(connectionCreateDto.name()))
+        Set<CastingRelationship> connections = isDirectional
+                ? updatedCastingNode.getOutConnections()
+                : updatedCastingNode.getOutBiConnections();
+
+        CastingRelationship castingRelationship = connections.stream()
+                .filter(conn -> conn.getCastingNode().getId().equals(connectionCreateDto.targetId()))
+                .filter(conn -> conn.getName().equals(connectionCreateDto.name()))
                 .findFirst()
                 .orElseThrow(() -> CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND));
 
