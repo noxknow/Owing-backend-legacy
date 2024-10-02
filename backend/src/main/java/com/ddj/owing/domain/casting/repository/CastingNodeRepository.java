@@ -27,4 +27,9 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
 
     @Query("MATCH (n:Cast{name: $name}) WHERE n.deletedAt IS NULL RETURN n")
     Optional<CastingNode> findOneByName(String name);
+
+    @Query("MATCH (n1:Cast)-[r:CONNECTION|BI_CONNECTION{uuid: 'string'}]-(n2:Cast) " +
+            "DELETE r " +
+            "RETURN count(DISTINCT r)")
+    Integer deleteConnectionByUuid(String uuid);
 }

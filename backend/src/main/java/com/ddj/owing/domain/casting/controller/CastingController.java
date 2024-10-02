@@ -59,4 +59,10 @@ public class CastingController {
         CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid, castingConnectionUpdateDto);
         return ResponseEntity.ok(castingRelationshipDto);
     }
+
+    @DeleteMapping("/relationship/{uuid}")
+    public ResponseEntity<Void> deleteRelationshipByUuid(@PathVariable String uuid) {
+        castingService.deleteConnection(uuid);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -202,4 +202,17 @@ public class CastingService {
                 connectionUpdateDto.connectionType()
         );
     }
+
+    @Transactional
+    public void deleteConnection(String uuid) {
+        Integer deletedConnectionCount = castingNodeRepository.deleteConnectionByUuid(uuid);
+
+        if (deletedConnectionCount < 1) {
+            throw CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND);
+        }
+
+        if (deletedConnectionCount > 1) {
+            throw CastingException.of(CastingErrorCode.INVALID_DELETE_COUNT);
+        }
+    }
 }
