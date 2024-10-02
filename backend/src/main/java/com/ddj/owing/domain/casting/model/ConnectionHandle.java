@@ -3,6 +3,8 @@ package com.ddj.owing.domain.casting.model;
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 
+import java.util.Arrays;
+
 public enum ConnectionHandle {
     TOP("top"), BOTTOM("bottom"), RIGHT("right"), LEFT("left");
 
@@ -18,7 +20,7 @@ public enum ConnectionHandle {
                 return handle;
             }
         }
-        throw CastingException.of(CastingErrorCode.ILLEGAL_ARGS);
+        throw CastingException.of(CastingErrorCode.ILLEGAL_HANDLE_ARGS);
     }
 
 }
