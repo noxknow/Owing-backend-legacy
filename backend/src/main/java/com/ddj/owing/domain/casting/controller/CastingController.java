@@ -54,9 +54,9 @@ public class CastingController {
         return ResponseEntity.ok(castingRelationshipDto);
     }
 
-    @PutMapping("/relationship/{id}")
-    public ResponseEntity<CastingRelationshipDto> updateRelationshipName(@PathVariable Long id, CastingConnectionUpdateDto castingConnectionUpdateDto) {
-        CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(id, castingConnectionUpdateDto);
+    @PutMapping("/relationship/{uuid}")
+    public ResponseEntity<CastingRelationshipDto> updateRelationshipName(@PathVariable String uuid, CastingConnectionUpdateDto castingConnectionUpdateDto) {
+        CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid, castingConnectionUpdateDto);
         return ResponseEntity.ok(castingRelationshipDto);
     }
 }

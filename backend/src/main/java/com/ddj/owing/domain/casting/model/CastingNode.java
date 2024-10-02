@@ -35,25 +35,25 @@ public class CastingNode extends BaseTimeGraph {
     @Relationship(type = "CONNECTION_BY", direction = Relationship.Direction.INCOMING)
     private Set<CastingRelationship> inConnections;
 
-    public void addConnection(CastingNode targetCastingNode, String relationName) {
+    public void addConnection(String uuid, CastingNode targetCastingNode, String relationName) {
         if (ObjectUtils.isEmpty(targetCastingNode)) {
             throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
         }
 
-        CastingRelationship outConnection = new CastingRelationship(relationName, targetCastingNode);
+        CastingRelationship outConnection = new CastingRelationship(uuid, relationName, targetCastingNode);
         this.outConnections.add(outConnection);
 
-        CastingRelationship inConnection = new CastingRelationship(relationName, this);
+        CastingRelationship inConnection = new CastingRelationship(uuid, relationName, this);
         targetCastingNode.inConnections.add(inConnection);
     }
 
     @Deprecated
-    public void updateConnectionName(Long connectionId, CastingNode targetNode, String relationName) {
+    public void updateConnectionName(String connectionId, CastingNode targetNode, String relationName) {
         this.getOutConnections().stream()
-                .filter(connection -> connection.getId().equals(connectionId))
+                .filter(connection -> connection.getUuid().equals(connectionId))
                 .forEach(target -> target.updateName(relationName));
         targetNode.getOutConnections().stream()
-                .filter(connection -> connection.getId().equals(connectionId))
+                .filter(connection -> connection.getUuid().equals(connectionId))
                 .forEach(target -> target.updateName(relationName));
     }
 

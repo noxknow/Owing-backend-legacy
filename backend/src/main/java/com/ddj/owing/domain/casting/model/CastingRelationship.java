@@ -2,6 +2,7 @@ package com.ddj.owing.domain.casting.model;
 
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import org.springframework.data.neo4j.core.schema.RelationshipId;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
@@ -13,12 +14,15 @@ import org.springframework.util.StringUtils;
 public class CastingRelationship {
     @RelationshipId
     private Long id;
+
+    private String uuid;
     private String name;
 
     @TargetNode
     private CastingNode castingNode;
 
-    CastingRelationship(String name, CastingNode castingNode) {
+    CastingRelationship(String uuid, String name, CastingNode castingNode) {
+        this.uuid = uuid;
         this.name = name;
         this.castingNode = castingNode;
     }
