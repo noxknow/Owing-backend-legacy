@@ -1,10 +1,14 @@
 package com.ddj.owing.domain.universe.service;
 
 import com.ddj.owing.domain.universe.error.code.UniverseFileErrorCode;
+import com.ddj.owing.domain.universe.error.code.UniverseFolderErrorCode;
 import com.ddj.owing.domain.universe.error.exception.UniverseFileException;
+import com.ddj.owing.domain.universe.error.exception.UniverseFolderException;
 import com.ddj.owing.domain.universe.model.UniverseFile;
+import com.ddj.owing.domain.universe.model.UniverseFolder;
 import com.ddj.owing.domain.universe.model.dto.UniverseFileRequestDto;
 import com.ddj.owing.domain.universe.repository.UniverseFileRepository;
+import com.ddj.owing.domain.universe.repository.UniverseFolderRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UniverseFileService {
 
     private final UniverseFileRepository universeFileRepository;
+    private final UniverseFolderRepository universeFolderRepository;
     private final OpenAiUtil openAiUtil;
 
     /**
@@ -43,10 +48,13 @@ public class UniverseFileService {
     @Transactional
     public ResponseEntity<String> generateUniverseImage(UniverseFileRequestDto universeFileRequestDto) {
 
+        UniverseFolder universeFolder = universeFolderRepository.findById(universeFileRequestDto.universeFolderId())
+                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
+
         String prompt = openAiUtil.createPrompt(universeFileRequestDto);
         String jsonString = openAiUtil.createImage(prompt);
         String imageUrl = Parser.extractUrl(jsonString);
-        UniverseFile universeFile = universeFileRequestDto.toEntity(imageUrl);
+        UniverseFile universeFile = universeFileRequestDto.toEntity(imageUrl, universeFolder);
 
         universeFileRepository.save(universeFile);
 

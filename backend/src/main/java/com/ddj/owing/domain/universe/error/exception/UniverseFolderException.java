@@ -5,7 +5,6 @@ import com.ddj.owing.global.error.exception.OwingException;
 
 public class UniverseFolderException extends OwingException {
 
-
     private UniverseFolderException(OwingErrorCode errorCode) {
         super(errorCode);
     }
