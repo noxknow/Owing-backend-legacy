@@ -65,4 +65,10 @@ public class CastingController {
         castingService.deleteConnection(uuid);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/graph/{projectId}")
+    public ResponseEntity<CastingGraphDto> getGraph(@PathVariable Long projectId) {
+        CastingGraphDto graph = castingService.getGraph(projectId);
+        return ResponseEntity.ok(graph);
+    }
 }

@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -211,5 +212,15 @@ public class CastingService {
         if (deletedConnectionCount > 1) {
             throw CastingException.of(CastingErrorCode.INVALID_DELETE_COUNT);
         }
+    }
+
+    public CastingGraphDto getGraph(Long projectId) {
+        List<CastingDto> castingNodeList =
+                castingNodeRepository.findAllByProjectId(projectId).stream()
+                        .map(casting -> CastingDto.from(casting)).toList();
+        List<CastingRelationshipInfoDto> castingConnectionList =
+                castingNodeRepository.findAllConnectionByProjectId(projectId);
+
+        return new CastingGraphDto(castingNodeList, castingConnectionList);
     }
 }
