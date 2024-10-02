@@ -13,7 +13,8 @@ public enum CastingErrorCode implements OwingErrorCode {
 	ILLEGAL_ARGS(HttpStatus.BAD_REQUEST, "005", "올바르지 않은 인자값입니다."),
 	CONNECTION_NAME_UPDATE_FAIL(HttpStatus.BAD_REQUEST, "006", "관계 이름 업데이트를 실패했습니다."),
 	INVALID_DELETE_COUNT(HttpStatus.CONFLICT, "007", "올바르지 않은 관계 정보로 인해 삭제에 실패했습니다."),
-	ILLEGAL_HANDLE_ARGS(HttpStatus.BAD_REQUEST, "008", "올바르지 않은 관계 Handle입니다.");
+	ILLEGAL_HANDLE_ARGS(HttpStatus.BAD_REQUEST, "008", "올바르지 않은 관계 Handle입니다."),
+	ILLEGAL_TYPE_ARGS(HttpStatus.BAD_REQUEST, "009", "올바르지 않은 관계 Type입니다.");
 
 	private final HttpStatus status;
 	private final String code;
