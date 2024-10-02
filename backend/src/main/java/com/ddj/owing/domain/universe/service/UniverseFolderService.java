@@ -4,6 +4,8 @@ import com.ddj.owing.domain.universe.error.code.UniverseFolderErrorCode;
 import com.ddj.owing.domain.universe.error.exception.UniverseFolderException;
 import com.ddj.owing.domain.universe.model.UniverseFolder;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderCreateDto;
+import com.ddj.owing.domain.universe.model.dto.UniverseFolderResponseDto;
+import com.ddj.owing.domain.universe.model.dto.UniverseFolderUpdateRequestDto;
 import com.ddj.owing.domain.universe.repository.UniverseFolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,10 +53,13 @@ public class UniverseFolderService {
      * @return 조회된 폴더를 ResponseEntity 로 감싸서 반환
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<UniverseFolder> getFolderById(Long id) {
+    public ResponseEntity<UniverseFolderResponseDto> getFolderById(Long id) {
 
-        return ResponseEntity.ok(universeFolderRepository.findById(id)
-                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND)));
+        UniverseFolder universeFolder = universeFolderRepository.findById(id)
+                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
+        UniverseFolderResponseDto universeFolderResponseDto = UniverseFolderResponseDto.fromEntity(universeFolder);
+
+        return ResponseEntity.ok(universeFolderResponseDto);
     }
 
     /**
@@ -73,4 +78,21 @@ public class UniverseFolderService {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 폴더 정보를 업데이트하는 메서드
+     *
+     * @param id                         업데이트할 폴더의 고유 ID
+     * @param universeFolderUpdateRequestDto    업데이트 요청에 필요한 정보를 담은 DTO
+     * @return 업데이트 성공 시 빈 ResponseEntity 반환
+     */
+    @Transactional
+    public ResponseEntity<Void> updateFolder(Long id, UniverseFolderUpdateRequestDto universeFolderUpdateRequestDto) {
+
+        UniverseFolder universeFolder = universeFolderRepository.findById(id)
+                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
+
+        universeFolder.updateFolder(universeFolderUpdateRequestDto);
+
+        return ResponseEntity.ok().build();
+    }
 }
