@@ -47,6 +47,7 @@ public class CastingNode extends BaseTimeGraph {
         targetCastingNode.inConnections.add(inConnection);
     }
 
+    @Deprecated
     public void updateConnectionName(Long connectionId, CastingNode targetNode, String relationName) {
         this.getOutConnections().stream()
                 .filter(connection -> connection.getId().equals(connectionId))
