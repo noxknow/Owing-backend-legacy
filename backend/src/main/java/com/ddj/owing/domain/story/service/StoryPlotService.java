@@ -1,9 +1,12 @@
 package com.ddj.owing.domain.story.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.story.model.StoryPlotNode;
 import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,7 @@ import com.ddj.owing.domain.story.repository.StoryPlotRepository;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +33,7 @@ public class StoryPlotService {
 	private final StoryPlotRepository storyPlotRepository;
 	private final StoryFolderRepository storyFolderRepository;
 	private final StoryPlotNodeRepository storyPlotNodeRepository;
+	private final CastingNodeRepository castingNodeRepository;
 
 	private StoryPlot findById(Long id) {
 		return storyPlotRepository.findById(id)
@@ -79,6 +84,14 @@ public class StoryPlotService {
 		StoryPlot storyPlot = findById(id);
 		storyPlotRepository.decrementPositionAfter(storyPlot.getPosition(), storyPlot.getStoryFolder().getId());
 		storyPlotRepository.deleteById(id);
+
+		storyPlotNodeRepository.findById(id).ifPresentOrElse(
+				(node) -> {
+					node.delete();
+					storyPlotNodeRepository.save(node);
+				},
+				() -> log.warn("StoryPlot 데이터 불일치 발생. entity id:{}", storyPlot.getId())
+		);
 	}
 
 	@Transactional
