@@ -47,4 +47,28 @@ public class CastingController {
         castingService.deleteCasting(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/relationship")
+    public ResponseEntity<CastingRelationshipDto> createRelationship(CastingConnectionCreateDto castingConnectionCreateDto) {
+        CastingRelationshipDto castingRelationshipDto = castingService.createConnection(castingConnectionCreateDto);
+        return ResponseEntity.ok(castingRelationshipDto);
+    }
+
+    @PutMapping("/relationship/{uuid}")
+    public ResponseEntity<CastingRelationshipDto> updateRelationshipName(@PathVariable String uuid, CastingConnectionUpdateDto castingConnectionUpdateDto) {
+        CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid, castingConnectionUpdateDto);
+        return ResponseEntity.ok(castingRelationshipDto);
+    }
+
+    @DeleteMapping("/relationship/{uuid}")
+    public ResponseEntity<Void> deleteRelationshipByUuid(@PathVariable String uuid) {
+        castingService.deleteConnection(uuid);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/graph/{projectId}")
+    public ResponseEntity<CastingGraphDto> getGraph(@PathVariable Long projectId) {
+        CastingGraphDto graph = castingService.getGraph(projectId);
+        return ResponseEntity.ok(graph);
+    }
 }
