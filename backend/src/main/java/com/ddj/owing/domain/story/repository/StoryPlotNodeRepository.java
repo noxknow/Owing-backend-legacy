@@ -5,11 +5,14 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface StoryPlotNodeRepository extends Neo4jRepository<StoryPlotNode, Long> {
 
-    @Query("MATCH (n:StoryPlot{id: $id}) WHERE n.deletedAt IS NULL return n")
+    @Query("MATCH (n1:StoryPlot{id: $id})-[r]-(n2:Cast) " +
+            "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
+            "RETURN n1, collect(r), collect(n2)")
     Optional<StoryPlotNode> findById(Long id);
 }
