@@ -13,6 +13,11 @@ import java.util.Optional;
 @Repository
 public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long> {
 
+    @Query("MATCH (n1:Cast{id: $id})-[r]-(n2) " +
+            "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
+            "RETURN n1, collect(r), collect(n2)")
+    Optional<CastingNode> findById(Long id);
+
     @Query("MATCH (n1:Cast{id: $sourceId})-[r:CONNECTION{uuid: $uuid}]->(n2:Cast{id: $targetId}) " +
             "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
             "SET r.label = $label " +
