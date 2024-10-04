@@ -76,6 +76,11 @@ public class StoryPlotService {
 		StoryPlot storyPlot = findById(id);
 		storyPlot.update(storyPlotUpdateDto.name(), storyPlotUpdateDto.description());
 
+		StoryPlotNode storyPlotNode = storyPlotNodeRepository.findById(id)
+				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
+		storyPlotNode.updateName(storyPlotUpdateDto.name());
+		storyPlotNodeRepository.save(storyPlotNode);
+
 		return StoryPlotDto.from(storyPlotRepository.save(storyPlot));
 	}
 

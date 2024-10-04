@@ -18,4 +18,8 @@ public class StoryPlotNode extends BaseTimeGraph {
 	private Long id;
 
 	private String name;
+
+	public void updateName(String name) {
+		this.name = name;
+	}
 }
