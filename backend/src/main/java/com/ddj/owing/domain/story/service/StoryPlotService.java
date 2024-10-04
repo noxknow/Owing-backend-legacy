@@ -2,6 +2,8 @@ package com.ddj.owing.domain.story.service;
 
 import java.util.List;
 
+import com.ddj.owing.domain.story.model.StoryPlotNode;
+import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class StoryPlotService {
 	private final StoryPlotRepository storyPlotRepository;
 	private final StoryFolderRepository storyFolderRepository;
+	private final StoryPlotNodeRepository storyPlotNodeRepository;
 
 	private StoryPlot findById(Long id) {
 		return storyPlotRepository.findById(id)
@@ -53,7 +56,12 @@ public class StoryPlotService {
 		Integer position = storyPlotRepository.findMaxOrderByStoryFolderId(storyPlotCreateDto.folderId()) + 1;
 
 		StoryPlot storyPlot = storyPlotCreateDto.toEntity(storyFolder, position);
-		return StoryPlotDto.from(storyPlotRepository.save(storyPlot));
+		StoryPlot savedStoryPlot = storyPlotRepository.save(storyPlot);
+
+		StoryPlotNode storyPlotNode = storyPlotCreateDto.toNode(savedStoryPlot.getId());
+		storyPlotNodeRepository.save(storyPlotNode);
+
+		return StoryPlotDto.from(savedStoryPlot);
 	}
 
 	@Transactional
