@@ -2,6 +2,7 @@ package com.ddj.owing.domain.casting.model;
 
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
+import com.ddj.owing.domain.story.model.StoryPlotNode;
 import com.ddj.owing.global.entity.BaseTimeGraph;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -37,6 +38,9 @@ public class CastingNode extends BaseTimeGraph {
 
     @Relationship(type = "BI_CONNECTION", direction = Relationship.Direction.INCOMING)
     private Set<CastingRelationship> inBiConnections;
+
+    @Relationship(type = "APPEARED",  direction = Relationship.Direction.OUTGOING)
+    private Set<StoryPlotNode> episodes;
 
     public void addConnection(String uuid, CastingNode targetCastingNode, String label, String sourceHandleStr, String targetHandleStr) {
         if (ObjectUtils.isEmpty(targetCastingNode)) {
