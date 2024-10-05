@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,11 +29,26 @@ public class StoryPlotNode extends BaseTimeGraph {
 		this.name = name;
 	}
 
-	public void addCasts(List<CastingNode> casts) {
+	public void addCasts(Collection<CastingNode> casts) {
 		this.casts.addAll(casts);
 	}
 
 	public void updateName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof StoryPlotNode other))
+			return false;
+
+        return id.equals(other.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
 	}
 }
