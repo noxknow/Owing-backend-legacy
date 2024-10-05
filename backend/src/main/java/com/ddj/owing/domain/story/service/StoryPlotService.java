@@ -1,10 +1,12 @@
 package com.ddj.owing.domain.story.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.ddj.owing.domain.casting.model.CastingNode;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.story.model.StoryPlotNode;
+import com.ddj.owing.domain.story.model.dto.*;
 import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,6 @@ import com.ddj.owing.domain.story.error.code.StoryFolderErrorCode;
 import com.ddj.owing.domain.story.error.code.StoryPlotErrorCode;
 import com.ddj.owing.domain.story.error.exception.StoryPlotException;
 import com.ddj.owing.domain.story.model.StoryPlot;
-import com.ddj.owing.domain.story.model.dto.StoryPlotCreateDto;
-import com.ddj.owing.domain.story.model.dto.StoryPlotDto;
-import com.ddj.owing.domain.story.model.dto.StoryPlotPositionUpdateDto;
-import com.ddj.owing.domain.story.model.dto.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.error.exception.StoryFolderException;
 import com.ddj.owing.domain.story.model.StoryFolder;
 import com.ddj.owing.domain.story.repository.StoryFolderRepository;
@@ -134,4 +132,33 @@ public class StoryPlotService {
 		return StoryPlotDto.from(storyPlotRepository.save(storyPlot));
 	}
 
+	@Transactional
+	public List<StoryPlotAppearedCastDto> registerCasts(Long storyPlotId, StoryPlotAppearedCastCreateDto appearedCastCreateDto) {
+		StoryPlotNode storyPlotNode = storyPlotNodeRepository.findById(storyPlotId)
+				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
+
+		Set<CastingNode> existsCasts = new HashSet<>();
+		for (Long castId : appearedCastCreateDto.castIdList()) {
+			Optional<CastingNode> optionalCast = castingNodeRepository.findById(castId);
+            optionalCast.ifPresent(cast -> {
+				if (!cast.getEpisodes().contains(storyPlotNode)) {
+					existsCasts.add(cast);
+				}
+			});
+		}
+
+		storyPlotNode.addCasts(existsCasts);
+		storyPlotNodeRepository.save(storyPlotNode);
+
+		return existsCasts.stream()
+				.map(cast -> new StoryPlotAppearedCastDto(cast.getId(), cast.getName()))
+				.toList();
+	}
+
+	// TODO 등장인물 추출
+	public void extractCasts(Long id) {
+		// 기존 캐릭터 정보(이름, id), StoryPlot -> Gen Ai
+		// Gen Ai -> 출연한 캐릭터 정보(이름, id)
+		// 해당 값을 사용자에게 Return
+	}
 }
