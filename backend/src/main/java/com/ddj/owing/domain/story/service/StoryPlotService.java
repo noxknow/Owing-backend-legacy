@@ -3,6 +3,8 @@ package com.ddj.owing.domain.story.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
+import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.model.CastingNode;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.story.model.StoryPlotNode;
@@ -160,5 +162,22 @@ public class StoryPlotService {
 		// 기존 캐릭터 정보(이름, id), StoryPlot -> Gen Ai
 		// Gen Ai -> 출연한 캐릭터 정보(이름, id)
 		// 해당 값을 사용자에게 Return
+	}
+
+	@Transactional
+	public void deleteAppearedCast(Long storyPlotId, Long castId) {
+		StoryPlotNode storyPlotNode = storyPlotNodeRepository.findById(storyPlotId)
+				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
+		CastingNode castingNode = castingNodeRepository.findById(castId)
+				.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
+
+		if (!castingNode.getEpisodes().contains(storyPlotNode)) {
+			throw StoryPlotException.of(StoryPlotErrorCode.NOT_APPEARED_RELATIONSHIP);
+		}
+
+		int deletedAppearedCount = storyPlotNodeRepository.deleteAppearedCasting(storyPlotId, castId);
+		if (1 < deletedAppearedCount) {
+			log.warn("예상치 못한 출연 관계가 다수 삭제되었습니다. 예상 삭제 수: 1, 실제 삭제된 수: {}. storyPlotId: {}, castId: {}", deletedAppearedCount, storyPlotId, castId);
+		}
 	}
 }

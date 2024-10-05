@@ -72,4 +72,10 @@ public class StoryPlotController {
 		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(id, storyPlotAppearedCastCreateDto);
 		return ResponseEntity.ok(appearedCastList);
 	}
+
+	@DeleteMapping("/{id}/appearedCast/{castId}")
+	public ResponseEntity<Void> deleteAppearedCast(@PathVariable Long id, @PathVariable Long castId) {
+		storyPlotService.deleteAppearedCast(id, castId);
+		return ResponseEntity.ok().build();
+	}
 }

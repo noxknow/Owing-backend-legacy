@@ -17,4 +17,9 @@ public interface StoryPlotNodeRepository extends Neo4jRepository<StoryPlotNode, 
             "WHERE n2 IS NULL OR n2.deletedAt IS NULL " +
             "RETURN n1, collect(r), collect(n2)")
     Optional<StoryPlotNode> findById(Long id);
+
+    @Query("MATCH (n1:StoryPlot{id: $storyPlotId})-[r]-(n2:Cast{id: $castId}) " +
+            "DELETE r " +
+            "RETURN count(DISTINCT r)")
+    Integer deleteAppearedCasting(Long storyPlotId, Long castId);
 }
