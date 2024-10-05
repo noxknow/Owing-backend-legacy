@@ -13,8 +13,10 @@ import java.util.Optional;
 @Repository
 public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long> {
 
-    @Query("MATCH (n1:Cast{id: $id})-[r]-(n2) " +
-            "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
+    @Query("MATCH (n1:Cast{id: $id}) " +
+            "WHERE n1.deletedAt IS NULL " +
+            "OPTIONAL MATCH (n1)-[r]-(n2) " +
+            "WHERE n2 IS NULL OR n2.deletedAt IS NULL " +
             "RETURN n1, collect(r), collect(n2)")
     Optional<CastingNode> findById(Long id);
 
@@ -31,9 +33,6 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
             "RETURN r.uuid AS uuid, r.label AS label, r.sourceId AS sourceId, r.targetId AS targetId, " +
             "r.sourceHandle AS sourceHandle, r.targetHandle AS targetHandle")
     Optional<CastingRelationship> updateBidirectionalConnectionName(String uuid, Long sourceId, Long targetId, String label);
-
-    @Query("MATCH (n:Cast{label: $label}) WHERE n.deletedAt IS NULL RETURN n")
-    Optional<CastingNode> findOneByName(String name);
 
     @Query("MATCH (n1:Cast)-[r:CONNECTION|BI_CONNECTION{uuid: 'string'}]-(n2:Cast) " +
             "DELETE r " +
