@@ -64,7 +64,7 @@ public class StoryPlotController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/{id}/appeared-cast")
+	@PostMapping("/{id}/appearedCast")
 	public ResponseEntity<List<StoryPlotAppearedCastDto>> createAppearedCast(
 			@PathVariable Long id,
 			@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
