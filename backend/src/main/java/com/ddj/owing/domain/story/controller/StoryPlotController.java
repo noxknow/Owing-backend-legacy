@@ -1,7 +1,9 @@
 package com.ddj.owing.domain.story.controller;
 
 import java.util.List;
+import java.util.Set;
 
+import com.ddj.owing.domain.story.model.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ddj.owing.domain.story.model.dto.StoryPlotCreateDto;
-import com.ddj.owing.domain.story.model.dto.StoryPlotDto;
-import com.ddj.owing.domain.story.model.dto.StoryPlotPositionUpdateDto;
-import com.ddj.owing.domain.story.model.dto.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.service.StoryPlotService;
 
 import lombok.RequiredArgsConstructor;
@@ -63,6 +61,21 @@ public class StoryPlotController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteStoryPlot(@PathVariable Long id) {
 		storyPlotService.deleteStoryPlot(id);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/{id}/appearedCast")
+	public ResponseEntity<List<StoryPlotAppearedCastDto>> createAppearedCast(
+			@PathVariable Long id,
+			@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
+	) {
+		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(id, storyPlotAppearedCastCreateDto);
+		return ResponseEntity.ok(appearedCastList);
+	}
+
+	@DeleteMapping("/{id}/appearedCast/{castId}")
+	public ResponseEntity<Void> deleteAppearedCast(@PathVariable Long id, @PathVariable Long castId) {
+		storyPlotService.deleteAppearedCast(id, castId);
 		return ResponseEntity.ok().build();
 	}
 }
