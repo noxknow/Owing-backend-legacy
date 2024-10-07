@@ -1,6 +1,7 @@
 package com.ddj.owing.domain.casting.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,25 +14,26 @@ import com.ddj.owing.domain.casting.error.exception.CastingFolderException;
 import com.ddj.owing.domain.casting.model.Casting;
 import com.ddj.owing.domain.casting.model.CastingFolder;
 import com.ddj.owing.domain.casting.model.CastingNode;
+import com.ddj.owing.domain.casting.model.CastingRelationship;
+import com.ddj.owing.domain.casting.model.ConnectionType;
+import com.ddj.owing.domain.casting.model.dto.CastingRelationshipInfoDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionCreateDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionUpdateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingCoordUpdateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingCreateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingGraphDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingInfoUpdateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingPositionUpdateDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingRelationshipDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
 import com.ddj.owing.domain.casting.repository.CastingFolderRepository;
-import com.ddj.owing.domain.casting.model.CastingRelationship;
-import com.ddj.owing.domain.casting.model.ConnectionType;
-import com.ddj.owing.domain.casting.model.dto.*;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +56,8 @@ public class CastingService {
 
 		castingRepository.save(casting);
 
-        return ResponseEntity.ok(imageUrl);
-    }
+		return ResponseEntity.ok(imageUrl);
+	}
 
 	public List<CastingDto> getCastingList(Long folderId) {
 		return castingRepository.findByCastingFolderIdOrderByPositionAsc(folderId)
@@ -182,112 +184,114 @@ public class CastingService {
 		castingNodeRepository.save(castingNode);
 	}
 
-    /**
-     * Casting간 Relation을 생성하는 메서드
-     *
-     * @param connectionCreateDto connectionType()을 통해 단방향, 양방향 지정
-     * @return
-     */
-    @Transactional
-    public CastingRelationshipDto createConnection(CastingConnectionCreateDto connectionCreateDto) {
-        CastingNode sourceCasting = castingNodeRepository.findById(connectionCreateDto.sourceId())
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        CastingNode targetCasting = castingNodeRepository.findById(connectionCreateDto.targetId())
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+	/**
+	 * Casting간 Relation을 생성하는 메서드
+	 *
+	 * @param connectionCreateDto connectionType()을 통해 단방향, 양방향 지정
+	 * @return
+	 */
+	@Transactional
+	public CastingRelationshipDto createConnection(CastingConnectionCreateDto connectionCreateDto) {
+		CastingNode sourceCasting = castingNodeRepository.findById(connectionCreateDto.sourceId())
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+		CastingNode targetCasting = castingNodeRepository.findById(connectionCreateDto.targetId())
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
-        boolean isDirectional = ConnectionType.DIRECTIONAL.equals(connectionCreateDto.connectionType());
-        if (isDirectional) {
-            sourceCasting.addConnection(
-                    connectionCreateDto.uuid(),
-                    targetCasting,
-                    connectionCreateDto.label(),
-                    connectionCreateDto.sourceHandleStr(),
-                    connectionCreateDto.targetHandleStr()
-            );
-        } else {
-            sourceCasting.addBiConnection(
-                    connectionCreateDto.uuid(),
-                    targetCasting,
-                    connectionCreateDto.label(),
-                    connectionCreateDto.sourceHandleStr(),
-                    connectionCreateDto.targetHandleStr()
-            );
-        }
+		boolean isDirectional = ConnectionType.DIRECTIONAL.equals(connectionCreateDto.connectionType());
+		if (isDirectional) {
+			sourceCasting.addConnection(
+				connectionCreateDto.uuid(),
+				targetCasting,
+				connectionCreateDto.label(),
+				connectionCreateDto.sourceHandleStr(),
+				connectionCreateDto.targetHandleStr()
+			);
+		} else {
+			sourceCasting.addBiConnection(
+				connectionCreateDto.uuid(),
+				targetCasting,
+				connectionCreateDto.label(),
+				connectionCreateDto.sourceHandleStr(),
+				connectionCreateDto.targetHandleStr()
+			);
+		}
 
-        CastingNode updatedCastingNode = castingNodeRepository.save(sourceCasting);
-        Set<CastingRelationship> connections = isDirectional
-                ? updatedCastingNode.getOutConnections()
-                : updatedCastingNode.getOutBiConnections();
+		CastingNode updatedCastingNode = castingNodeRepository.save(sourceCasting);
+		Set<CastingRelationship> connections = isDirectional
+			? updatedCastingNode.getOutConnections()
+			: updatedCastingNode.getOutBiConnections();
 
-        CastingRelationship castingRelationship = connections.stream()
-                .filter(conn -> conn.getCastingNode().getId().equals(connectionCreateDto.targetId()))
-                .filter(conn -> conn.getLabel().equals(connectionCreateDto.label()))
-                .findFirst()
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND));
+		CastingRelationship castingRelationship = connections.stream()
+			.filter(conn -> conn.getCastingNode().getId().equals(connectionCreateDto.targetId()))
+			.filter(conn -> conn.getLabel().equals(connectionCreateDto.label()))
+			.findFirst()
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND));
 
-        return new CastingRelationshipDto(
-                castingRelationship.getUuid(),
-                connectionCreateDto.sourceId(),
-                connectionCreateDto.targetId(),
-                connectionCreateDto.connectionType()
-        );
-    }
+		return new CastingRelationshipDto(
+			castingRelationship.getUuid(),
+			connectionCreateDto.sourceId(),
+			connectionCreateDto.targetId(),
+			connectionCreateDto.connectionType()
+		);
+	}
 
-    /**
-     * connectionType에 따라 단방향, 양방향 관계 이름을 변경.
-     * @param uuid
-     * relationship 지정에 사용
-     * @param connectionUpdateDto
-     * @return
-     * 관계 id, 시작객체 id, 끝객체 id, connectionType이 포함된 CastingRelationshipDto
-     */
-    @Transactional
-    public CastingRelationshipDto updateConnectionName(String uuid, CastingConnectionUpdateDto connectionUpdateDto) {
-        CastingNode fromCasting = castingNodeRepository.findById(connectionUpdateDto.fromId())
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.toId())
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+	/**
+	 * connectionType에 따라 단방향, 양방향 관계 이름을 변경.
+	 * @param uuid
+	 * relationship 지정에 사용
+	 * @param connectionUpdateDto
+	 * @return
+	 * 관계 id, 시작객체 id, 끝객체 id, connectionType이 포함된 CastingRelationshipDto
+	 */
+	@Transactional
+	public CastingRelationshipDto updateConnectionName(String uuid, CastingConnectionUpdateDto connectionUpdateDto) {
+		CastingNode fromCasting = castingNodeRepository.findById(connectionUpdateDto.fromId())
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+		CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.toId())
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
-        boolean isNameUpdated = false;
-        switch (connectionUpdateDto.connectionType()) {
-            case ConnectionType.DIRECTIONAL ->
-                    isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.label()).isPresent();
-            case ConnectionType.BIDIRECTIONAL ->
-                    isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(uuid, fromCasting.getId(), toCasting.getId(), connectionUpdateDto.label()).isPresent();
-        }
+		boolean isNameUpdated = false;
+		switch (connectionUpdateDto.connectionType()) {
+			case ConnectionType.DIRECTIONAL ->
+				isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(uuid, fromCasting.getId(),
+					toCasting.getId(), connectionUpdateDto.label()).isPresent();
+			case ConnectionType.BIDIRECTIONAL ->
+				isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(uuid, fromCasting.getId(),
+					toCasting.getId(), connectionUpdateDto.label()).isPresent();
+		}
 
-        if (!isNameUpdated) {
-            throw CastingException.of(CastingErrorCode.CONNECTION_NAME_UPDATE_FAIL);
-        }
+		if (!isNameUpdated) {
+			throw CastingException.of(CastingErrorCode.CONNECTION_NAME_UPDATE_FAIL);
+		}
 
-        return new CastingRelationshipDto(
-                uuid,
-                connectionUpdateDto.fromId(),
-                connectionUpdateDto.toId(),
-                connectionUpdateDto.connectionType()
-        );
-    }
+		return new CastingRelationshipDto(
+			uuid,
+			connectionUpdateDto.fromId(),
+			connectionUpdateDto.toId(),
+			connectionUpdateDto.connectionType()
+		);
+	}
 
-    @Transactional
-    public void deleteConnection(String uuid) {
-        Integer deletedConnectionCount = castingNodeRepository.deleteConnectionByUuid(uuid);
+	@Transactional
+	public void deleteConnection(String uuid) {
+		Integer deletedConnectionCount = castingNodeRepository.deleteConnectionByUuid(uuid);
 
-        if (deletedConnectionCount < 1) {
-            throw CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND);
-        }
+		if (deletedConnectionCount < 1) {
+			throw CastingException.of(CastingErrorCode.CONNECTION_NOT_FOUND);
+		}
 
-        if (deletedConnectionCount > 1) {
-            throw CastingException.of(CastingErrorCode.INVALID_DELETE_COUNT);
-        }
-    }
+		if (deletedConnectionCount > 1) {
+			throw CastingException.of(CastingErrorCode.INVALID_DELETE_COUNT);
+		}
+	}
 
-    public CastingGraphDto getGraph(Long projectId) {
-        List<CastingDto> castingNodeList =
-                castingNodeRepository.findAllByProjectId(projectId).stream()
-                        .map(casting -> CastingDto.from(casting)).toList();
-        List<CastingRelationshipInfoDto> castingConnectionList =
-                castingNodeRepository.findAllConnectionByProjectId(projectId);
+	public CastingGraphDto getGraph(Long projectId) {
+		List<CastingDto> castingNodeList =
+			castingNodeRepository.findAllByProjectId(projectId).stream()
+				.map(casting -> CastingDto.from(casting)).toList();
+		List<CastingRelationshipInfoDto> castingConnectionList =
+			castingNodeRepository.findAllConnectionByProjectId(projectId);
 
-        return new CastingGraphDto(castingNodeList, castingConnectionList);
-    }
+		return new CastingGraphDto(castingNodeList, castingConnectionList);
+	}
 }
