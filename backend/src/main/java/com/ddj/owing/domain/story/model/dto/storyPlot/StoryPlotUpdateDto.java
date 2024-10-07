@@ -1,8 +1,8 @@
-package com.ddj.owing.domain.story.model.dto;
+package com.ddj.owing.domain.story.model.dto.storyPlot;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record StoryFolderUpdateDto(
+public record StoryPlotUpdateDto(
 	@NotBlank String name,
 	String description
 ) {

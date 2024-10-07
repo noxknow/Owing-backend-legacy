@@ -1,9 +1,7 @@
 package com.ddj.owing.domain.story.controller;
 
 import java.util.List;
-import java.util.Set;
 
-import com.ddj.owing.domain.story.model.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ddj.owing.domain.story.model.dto.StoryPlotAppearedCastDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotAppearedCastCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotPositionUpdateDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.service.StoryPlotService;
 
 import lombok.RequiredArgsConstructor;
@@ -66,10 +70,11 @@ public class StoryPlotController {
 
 	@PostMapping("/{id}/appearedCast")
 	public ResponseEntity<List<StoryPlotAppearedCastDto>> createAppearedCast(
-			@PathVariable Long id,
-			@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
+		@PathVariable Long id,
+		@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
 	) {
-		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(id, storyPlotAppearedCastCreateDto);
+		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(id,
+			storyPlotAppearedCastCreateDto);
 		return ResponseEntity.ok(appearedCastList);
 	}
 

@@ -1,4 +1,4 @@
-package com.ddj.owing.domain.story.model.dto;
+package com.ddj.owing.domain.story.model.dto.storyBlock;
 
 import java.util.Map;
 
@@ -18,18 +18,18 @@ public record ContentDto(
 
 	public static ContentDto from(Content content) {
 		return ContentDto.builder()
-                .type(content.getType())
-                .text(content.getText())
-                .styles(content.getStyles() != null ? JsonHelperUtil.fromJsonString(content.getStyles()): null)
-                .build();
+			.type(content.getType())
+			.text(content.getText())
+			.styles(content.getStyles() != null ? JsonHelperUtil.fromJsonString(content.getStyles()) : null)
+			.build();
 	}
 
-	public Content toEntity(){
+	public Content toEntity() {
 		return Content.builder()
-                .type(type)
-                .text(text)
-                .styles(JsonHelperUtil.toJsonString(styles))
-                .build();
+			.type(type)
+			.text(text)
+			.styles(JsonHelperUtil.toJsonString(styles))
+			.build();
 	}
 
 }
