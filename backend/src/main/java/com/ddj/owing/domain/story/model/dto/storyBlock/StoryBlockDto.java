@@ -8,6 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record StoryBlockDto(
+	Long id,
 	String type,
 	String props,
 	List<ContentDto> content,
@@ -19,6 +20,7 @@ public record StoryBlockDto(
 
 	public static StoryBlockDto from(StoryBlock storyBlock) {
 		return StoryBlockDto.builder()
+			.id(storyBlock.getId())
 			.type(storyBlock.getType())
 			.props(storyBlock.getProps())
 			.content(storyBlock.getContents().stream().map(ContentDto::from).toList())
