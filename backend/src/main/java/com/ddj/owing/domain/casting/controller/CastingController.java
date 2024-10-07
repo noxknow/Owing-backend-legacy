@@ -13,10 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionCreateDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionUpdateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingCoordUpdateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingCreateDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingGraphDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingInfoUpdateDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingRelationshipDto;
 import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
 import com.ddj.owing.domain.casting.service.CastingService;
 
@@ -29,10 +33,10 @@ public class CastingController {
 
 	private final CastingService castingService;
 
-    @PostMapping("/generate/coverImage")
-    public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
-        return castingService.generateCharacterImage(castingRequestDto);
-    }
+	@PostMapping("/generate/coverImage")
+	public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
+		return castingService.generateCharacterImage(castingRequestDto);
+	}
 
 	@GetMapping
 	public ResponseEntity<List<CastingDto>> getCastingList(@RequestParam Long folderId) {
@@ -72,27 +76,30 @@ public class CastingController {
 		return ResponseEntity.ok().build();
 	}
 
-    @PostMapping("/relationship")
-    public ResponseEntity<CastingRelationshipDto> createRelationship(CastingConnectionCreateDto castingConnectionCreateDto) {
-        CastingRelationshipDto castingRelationshipDto = castingService.createConnection(castingConnectionCreateDto);
-        return ResponseEntity.ok(castingRelationshipDto);
-    }
+	@PostMapping("/relationship")
+	public ResponseEntity<CastingRelationshipDto> createRelationship(
+		CastingConnectionCreateDto castingConnectionCreateDto) {
+		CastingRelationshipDto castingRelationshipDto = castingService.createConnection(castingConnectionCreateDto);
+		return ResponseEntity.ok(castingRelationshipDto);
+	}
 
-    @PutMapping("/relationship/{uuid}")
-    public ResponseEntity<CastingRelationshipDto> updateRelationshipName(@PathVariable String uuid, CastingConnectionUpdateDto castingConnectionUpdateDto) {
-        CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid, castingConnectionUpdateDto);
-        return ResponseEntity.ok(castingRelationshipDto);
-    }
+	@PutMapping("/relationship/{uuid}")
+	public ResponseEntity<CastingRelationshipDto> updateRelationshipName(@PathVariable String uuid,
+		CastingConnectionUpdateDto castingConnectionUpdateDto) {
+		CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid,
+			castingConnectionUpdateDto);
+		return ResponseEntity.ok(castingRelationshipDto);
+	}
 
-    @DeleteMapping("/relationship/{uuid}")
-    public ResponseEntity<Void> deleteRelationshipByUuid(@PathVariable String uuid) {
-        castingService.deleteConnection(uuid);
-        return ResponseEntity.ok().build();
-    }
+	@DeleteMapping("/relationship/{uuid}")
+	public ResponseEntity<Void> deleteRelationshipByUuid(@PathVariable String uuid) {
+		castingService.deleteConnection(uuid);
+		return ResponseEntity.ok().build();
+	}
 
-    @GetMapping("/graph/{projectId}")
-    public ResponseEntity<CastingGraphDto> getGraph(@PathVariable Long projectId) {
-        CastingGraphDto graph = castingService.getGraph(projectId);
-        return ResponseEntity.ok(graph);
-    }
+	@GetMapping("/graph/{projectId}")
+	public ResponseEntity<CastingGraphDto> getGraph(@PathVariable Long projectId) {
+		CastingGraphDto graph = castingService.getGraph(projectId);
+		return ResponseEntity.ok(graph);
+	}
 }
