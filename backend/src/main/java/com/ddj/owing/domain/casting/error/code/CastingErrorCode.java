@@ -1,8 +1,10 @@
 package com.ddj.owing.domain.casting.error.code;
 
-import com.ddj.owing.global.error.code.OwingErrorCode;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import com.ddj.owing.global.error.code.OwingErrorCode;
+
+import lombok.Getter;
 
 @Getter
 public enum CastingErrorCode implements OwingErrorCode {
@@ -14,7 +16,9 @@ public enum CastingErrorCode implements OwingErrorCode {
 	CONNECTION_NAME_UPDATE_FAIL(HttpStatus.BAD_REQUEST, "006", "관계 이름 업데이트를 실패했습니다."),
 	INVALID_DELETE_COUNT(HttpStatus.CONFLICT, "007", "올바르지 않은 관계 정보로 인해 삭제에 실패했습니다."),
 	ILLEGAL_HANDLE_ARGS(HttpStatus.BAD_REQUEST, "008", "올바르지 않은 관계 Handle입니다."),
-	ILLEGAL_TYPE_ARGS(HttpStatus.BAD_REQUEST, "009", "올바르지 않은 관계 Type입니다.");
+	ILLEGAL_TYPE_ARGS(HttpStatus.BAD_REQUEST, "009", "올바르지 않은 관계 Type입니다."),
+	INVALID_POSITION(HttpStatus.BAD_REQUEST, "010", "캐릭터의 위치를 변경할 수 없습니다.");
+
 
 	private final HttpStatus status;
 	private final String code;

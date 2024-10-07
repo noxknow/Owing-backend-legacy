@@ -1,8 +1,17 @@
 package com.ddj.owing.domain.casting.service;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
+import com.ddj.owing.domain.casting.error.code.CastingFolderErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
+import com.ddj.owing.domain.casting.error.exception.CastingFolderException;
 import com.ddj.owing.domain.casting.model.Casting;
+import com.ddj.owing.domain.casting.model.CastingFolder;
 import com.ddj.owing.domain.casting.model.CastingNode;
 import com.ddj.owing.domain.casting.model.CastingRelationship;
 import com.ddj.owing.domain.casting.model.ConnectionType;
@@ -11,10 +20,8 @@ import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -24,20 +31,21 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class CastingService {
 
-    private final CastingRepository castingRepository;
-    private final OpenAiUtil openAiUtil;
+	private final CastingRepository castingRepository;
+	private final OpenAiUtil openAiUtil;
 
-    private final CastingNodeRepository castingNodeRepository;
+	private final CastingNodeRepository castingNodeRepository;
+	private final CastingFolderRepository castingFolderRepository;
 
-    @Transactional
-    public ResponseEntity<String> generateCharacterImage(CastingRequestDto castingRequestDto) {
+	@Transactional
+	public ResponseEntity<String> generateCharacterImage(CastingRequestDto castingRequestDto) {
 
-        String prompt = openAiUtil.createPrompt(castingRequestDto);
-        String jsonString = openAiUtil.createImage(prompt);
-        String imageUrl = Parser.extractUrl(jsonString);
-        Casting casting = castingRequestDto.toEntity(imageUrl);
+		String prompt = openAiUtil.createPrompt(castingRequestDto);
+		String jsonString = openAiUtil.createImage(prompt);
+		String imageUrl = Parser.extractUrl(jsonString);
+		Casting casting = castingRequestDto.toEntity(imageUrl);
 
-        castingRepository.save(casting);
+		castingRepository.save(casting);
 
         return ResponseEntity.ok(imageUrl);
     }
@@ -48,72 +56,117 @@ public class CastingService {
         return CastingDto.from(casting);
     }
 
-    @Transactional
-    public CastingDto createCasting(CastingCreateDto castingCreateDto) {
-        Casting casting = castingCreateDto.toEntity();
-        Casting savedCasting = castingRepository.save(casting);
+	@Transactional
+	public CastingDto createCasting(CastingCreateDto castingCreateDto) {
+		CastingFolder castingFolder = castingFolderRepository.findById(castingCreateDto.folderId())
+			.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
 
-        CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
-        CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+		Integer position = castingRepository.findMaxOrderByCastingFolderId(castingCreateDto.folderId()) + 1;
 
-        return CastingDto.from(savedCastingNode);
-    }
+		Casting casting = castingCreateDto.toEntity(castingFolder, position);
+		Casting savedCasting = castingRepository.save(casting);
 
-    @Transactional
-    public CastingDto updateCastingInfo(Long id, CastingInfoUpdateDto castingInfoUpdateDto) {
-        Casting casting = castingRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        casting.updateInfo(
-                castingInfoUpdateDto.name(),
-                castingInfoUpdateDto.age(),
-                castingInfoUpdateDto.name(),
-                castingInfoUpdateDto.role(),
-                castingInfoUpdateDto.detail(),
-                castingInfoUpdateDto.imageUrl()
-        );
+		CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
+		CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
 
-        CastingNode castingNode = castingNodeRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
-        castingNode.updateInfo(
-                castingInfoUpdateDto.name(),
-                castingInfoUpdateDto.age(),
-                castingInfoUpdateDto.name(),
-                castingInfoUpdateDto.role(),
-                castingInfoUpdateDto.imageUrl()
-        );
-        CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
+		return CastingDto.from(savedCastingNode);
+	}
 
-        return CastingDto.from(updatedCastingNode);
-    }
+	@Transactional
+	public CastingDto updateCastingInfo(Long id, CastingInfoUpdateDto castingInfoUpdateDto) {
+		Casting casting = castingRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+		casting.updateInfo(
+			castingInfoUpdateDto.name(),
+			castingInfoUpdateDto.age(),
+			castingInfoUpdateDto.name(),
+			castingInfoUpdateDto.role(),
+			castingInfoUpdateDto.detail(),
+			castingInfoUpdateDto.imageUrl()
+		);
 
-    @Transactional
-    public CastingDto updateCastingCoord(Long id, CastingCoordUpdateDto coordUpdateDto) {
-        Casting casting = castingRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        casting.updateCoord(
-                coordUpdateDto.coordX(),
-                coordUpdateDto.coordY()
-        );
+		CastingNode castingNode = castingNodeRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
+		castingNode.updateInfo(
+			castingInfoUpdateDto.name(),
+			castingInfoUpdateDto.age(),
+			castingInfoUpdateDto.name(),
+			castingInfoUpdateDto.role(),
+			castingInfoUpdateDto.imageUrl()
+		);
+		CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
 
-        CastingNode castingNode = castingNodeRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
-        castingNode.updateCoord(
-                coordUpdateDto.coordX(),
-                coordUpdateDto.coordY()
-        );
-        CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
+		return CastingDto.from(updatedCastingNode);
+	}
 
-        return CastingDto.from(updatedCastingNode);
-    }
+	@Transactional
+	public CastingDto updateCastingCoord(Long id, CastingCoordUpdateDto coordUpdateDto) {
+		Casting casting = castingRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+		casting.updateCoord(
+			coordUpdateDto.coordX(),
+			coordUpdateDto.coordY()
+		);
 
-    @Transactional
-    public void deleteCasting(Long id) {
-        castingRepository.deleteById(id);
-        CastingNode castingNode = castingNodeRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
-        castingNode.delete();
-        castingNodeRepository.save(castingNode);
-    }
+		CastingNode castingNode = castingNodeRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
+		castingNode.updateCoord(
+			coordUpdateDto.coordX(),
+			coordUpdateDto.coordY()
+		);
+		CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
+
+		return CastingDto.from(updatedCastingNode);
+	}
+
+	@Transactional
+	public CastingDto updateCastingPosition(Long id, CastingPositionUpdateDto dto) {
+		Casting casting = castingRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+
+		CastingFolder oldFolder = casting.getCastingFolder();
+		CastingFolder newFolder = castingFolderRepository.findById(casting.getCastingFolder().getId())
+			.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
+
+		int oldPosition = casting.getPosition();
+		int newPosition = dto.position();
+
+		if (oldFolder.getId().equals(newFolder.getId()) && oldPosition == newPosition) {
+			return CastingDto.from(casting);
+		}
+
+		if (newPosition < 1 || newPosition > newFolder.getCastings().size() + 1) {
+			throw CastingException.of(CastingErrorCode.INVALID_POSITION);
+		}
+
+		if (oldFolder.getId().equals(newFolder.getId())) {
+			if (oldPosition < newPosition) {
+				castingRepository.decrementPositionBetween(oldPosition, newPosition, oldFolder.getId());
+			} else {
+				castingRepository.incrementPositionBetween(newPosition, oldPosition - 1, oldFolder.getId());
+			}
+		} else {
+			castingRepository.decrementPositionAfter(oldPosition, oldFolder.getId());
+			castingRepository.incrementPositionAfter(newPosition, newFolder.getId());
+			casting.updateFolder(newFolder);
+		}
+
+		casting.updatePosition(newPosition);
+		return CastingDto.from(castingRepository.save(casting));
+	}
+
+	@Transactional
+	public void deleteCasting(Long id) {
+		Casting casting = castingRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+		castingRepository.decrementPositionAfter(casting.getPosition(), casting.getCastingFolder().getId());
+
+		castingRepository.deleteById(id);
+		CastingNode castingNode = castingNodeRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
+		castingNode.delete();
+		castingNodeRepository.save(castingNode);
+	}
 
     /**
      * Casting간 Relation을 생성하는 메서드
