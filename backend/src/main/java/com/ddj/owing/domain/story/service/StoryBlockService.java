@@ -17,7 +17,6 @@ import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockCreateDto;
 import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockDto;
 import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockPositionUpdateDto;
 import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockUpdateDto;
-import com.ddj.owing.domain.story.repository.DailyTextCountRepository;
 import com.ddj.owing.domain.story.repository.StoryBlockRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
 
@@ -29,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class StoryBlockService {
 	private final StoryBlockRepository storyBlockRepository;
 	private final StoryPlotRepository storyPlotRepository;
+	// private final DailyTextCountRepository dailyTextCountRepository;
 
 	private StoryBlock findById(Long id) {
 		return storyBlockRepository.findById(id)
@@ -64,6 +64,13 @@ public class StoryBlockService {
 
 		storyPlot.updateTextCount(textCount);
 
+		// LocalDate now = LocalDate.now();
+		// LocalDateTime start = now.atStartOfDay();
+		// LocalDateTime end = LocalTime.MAX.atDate(now);
+		// DailyTextCount dailyTextCount = dailyTextCountRepository.findByCreatedAtBetween(start, end)
+		// 	.orElseGet(() -> DailyTextCount.builder().build());
+		// dailyTextCount.updateDailyTextCount(textCount);
+
 		return StoryBlockDto.from(storyBlockRepository.save(newBlock));
 	}
 
@@ -78,6 +85,13 @@ public class StoryBlockService {
 		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), contents);
 		storyBlock.getStoryPlot().updateTextCount(textCountDiff);
 
+		// LocalDate now = LocalDate.now();
+		// LocalDateTime start = now.atStartOfDay();
+		// LocalDateTime end = LocalTime.MAX.atDate(now);
+		// DailyTextCount dailyTextCount = dailyTextCountRepository.findByCreatedAtBetween(start, end)
+		// 	.orElseGet(() -> DailyTextCount.builder().build());
+		// dailyTextCount.updateDailyTextCount(textCountDiff);
+
 		return StoryBlockDto.from(storyBlockRepository.save(storyBlock));
 	}
 
@@ -86,8 +100,16 @@ public class StoryBlockService {
 		StoryBlock storyBlock = findById(id);
 
 		storyBlockRepository.decrementPositionAfter(storyBlock.getPosition(), storyBlock.getStoryPlot().getId());
-		int textCount = getTextCount(storyBlock.getContents());
-		storyBlock.getStoryPlot().updateTextCount(-textCount);
+		int textCount = -getTextCount(storyBlock.getContents());
+		storyBlock.getStoryPlot().updateTextCount(textCount);
+		//
+		// LocalDate now = LocalDate.now();
+		// LocalDateTime start = now.atStartOfDay();
+		// LocalDateTime end = LocalTime.MAX.atDate(now);
+		// DailyTextCount dailyTextCount = dailyTextCountRepository.findByCreatedAtBetween(start, end)
+		// 	.orElseGet(() -> DailyTextCount.builder().build());
+		// dailyTextCount.updateDailyTextCount(textCount);
+
 		storyBlockRepository.deleteById(id);
 	}
 
