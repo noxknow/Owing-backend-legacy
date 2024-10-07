@@ -1,4 +1,4 @@
-package com.ddj.owing.domain.story.model.dto;
+package com.ddj.owing.domain.story.model.dto.storyPlot;
 
 import jakarta.validation.constraints.NotNull;
 

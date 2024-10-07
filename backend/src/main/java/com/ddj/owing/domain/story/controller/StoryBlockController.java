@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockPositionUpdateDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockUpdateDto;
 import com.ddj.owing.domain.story.service.StoryBlockService;
-import com.ddj.owing.domain.story.model.dto.StoryBlockCreateDto;
-import com.ddj.owing.domain.story.model.dto.StoryBlockDto;
-import com.ddj.owing.domain.story.model.dto.StoryBlockPositionUpdateDto;
-import com.ddj.owing.domain.story.model.dto.StoryBlockUpdateDto;
 
 import lombok.RequiredArgsConstructor;
 

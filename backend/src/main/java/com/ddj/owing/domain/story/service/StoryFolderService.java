@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ddj.owing.domain.story.model.StoryFolder;
-import com.ddj.owing.domain.story.model.dto.StoryFolderCreateDto;
-import com.ddj.owing.domain.story.model.dto.StoryFolderDto;
-import com.ddj.owing.domain.story.model.dto.StoryFolderPositionUpdateDto;
 import com.ddj.owing.domain.story.error.code.StoryFolderErrorCode;
 import com.ddj.owing.domain.story.error.exception.StoryFolderException;
-import com.ddj.owing.domain.story.model.dto.StoryFolderUpdateDto;
+import com.ddj.owing.domain.story.model.StoryFolder;
+import com.ddj.owing.domain.story.model.dto.storyFolder.StoryFolderCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyFolder.StoryFolderDto;
+import com.ddj.owing.domain.story.model.dto.storyFolder.StoryFolderPositionUpdateDto;
+import com.ddj.owing.domain.story.model.dto.storyFolder.StoryFolderUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryFolderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -81,7 +81,6 @@ public class StoryFolderService {
 		if (newPosition < 1 || newPosition > maxPosition) {
 			throw StoryFolderException.of(StoryFolderErrorCode.INVALID_POSITION);
 		}
-
 
 		if (storyFolder.getPosition() < newPosition) {
 			storyFolderRepository.decrementPositionBetween(storyFolder.getPosition() + 1, newPosition,

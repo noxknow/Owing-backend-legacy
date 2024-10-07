@@ -1,4 +1,4 @@
-package com.ddj.owing.domain.story.model.dto;
+package com.ddj.owing.domain.story.model.dto.storyBlock;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public record StoryBlockCreateDto(
 	Long storyPlotId
 ) {
 
-	public StoryBlock toEntity(StoryPlot storyPlot, StoryBlock parentBlock, Integer position){
+	public StoryBlock toEntity(StoryPlot storyPlot, StoryBlock parentBlock, Integer position) {
 		return StoryBlock.builder()
 			.type(type)
 			.props(props)

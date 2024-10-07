@@ -17,6 +17,11 @@ import com.ddj.owing.domain.story.model.dto.StoryBlockCreateDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockPositionUpdateDto;
 import com.ddj.owing.domain.story.model.dto.StoryBlockUpdateDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.ContentDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockPositionUpdateDto;
+import com.ddj.owing.domain.story.model.dto.storyBlock.StoryBlockUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryBlockRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
 
@@ -100,7 +105,7 @@ public class StoryBlockService {
 		Integer oldPosition = storyBlock.getPosition();
 		Integer newPosition = dto.position();
 
-		if(oldParentBlock.getId().equals(dto.parentBlockId()) && oldPosition.equals(newPosition)){
+		if (oldParentBlock.getId().equals(dto.parentBlockId()) && oldPosition.equals(newPosition)) {
 			return StoryBlockDto.from(storyBlock);
 		}
 
@@ -108,7 +113,7 @@ public class StoryBlockService {
 			throw StoryBlockException.of(StoryBlockErrorCode.INVALID_POSITION);
 		}
 
-		if(oldParentBlock.getId().equals(dto.parentBlockId())){
+		if (oldParentBlock.getId().equals(dto.parentBlockId())) {
 			if (newPosition < oldPosition) {
 				storyBlockRepository.decrementPositionBetween(oldPosition, newPosition, oldParentBlock.getId());
 			} else {

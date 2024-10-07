@@ -1,29 +1,36 @@
 package com.ddj.owing.domain.story.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.model.CastingNode;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
-import com.ddj.owing.domain.story.model.StoryPlotNode;
-import com.ddj.owing.domain.story.model.dto.*;
-import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.ddj.owing.domain.story.error.code.StoryFolderErrorCode;
 import com.ddj.owing.domain.story.error.code.StoryPlotErrorCode;
-import com.ddj.owing.domain.story.error.exception.StoryPlotException;
-import com.ddj.owing.domain.story.model.StoryPlot;
 import com.ddj.owing.domain.story.error.exception.StoryFolderException;
+import com.ddj.owing.domain.story.error.exception.StoryPlotException;
 import com.ddj.owing.domain.story.model.StoryFolder;
+import com.ddj.owing.domain.story.model.StoryPlot;
+import com.ddj.owing.domain.story.model.StoryPlotNode;
+import com.ddj.owing.domain.story.model.dto.StoryPlotAppearedCastDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotAppearedCastCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotCreateDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotPositionUpdateDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryFolderRepository;
+import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -77,7 +84,7 @@ public class StoryPlotService {
 		storyPlot.update(storyPlotUpdateDto.name(), storyPlotUpdateDto.description());
 
 		StoryPlotNode storyPlotNode = storyPlotNodeRepository.findById(id)
-				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
+			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
 		storyPlotNode.updateName(storyPlotUpdateDto.name());
 		storyPlotNodeRepository.save(storyPlotNode);
 
@@ -91,11 +98,11 @@ public class StoryPlotService {
 		storyPlotRepository.deleteById(id);
 
 		storyPlotNodeRepository.findById(id).ifPresentOrElse(
-				(node) -> {
-					node.delete();
-					storyPlotNodeRepository.save(node);
-				},
-				() -> log.warn("StoryPlot 데이터 불일치 발생. entity id:{}", storyPlot.getId())
+			(node) -> {
+				node.delete();
+				storyPlotNodeRepository.save(node);
+			},
+			() -> log.warn("StoryPlot 데이터 불일치 발생. entity id:{}", storyPlot.getId())
 		);
 	}
 
@@ -110,7 +117,7 @@ public class StoryPlotService {
 		int oldPosition = storyPlot.getPosition();
 		int newPosition = storyPlotPositionUpdateDto.position();
 
-		if(oldFolder.getId().equals(newFolder.getId()) && oldPosition==newPosition) {
+		if (oldFolder.getId().equals(newFolder.getId()) && oldPosition == newPosition) {
 			return StoryPlotDto.from(storyPlot);
 		}
 
@@ -118,7 +125,7 @@ public class StoryPlotService {
 			throw StoryPlotException.of(StoryPlotErrorCode.INVALID_POSITION);
 		}
 
-		if(oldFolder.getId().equals(newFolder.getId())){
+		if (oldFolder.getId().equals(newFolder.getId())) {
 			if (oldPosition < newPosition) {
 				storyPlotRepository.decrementPositionBetween(oldPosition, newPosition, oldFolder.getId());
 			} else {
@@ -135,14 +142,15 @@ public class StoryPlotService {
 	}
 
 	@Transactional
-	public List<StoryPlotAppearedCastDto> registerCasts(Long storyPlotId, StoryPlotAppearedCastCreateDto appearedCastCreateDto) {
+	public List<StoryPlotAppearedCastDto> registerCasts(Long storyPlotId,
+		StoryPlotAppearedCastCreateDto appearedCastCreateDto) {
 		StoryPlotNode storyPlotNode = storyPlotNodeRepository.findById(storyPlotId)
-				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
+			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
 
 		Set<CastingNode> existsCasts = new HashSet<>();
 		for (Long castId : appearedCastCreateDto.castIdList()) {
 			Optional<CastingNode> optionalCast = castingNodeRepository.findById(castId);
-            optionalCast.ifPresent(cast -> {
+			optionalCast.ifPresent(cast -> {
 				if (!cast.getEpisodes().contains(storyPlotNode)) {
 					existsCasts.add(cast);
 				}
@@ -153,8 +161,8 @@ public class StoryPlotService {
 		storyPlotNodeRepository.save(storyPlotNode);
 
 		return existsCasts.stream()
-				.map(cast -> new StoryPlotAppearedCastDto(cast.getId(), cast.getName()))
-				.toList();
+			.map(cast -> new StoryPlotAppearedCastDto(cast.getId(), cast.getName()))
+			.toList();
 	}
 
 	// TODO 등장인물 추출
@@ -167,9 +175,9 @@ public class StoryPlotService {
 	@Transactional
 	public void deleteAppearedCast(Long storyPlotId, Long castId) {
 		StoryPlotNode storyPlotNode = storyPlotNodeRepository.findById(storyPlotId)
-				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
+			.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NODE_NOT_FOUND));
 		CastingNode castingNode = castingNodeRepository.findById(castId)
-				.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
 
 		if (!castingNode.getEpisodes().contains(storyPlotNode)) {
 			throw StoryPlotException.of(StoryPlotErrorCode.NOT_APPEARED_RELATIONSHIP);
@@ -177,7 +185,8 @@ public class StoryPlotService {
 
 		int deletedAppearedCount = storyPlotNodeRepository.deleteAppearedCasting(storyPlotId, castId);
 		if (1 < deletedAppearedCount) {
-			log.warn("예상치 못한 출연 관계가 다수 삭제되었습니다. 예상 삭제 수: 1, 실제 삭제된 수: {}. storyPlotId: {}, castId: {}", deletedAppearedCount, storyPlotId, castId);
+			log.warn("예상치 못한 출연 관계가 다수 삭제되었습니다. 예상 삭제 수: 1, 실제 삭제된 수: {}. storyPlotId: {}, castId: {}",
+				deletedAppearedCount, storyPlotId, castId);
 		}
 	}
 }
