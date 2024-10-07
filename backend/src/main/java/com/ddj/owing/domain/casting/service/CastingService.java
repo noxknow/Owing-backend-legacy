@@ -50,11 +50,18 @@ public class CastingService {
         return ResponseEntity.ok(imageUrl);
     }
 
-    public CastingDto getCasting(Long id) {
-        Casting casting = castingRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        return CastingDto.from(casting);
-    }
+	public List<CastingDto> getCastingList(Long folderId) {
+		return castingRepository.findByCastingFolderIdOrderByPositionAsc(folderId)
+			.stream()
+			.map(CastingDto::from)
+			.toList();
+	}
+
+	public CastingDto getCasting(Long id) {
+		Casting casting = castingRepository.findById(id)
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+		return CastingDto.from(casting);
+	}
 
 	@Transactional
 	public CastingDto createCasting(CastingCreateDto castingCreateDto) {
