@@ -6,7 +6,7 @@ public record UniverseFileResponseDto(
         Long id,
         String title,
         String description,
-        String coverImage
+        String imageUrl
 ) {
 
     public static UniverseFileResponseDto fromEntity(UniverseFile file) {
@@ -15,7 +15,7 @@ public record UniverseFileResponseDto(
                 file.getId(),
                 file.getTitle(),
                 file.getDescription(),
-                file.getCoverImage()
+                file.getImageUrl()
         );
     }
 }
