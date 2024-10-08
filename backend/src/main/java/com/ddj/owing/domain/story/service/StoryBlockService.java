@@ -46,7 +46,7 @@ public class StoryBlockService {
 	}
 
 	public int getTextCount(List<Content> contents) {
-		return contents.stream().mapToInt(content -> content.getText().length()).sum();
+		return contents == null ? 0 : contents.stream().mapToInt(content -> content.getText().length()).sum();
 	}
 
 	@Transactional
@@ -60,7 +60,7 @@ public class StoryBlockService {
 		Integer position = storyBlockRepository.findMaxOrderByStoryPlotId(storyBlockCreateDto.storyPlotId()) + 1;
 
 		StoryBlock newBlock = storyBlockCreateDto.toEntity(storyPlot, parentBlock, position);
-		int textCount = getTextCount(newBlock.getContents());
+		int textCount = getTextCount(newBlock.getContent());
 
 		storyPlot.updateTextCount(textCount);
 
@@ -80,7 +80,7 @@ public class StoryBlockService {
 		// todo: validation
 		StoryBlock storyBlock = findById(id);
 		List<Content> contents = storyBlockUpdateDto.contents().stream().map(ContentDto::toEntity).toList();
-		int textCountDiff = getTextCount(contents) - getTextCount(storyBlock.getContents());
+		int textCountDiff = getTextCount(contents) - getTextCount(storyBlock.getContent());
 
 		storyBlock.update(storyBlockUpdateDto.type(), storyBlockUpdateDto.props(), contents);
 		storyBlock.getStoryPlot().updateTextCount(textCountDiff);
@@ -100,7 +100,7 @@ public class StoryBlockService {
 		StoryBlock storyBlock = findById(id);
 
 		storyBlockRepository.decrementPositionAfter(storyBlock.getPosition(), storyBlock.getStoryPlot().getId());
-		int textCount = -getTextCount(storyBlock.getContents());
+		int textCount = -getTextCount(storyBlock.getContent());
 		storyBlock.getStoryPlot().updateTextCount(textCount);
 		//
 		// LocalDate now = LocalDate.now();

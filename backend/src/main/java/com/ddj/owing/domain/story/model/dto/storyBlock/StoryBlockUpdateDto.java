@@ -1,10 +1,11 @@
 package com.ddj.owing.domain.story.model.dto.storyBlock;
 
 import java.util.List;
+import java.util.Map;
 
 public record StoryBlockUpdateDto(
 	String type,
-	String props,
+	Map<String, Object> props,
 	List<ContentDto> contents
 ) {
 }
