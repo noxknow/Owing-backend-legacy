@@ -77,7 +77,7 @@ public class UniverseFileService {
         String fileName = "universe-image.png";
         String preSignedUrl = s3FileUtil.getPreSignedUrl(universeDirectory, fileName);
 
-        UniverseFile universeFile = universeFileImageRequestDto.toEntity(preSignedUrl, universeFolder);
+        UniverseFile universeFile = universeFileImageRequestDto.toEntity(universeFolder);
         universeFileRepository.save(universeFile);
 
         return ResponseEntity.ok(preSignedUrl);
