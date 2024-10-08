@@ -30,5 +30,5 @@ public class UniverseFile extends BaseTimeEntity {
 
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String coverImage;
+    private String imageUrl;
 }
