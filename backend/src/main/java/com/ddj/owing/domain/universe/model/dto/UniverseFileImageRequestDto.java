@@ -10,7 +10,7 @@ public record UniverseFileImageRequestDto(
         String imageUrl
 ) {
 
-    public UniverseFile toEntity(String imageUrl, UniverseFolder universeFolder) {
+    public UniverseFile toEntity(UniverseFolder universeFolder) {
 
         return UniverseFile.builder()
                 .universeFolder(universeFolder)
