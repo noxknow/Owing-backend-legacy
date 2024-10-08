@@ -30,10 +30,19 @@ import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
 import com.ddj.owing.domain.casting.repository.CastingFolderRepository;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
+import com.ddj.owing.domain.universe.model.UniverseFile;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
+import com.ddj.owing.global.util.S3FileUtil;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -45,19 +54,28 @@ public class CastingService {
 
 	private final CastingNodeRepository castingNodeRepository;
 	private final CastingFolderRepository castingFolderRepository;
+    private final S3FileUtil s3FileUtil;
+    private final OpenAiUtil openAiUtil;
 
-	@Transactional
-	public ResponseEntity<String> generateCharacterImage(CastingRequestDto castingRequestDto) {
+    @Value("${cloud.aws.s3.directory.casting}")
+    private String castingDirectory;
 
-		String prompt = openAiUtil.createPrompt(castingRequestDto);
-		String jsonString = openAiUtil.createImage(prompt);
-		String imageUrl = Parser.extractUrl(jsonString);
-		Casting casting = castingRequestDto.toEntity(imageUrl);
+    /**
+     * 캐릭터 이미지를 생성하는 메서드
+     * 주어진 CastingRequestDto를 이용해서 프롬프트를 만들고, OpenAI API를 통해 이미지를 생성
+     *
+     * @param castingRequestDto 캐릭터 정보를 담고 있는 DTO
+     * @return 생성된 이미지의 URL을 ResponseEntity로 반환
+     */
+    @Transactional
+    public ResponseEntity<String> generateCharacterImage(CastingRequestDto castingRequestDto) {
 
-		castingRepository.save(casting);
+        String prompt = openAiUtil.createPrompt(castingRequestDto);
+        String jsonString = openAiUtil.createImage(prompt);
+        String imageUrl = Parser.extractUrl(jsonString);
 
-		return ResponseEntity.ok(imageUrl);
-	}
+        return ResponseEntity.ok(imageUrl);
+    }
 
 	public List<CastingDto> getCastingList(Long folderId) {
 		return castingRepository.findByCastingFolderIdOrderByPositionAsc(folderId)
@@ -71,7 +89,44 @@ public class CastingService {
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 		return CastingDto.from(casting);
 	}
+    /**
+     * 캐릭터 정보를 저장하고 파일 생성 요청을 위한 Presigned URL을 반환하는 메서드
+     *
+     * @param castingImageRequestDto 캐릭터 생성 정보를 담고 있는 DTO
+     * @return 생성된 파일에 대한 Presigned URL을 ResponseEntity로 반환
+     */
+    @Transactional
+    public ResponseEntity<CastingImageResponseDto> createCharacter(CastingImageRequestDto castingImageRequestDto) {
 
+        Casting casting = castingImageRequestDto.toEntity();
+        Casting savedCasting = castingRepository.save(casting);
+
+        CastingNode castingNode = castingImageRequestDto.toNodeEntity(savedCasting);
+        CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+
+        String fileName = "casting-image.png";
+        String preSignedUrl = s3FileUtil.getPreSignedUrl(castingDirectory, fileName);
+        CastingImageResponseDto castingImageResponseDto = CastingImageResponseDto.fromEntity(casting, preSignedUrl);
+
+        return ResponseEntity.ok(castingImageResponseDto);
+    }
+
+    public CastingDto getCasting(Long id) {
+        Casting casting = castingRepository.findById(id)
+                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+        return CastingDto.from(casting);
+    }
+
+//    @Transactional
+//    public CastingDto createCasting(CastingCreateDto castingCreateDto) {
+//        Casting casting = castingCreateDto.toEntity();
+//        Casting savedCasting = castingRepository.save(casting);
+//
+//        CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
+//        CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+//
+//        return CastingDto.from(savedCastingNode);
+//    }
 	@Transactional
 	public CastingDto createCasting(CastingCreateDto castingCreateDto) {
 		CastingFolder castingFolder = castingFolderRepository.findById(castingCreateDto.folderId())
