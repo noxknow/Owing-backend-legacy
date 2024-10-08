@@ -2,6 +2,7 @@ package com.ddj.owing.domain.story.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SoftDelete;
@@ -36,12 +37,15 @@ public class StoryBlock extends BaseTimeEntity {
 	private String uuid;
 
 	private String type;
+
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(columnDefinition = "jsonb")
-	private String props;
+	private Map<String, Object> props;
+
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Column(columnDefinition = "jsonb")
-	private List<Content> contents;
+	private List<Content> content;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "parent_id")
 	private StoryBlock parentBlock;
@@ -56,20 +60,20 @@ public class StoryBlock extends BaseTimeEntity {
 	private StoryPlot storyPlot;
 
 	@Builder
-	public StoryBlock(String type, String props, List<Content> contents, StoryBlock parentBlock, Integer position,
-		StoryPlot storyPlot) {
+	public StoryBlock(String type, Map<String, Object> props, List<Content> content, StoryBlock parentBlock,
+		Integer position, StoryPlot storyPlot) {
 		this.type = type;
 		this.props = props;
-		this.contents = contents;
+		this.content = content;
 		this.parentBlock = parentBlock;
 		this.position = position;
 		this.storyPlot = storyPlot;
 	}
 
-	public void update(String type, String props, List<Content> contents) {
+	public void update(String type, Map<String, Object> props, List<Content> content) {
 		this.type = type;
 		this.props = props;
-		this.contents = contents;
+		this.content = content;
 	}
 
 	public void updatePosition(Integer newPosition) {

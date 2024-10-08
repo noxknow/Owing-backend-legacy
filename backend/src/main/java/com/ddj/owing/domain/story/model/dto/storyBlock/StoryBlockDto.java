@@ -1,6 +1,7 @@
 package com.ddj.owing.domain.story.model.dto.storyBlock;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ddj.owing.domain.story.model.StoryBlock;
 
@@ -10,7 +11,7 @@ import lombok.Builder;
 public record StoryBlockDto(
 	Long id,
 	String type,
-	String props,
+	Map<String, Object> props,
 	List<ContentDto> content,
 	Long parentBlockId,
 	Integer position,
@@ -23,7 +24,8 @@ public record StoryBlockDto(
 			.id(storyBlock.getId())
 			.type(storyBlock.getType())
 			.props(storyBlock.getProps())
-			.content(storyBlock.getContents().stream().map(ContentDto::from).toList())
+			.content(storyBlock.getContent() == null ? null :
+				storyBlock.getContent().stream().map(ContentDto::from).toList())
 			.parentBlockId(storyBlock.getParentBlock() == null ? null : storyBlock.getParentBlock().getId())
 			.position(storyBlock.getPosition())
 			.storyPlotId(storyBlock.getStoryPlot().getId())
