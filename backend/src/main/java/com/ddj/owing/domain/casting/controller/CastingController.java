@@ -33,11 +33,21 @@ public class CastingController {
 
 	private final CastingService castingService;
 
-	@PostMapping("/generate/coverImage")
-	public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
-		return castingService.generateCharacterImage(castingRequestDto);
-	}
+    @PostMapping("/generate/image")
+    public ResponseEntity<String> generateCharacterImage(@RequestBody CastingRequestDto castingRequestDto) {
+        return castingService.generateCharacterImage(castingRequestDto);
+    }
 
+    @PostMapping("/create")
+    public ResponseEntity<CastingImageResponseDto> createCharacter(@RequestBody CastingImageRequestDto castingImageRequestDto) {
+        return castingService.createCharacter(castingImageRequestDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CastingDto> getCastingById(@PathVariable Long id) {
+        CastingDto casting = castingService.getCasting(id);
+        return ResponseEntity.ok(casting);
+    }
 	@GetMapping
 	public ResponseEntity<List<CastingDto>> getCastingList(@RequestParam Long folderId) {
 		List<CastingDto> casting = castingService.getCastingList(folderId);
@@ -50,11 +60,11 @@ public class CastingController {
 		return ResponseEntity.ok(casting);
 	}
 
-	@PostMapping
-	public ResponseEntity<CastingDto> createCasting(@RequestBody CastingCreateDto castingCreateDto) {
-		CastingDto casting = castingService.createCasting(castingCreateDto);
-		return ResponseEntity.ok(casting);
-	}
+//    @PostMapping
+//    public ResponseEntity<CastingDto> createCasting(@RequestBody CastingCreateDto castingCreateDto) {
+//        CastingDto casting = castingService.createCasting(castingCreateDto);
+//        return ResponseEntity.ok(casting);
+//    }
 
 	@PutMapping("/{id}/info")
 	public ResponseEntity<CastingDto> updateCastingInfo(@PathVariable Long id,
