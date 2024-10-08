@@ -7,15 +7,15 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class S3FileService {
+public class S3FileUtil {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
