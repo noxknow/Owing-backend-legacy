@@ -46,9 +46,9 @@ public class Casting extends BaseTimeEntity {
 	@Column(columnDefinition = "TEXT")
 	private String detail;
 
-	@Lob
-	@Column(columnDefinition = "TEXT")
-	private String coverImage;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
 
 	@Column
 	private Integer coordX;
@@ -62,14 +62,14 @@ public class Casting extends BaseTimeEntity {
 
 	private Integer position;
 
-	public void updateInfo(String name, Long age, String gender, String role, String detail, String coverImage) {
-		this.name = name;
-		this.age = age;
-		this.gender = gender;
-		this.role = role;
-		this.detail = detail;
-		this.coverImage = coverImage;
-	}
+    public void updateInfo(String name, Long age, String gender, String role, String detail, String imageUrl) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.role = role;
+        this.detail = detail;
+        this.imageUrl = imageUrl;
+    }
 
 	public void updateCoord(Integer coordX, Integer coordY) {
 		this.coordX = coordX;
