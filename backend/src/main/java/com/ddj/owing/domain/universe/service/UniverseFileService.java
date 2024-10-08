@@ -55,6 +55,9 @@ public class UniverseFileService {
     @Transactional
     public ResponseEntity<String> generateUniverseImage(UniverseFileRequestDto universeFileRequestDto) {
 
+        UniverseFolder universeFolder = universeFolderRepository.findById(universeFileRequestDto.universeFolderId())
+                .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
+
         String prompt = openAiUtil.createPrompt(universeFileRequestDto);
         String jsonString = openAiUtil.createImage(prompt);
         String imageUrl = Parser.extractUrl(jsonString);
