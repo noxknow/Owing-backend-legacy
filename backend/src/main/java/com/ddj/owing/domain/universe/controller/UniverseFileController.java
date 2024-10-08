@@ -1,6 +1,7 @@
 package com.ddj.owing.domain.universe.controller;
 
 import com.ddj.owing.domain.universe.model.UniverseFile;
+import com.ddj.owing.domain.universe.model.dto.UniverseFileImageRequestDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseFileRequestDto;
 import com.ddj.owing.domain.universe.service.UniverseFileService;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,10 @@ public class UniverseFileController {
     @PostMapping("/generate")
     public ResponseEntity<String> generateUniverseImage(@RequestBody UniverseFileRequestDto universeFileRequestDto) {
         return universeFileService.generateUniverseImage(universeFileRequestDto);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createUniverseFile(@RequestBody UniverseFileImageRequestDto universeFileImageRequestDto) {
+        return universeFileService.createUniverseFile(universeFileImageRequestDto);
     }
 }
