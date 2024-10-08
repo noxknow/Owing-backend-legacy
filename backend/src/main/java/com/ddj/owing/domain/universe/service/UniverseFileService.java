@@ -66,7 +66,7 @@ public class UniverseFileService {
     }
 
     /**
-     * Universe 파일을 생성하는 메서드, S3에 업로드할 파일을 위한 Presigned URL을 반환합니다.
+     * Universe 파일을 생성하는 메서드, S3에 업로드할 파일을 위한 Presigned URL을 반환
      *
      * @param universeFileImageRequestDto 파일 생성 요청을 담은 DTO
      * @return 생성된 파일에 대한 Presigned URL을 ResponseEntity로 반환
