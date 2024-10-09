@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ProjectService {
 
+    private final int MAX_GENRE_COUNT = 5;
+
     private final ProjectRepository projectRepository;
     private final OpenAiUtil openAiUtil;
 
@@ -59,6 +61,9 @@ public class ProjectService {
 
     @Transactional
     public ProjectCreateResponseDto createProject(ProjectCreateRequestDto projectCreateDto) {
+        if (MAX_GENRE_COUNT < projectCreateDto.genres().size()) {
+            throw ProjectException.of(ProjectErrorCode.INVALID_GENRE_COUNT);
+        }
         Project project = projectCreateDto.toEntity();
         Project savedProject = projectRepository.save(project);
         return new ProjectCreateResponseDto(savedProject.getId());
@@ -66,6 +71,9 @@ public class ProjectService {
 
     @Transactional
     public void updateProject(Long id, ProjectUpdateRequestDto projectUpdateRequestDto) {
+        if (MAX_GENRE_COUNT < projectUpdateRequestDto.genres().size()) {
+            throw ProjectException.of(ProjectErrorCode.INVALID_GENRE_COUNT);
+        }
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND));
         project.update(projectUpdateRequestDto);

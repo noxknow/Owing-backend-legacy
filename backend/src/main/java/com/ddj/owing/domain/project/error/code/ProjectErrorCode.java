@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ProjectErrorCode implements OwingErrorCode {
 
-    PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "001", "프로젝트를 찾을 수 없습니다.");
+    PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "001", "프로젝트를 찾을 수 없습니다."),
+    INVALID_GENRE_COUNT(HttpStatus.BAD_REQUEST, "002", "장르의 개수가 유효하지 않습니다.");
 
     private final HttpStatus status;
     private final String code;
