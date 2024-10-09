@@ -1,6 +1,7 @@
 package com.ddj.owing.domain.story.model;
 
 import com.ddj.owing.domain.casting.model.CastingNode;
+import com.ddj.owing.domain.project.model.ProjectNode;
 import com.ddj.owing.global.entity.BaseTimeGraph;
 import lombok.*;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -9,7 +10,6 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Node("StoryPlot")
@@ -24,9 +24,16 @@ public class StoryPlotNode extends BaseTimeGraph {
 	@Relationship(type = "APPEARED", direction = Relationship.Direction.INCOMING)
 	private Set<CastingNode> casts = new HashSet<>();
 
+	@Relationship(type = "INCLUDED", direction = Relationship.Direction.INCOMING)
+	private ProjectNode project;
+
 	public StoryPlotNode(Long id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public void linkProject(ProjectNode project) {
+		this.project = project;
 	}
 
 	public void addCasts(Collection<CastingNode> casts) {
