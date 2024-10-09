@@ -1,6 +1,7 @@
 package com.ddj.owing.domain.project.model.dto;
 
 import com.ddj.owing.domain.project.model.Project;
+import com.ddj.owing.domain.project.model.ProjectNode;
 import com.ddj.owing.domain.project.model.enums.Category;
 import com.ddj.owing.domain.project.model.enums.Genre;
 
@@ -22,5 +23,9 @@ public record ProjectCreateRequestDto(
                 .genres(genres)
                 .coverImage(coverImage)
                 .build();
+    }
+
+    public ProjectNode toNode(Long id) {
+        return new ProjectNode(id, title);
     }
 }
