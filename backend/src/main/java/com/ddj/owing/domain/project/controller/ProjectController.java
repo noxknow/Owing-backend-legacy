@@ -11,17 +11,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/project")
 public class ProjectController {
 
     private final ProjectService projectService;
 
-    @GetMapping("project/load")
+    @GetMapping("/load")
     public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
         return projectService.loadProject();
     }
 
-    @PostMapping("/project/generate")
+    @PostMapping("/generate")
     public ResponseEntity<String> generateProjectImage(@RequestBody ProjectRequestDto projectRequestDto) {
         return projectService.generateProjectImage(projectRequestDto);
     }
