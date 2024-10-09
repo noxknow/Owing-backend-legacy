@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
+import com.ddj.owing.domain.project.error.exception.ProjectException;
+import com.ddj.owing.domain.project.model.ProjectNode;
+import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +45,7 @@ public class StoryPlotService {
 	private final StoryFolderRepository storyFolderRepository;
 	private final StoryPlotNodeRepository storyPlotNodeRepository;
 	private final CastingNodeRepository castingNodeRepository;
+	private final ProjectNodeRepository projectNodeRepository;
 
 	private StoryPlot findById(Long id) {
 		return storyPlotRepository.findById(id)
@@ -70,7 +75,12 @@ public class StoryPlotService {
 		StoryPlot storyPlot = storyPlotCreateDto.toEntity(storyFolder, position);
 		StoryPlot savedStoryPlot = storyPlotRepository.save(storyPlot);
 
+		ProjectNode projectNode = projectNodeRepository.findById(storyFolder.getProjectId())
+				.orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NODE_NOT_FOUND));
+
 		StoryPlotNode storyPlotNode = storyPlotCreateDto.toNode(savedStoryPlot.getId());
+		storyPlotNode.linkProject(projectNode);
+
 		storyPlotNodeRepository.save(storyPlotNode);
 
 		return StoryPlotDto.from(savedStoryPlot);
