@@ -39,22 +39,18 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
             "RETURN count(DISTINCT r)")
     Integer deleteConnectionByUuid(String uuid);
 
-    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:StoryPlot)-[r2:APPEARED]-(n3:Cast) " +
+    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:Cast) " +
             "WHERE n1.deletedAt IS NULL " +
                 "AND n2.deletedAt IS NULL " +
-                "AND n3.deletedAt IS NULL " +
-            "RETURN n3")
+            "RETURN n2")
     List<CastingNode> findAllByProjectId(Long projectId);
 
-    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:StoryPlot)-[r2:APPEARED]-(n3:Cast)-[r3]-(n4:Cast) " +
+    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:Cast)-[r2]-(n3:Cast) " +
             "WHERE n1.deletedAt IS NULL " +
                 "AND n2.deletedAt IS NULL " +
                 "AND n3.deletedAt IS NULL " +
-                "AND n4.deletedAt IS NULL " +
             "RETURN DISTINCT " +
-                "type(r3) as type, r3.uuid AS uuid, r3.label AS label, r3.sourceId AS sourceId,  " +
-                "r3.targetId AS targetId, r3.sourceHandle AS sourceHandle, r3.targetHandle AS targetHandle")
+                "type(r2) as type, r2.uuid AS uuid, r2.label AS label, r2.sourceId AS sourceId, " +
+                "r2.targetId AS targetId, r2.sourceHandle AS sourceHandle, r2.targetHandle AS targetHandle")
     List<CastingRelationshipInfoDto> findAllConnectionByProjectId(Long projectId);
-
-
 }
