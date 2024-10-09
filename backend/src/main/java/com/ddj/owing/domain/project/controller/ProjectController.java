@@ -36,4 +36,10 @@ public class ProjectController {
         ProjectCreateResponseDto projectCreateResponse = projectService.createProject(projectCreateRequestDto);
         return ResponseEntity.ok(projectCreateResponse);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateProjectInfo(@PathVariable Long id, @RequestBody ProjectUpdateRequestDto projectUpdateRequestDto) {
+        projectService.updateProject(id, projectUpdateRequestDto);
+        return ResponseEntity.ok().build();
+    }
 }

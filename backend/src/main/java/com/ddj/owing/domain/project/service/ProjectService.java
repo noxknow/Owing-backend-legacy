@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,5 +62,12 @@ public class ProjectService {
         Project project = projectCreateDto.toEntity();
         Project savedProject = projectRepository.save(project);
         return new ProjectCreateResponseDto(savedProject.getId());
+    }
+
+    @Transactional
+    public void updateProject(Long id, ProjectUpdateRequestDto projectUpdateRequestDto) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND));
+        project.update(projectUpdateRequestDto);
     }
 }
