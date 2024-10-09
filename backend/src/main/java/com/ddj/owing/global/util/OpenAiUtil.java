@@ -1,7 +1,10 @@
 package com.ddj.owing.global.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
 import org.springframework.ai.image.ImageMessage;
 import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
@@ -37,6 +40,18 @@ public class OpenAiUtil {
 		} else {
 			throw new RuntimeException("이미지 생성에 실패했습니다");
 		}
+	}
+
+	/**
+	 * OpenAI API를 사용해 원고에 출연한 캐릭터를 추출하는 메서드
+	 *
+	 * @param prompt 원고와 캐릭터 정보가 담긴 프롬프트
+	 * @return 추출된 캐릭터 요약 정보
+	 */
+	public List<CastingSummaryDto> extractCast(String prompt) {
+		// TODO 출연 캐릭터 추출 프롬프트 실행
+		// TODO CastingSummaryDto로 매핑하여 반환
+		return new ArrayList<>();
 	}
 
 	/**
@@ -114,6 +129,32 @@ public class OpenAiUtil {
 				"이미지는 하나이고, 제작된 표지 이미지는 독자의 관심을 끌 수 있도록 세밀하고 몰입감 있게 표현해주세요.",
 			universeFileRequestDto.title(),
 			universeFileRequestDto.description()
+		);
+	}
+
+	/**
+	 * 원고에 출연한 캐릭터 추출을 위한 프롬프트를 생성하는 메서드
+	 *
+	 * @param storyPlotTextList 원고의 내용이 담긴 list
+	 * @param castingSummaryList 프로젝트에 포함된 모든 캐릭터의 요약 정보(id, name, gender)
+	 * @return 원고에 출연한 캐릭터 추출 프롬프트
+	 */
+	public String creatPrompt(List<String> storyPlotTextList, List<CastingSummaryDto> castingSummaryList) {
+		return String.format(
+				"아래 <원고>를 꼼꼼히 읽고, <캐릭터 정보>를 참고하여 원고에 출연한 캐릭터의 정보를 JSON 리스트로 작성해주세요. " +
+				"각 캐릭터의 id, name, gender 정보를 포함해야 합니다. 출력 양식은 <JSON list 예시>를 참고하세요. " +
+				"필요한 정보는 다음과 같습니다: \n" +
+						"<원고>: \n[%s]\n" +
+						"<캐릭터 정보>: \n[%s]\n" +
+						"<JSON list 예시>: \n[%s]\n" +
+						"필수 준수 사항:\n" +
+						"1. 출력해야 할 JSON 리스트는 위와 같은 형식을 따라야 한다.\n" +
+						"2. 원고에 등장한 캐릭터만 JSON 리스트에 포함되어야 한다.\n" +
+						"3. 캐릭터가 여러 번 등장하더라도 JSON 리스트에는 중복되지 않게 하나만 포함한다.\n" +
+						"4. 원고에 등장하는 캐릭터가 없다면, 빈 JSON 리스트 ([])를 반환한다.",
+				storyPlotTextList.toString(),
+				castingSummaryList.toString(),
+				"[ { \"id\": 1, \"name\": \"John Doe\", \"gender\": \"male\" }, { \"id\": 2, \"name\": \"Jane Doe\", \"gender\": \"female\" }, ... ]"
 		);
 	}
 }
