@@ -92,7 +92,7 @@ public class OpenAiUtil {
 			projectRequestDto.title(),
 			projectRequestDto.description(),
 			projectRequestDto.category(),
-			projectRequestDto.genre()
+			projectRequestDto.genres().toString()
 		);
 	}
 
