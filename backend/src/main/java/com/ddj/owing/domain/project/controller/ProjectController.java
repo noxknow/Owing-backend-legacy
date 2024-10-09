@@ -30,4 +30,10 @@ public class ProjectController {
         ProjectDetailResponseDto projectDetail = projectService.findProject(id);
         return ResponseEntity.ok(projectDetail);
     }
+
+    @PostMapping
+    public ResponseEntity<ProjectCreateResponseDto> createProject(@RequestBody ProjectCreateRequestDto projectCreateRequestDto) {
+        ProjectCreateResponseDto projectCreateResponse = projectService.createProject(projectCreateRequestDto);
+        return ResponseEntity.ok(projectCreateResponse);
+    }
 }
