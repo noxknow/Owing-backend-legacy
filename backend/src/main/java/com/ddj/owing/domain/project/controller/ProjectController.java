@@ -38,8 +38,14 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProjectInfo(@PathVariable Long id, @RequestBody ProjectUpdateRequestDto projectUpdateRequestDto) {
+    public ResponseEntity<Void> updateProject(@PathVariable Long id, @RequestBody ProjectUpdateRequestDto projectUpdateRequestDto) {
         projectService.updateProject(id, projectUpdateRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+        projectService.deleteProject(id);
         return ResponseEntity.ok().build();
     }
 }

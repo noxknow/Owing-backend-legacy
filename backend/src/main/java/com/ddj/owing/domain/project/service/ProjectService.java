@@ -70,4 +70,11 @@ public class ProjectService {
                 .orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND));
         project.update(projectUpdateRequestDto);
     }
+
+    @Transactional
+    public void deleteProject(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND));
+        projectRepository.delete(project);
+    }
 }
