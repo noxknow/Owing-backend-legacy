@@ -1,8 +1,7 @@
 package com.ddj.owing.domain.project.service;
 
 import com.ddj.owing.domain.project.model.Project;
-import com.ddj.owing.domain.project.model.dto.ProjectInfoResponseDto;
-import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
+import com.ddj.owing.domain.project.model.dto.*;
 import com.ddj.owing.domain.project.repository.ProjectRepository;
 import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
 import com.ddj.owing.domain.project.error.exception.ProjectException;
@@ -18,12 +17,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final OpenAiUtil openAiUtil;
 
-    @Transactional(readOnly = true)
     public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
 
         List<Project> projects = projectRepository.findTop3ByOrderByUpdatedAtDesc();
@@ -50,5 +49,11 @@ public class ProjectService {
         projectRepository.save(project);
 
         return ResponseEntity.ok(imageUrl);
+    }
+
+    public ProjectDetailResponseDto findProject(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND));
+        return ProjectDetailResponseDto.from(project);
     }
 }

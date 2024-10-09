@@ -1,7 +1,6 @@
 package com.ddj.owing.domain.project.controller;
 
-import com.ddj.owing.domain.project.model.dto.ProjectInfoResponseDto;
-import com.ddj.owing.domain.project.model.dto.ProjectRequestDto;
+import com.ddj.owing.domain.project.model.dto.*;
 import com.ddj.owing.domain.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +23,11 @@ public class ProjectController {
     @PostMapping("/generate")
     public ResponseEntity<String> generateProjectImage(@RequestBody ProjectRequestDto projectRequestDto) {
         return projectService.generateProjectImage(projectRequestDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectDetailResponseDto> getProject(@PathVariable Long id) {
+        ProjectDetailResponseDto projectDetail = projectService.findProject(id);
+        return ResponseEntity.ok(projectDetail);
     }
 }
