@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.project.model;
 
+import com.ddj.owing.domain.project.model.dto.ProjectUpdateRequestDto;
 import com.ddj.owing.global.entity.BaseTimeEntity;
 import com.ddj.owing.domain.project.model.enums.Category;
 import com.ddj.owing.domain.project.model.enums.Genre;
@@ -33,4 +34,12 @@ public class Project extends BaseTimeEntity {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String coverImage;
+
+    public void update(ProjectUpdateRequestDto updateRequestDto) {
+        this.title = updateRequestDto.title();
+        this.description = updateRequestDto.description();
+        this.category = updateRequestDto.category();
+        this.genre = updateRequestDto.genre();
+        this.coverImage = updateRequestDto.coverImage();
+    }
 }
