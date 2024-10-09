@@ -4,11 +4,13 @@ import com.ddj.owing.domain.project.model.Project;
 import com.ddj.owing.domain.project.model.enums.Genre;
 import com.ddj.owing.domain.project.model.enums.Category;
 
+import java.util.Set;
+
 public record ProjectRequestDto(
         String title,
         String description,
         Category category,
-        Genre genre
+        Set<Genre> genres
 ) {
 
     public Project toEntity(String imageUrl) {
@@ -17,7 +19,7 @@ public record ProjectRequestDto(
                 .title(title)
                 .description(description)
                 .category(category)
-                .genre(genre)
+                .genres(genres)
                 .coverImage(imageUrl)
                 .build();
     }

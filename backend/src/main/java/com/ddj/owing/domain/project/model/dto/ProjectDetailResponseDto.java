@@ -5,12 +5,13 @@ import com.ddj.owing.domain.project.model.enums.Category;
 import com.ddj.owing.domain.project.model.enums.Genre;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public record ProjectDetailResponseDto(
         String title,
         String description,
         Category category,
-        Genre genre,
+        Set<Genre> genre,
         String coverImage,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
@@ -21,7 +22,7 @@ public record ProjectDetailResponseDto(
                 project.getTitle(),
                 project.getDescription(),
                 project.getCategory(),
-                project.getGenre(),
+                project.getGenres(),
                 project.getCoverImage(),
                 project.getCreatedAt(),
                 project.getUpdatedAt()

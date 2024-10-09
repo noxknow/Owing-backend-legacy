@@ -6,6 +6,10 @@ import com.ddj.owing.domain.project.model.enums.Category;
 import com.ddj.owing.domain.project.model.enums.Genre;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.Set;
 
 @Entity
 @Builder
@@ -28,8 +32,10 @@ public class Project extends BaseTimeEntity {
     @Column
     private Category category;
 
-    @Column
-    private Genre genre;
+    @Column(name = "genres", columnDefinition = "varchar[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Enumerated(EnumType.STRING)
+    private Set<Genre> genres;
 
     @Lob
     @Column(columnDefinition = "TEXT")
@@ -39,7 +45,7 @@ public class Project extends BaseTimeEntity {
         this.title = updateRequestDto.title();
         this.description = updateRequestDto.description();
         this.category = updateRequestDto.category();
-        this.genre = updateRequestDto.genre();
+        this.genres = updateRequestDto.genres();
         this.coverImage = updateRequestDto.coverImage();
     }
 }
