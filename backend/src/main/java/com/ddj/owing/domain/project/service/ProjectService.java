@@ -66,10 +66,10 @@ public class ProjectService {
     public ResponseEntity<String> generateProjectImage(ProjectRequestDto projectRequestDto) {
 
         String prompt = openAiUtil.createPrompt(projectRequestDto);
-        String jsonString = openAiUtil.createImage(prompt);
-        String imageUrl = Parser.extractUrl(jsonString);
+        String result = openAiUtil.createImage(prompt);
+        String imageBase64 = Parser.extractUrl(result);
 
-        return ResponseEntity.ok(imageUrl);
+        return ResponseEntity.ok(imageBase64);
     }
 
     /**

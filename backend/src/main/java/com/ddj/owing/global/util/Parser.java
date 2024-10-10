@@ -42,4 +42,23 @@ public class Parser {
             return null;
         }
     }
+
+    /**
+     * 주어진 문자열에서 Base64 을 추출하는 메서드
+     *
+     * @param input base64Json을 포함한 문자열
+     * @return 추출된 Base64, Base64가 없으면 null
+     */
+    public static String extractBase64(String input) {
+
+        String urlPattern = "b64Json='([^']*)'";
+        Pattern pattern = Pattern.compile(urlPattern);
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return null;
+        }
+    }
 }

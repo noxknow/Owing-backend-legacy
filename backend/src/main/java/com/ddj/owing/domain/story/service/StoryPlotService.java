@@ -1,23 +1,26 @@
 package com.ddj.owing.domain.story.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
+import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
+import com.ddj.owing.domain.project.error.exception.ProjectException;
+import com.ddj.owing.domain.project.model.ProjectNode;
+import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
+import com.ddj.owing.domain.story.model.dto.storyPlot.*;
+import com.ddj.owing.domain.story.repository.StoryPageRepository;
+import com.ddj.owing.global.util.OpenAiUtil;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.model.CastingNode;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
-import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
-import com.ddj.owing.domain.project.error.exception.ProjectException;
-import com.ddj.owing.domain.project.model.ProjectNode;
-import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
 import com.ddj.owing.domain.story.error.code.StoryFolderErrorCode;
 import com.ddj.owing.domain.story.error.code.StoryPlotErrorCode;
 import com.ddj.owing.domain.story.error.exception.StoryFolderException;
@@ -26,15 +29,9 @@ import com.ddj.owing.domain.story.model.StoryFolder;
 import com.ddj.owing.domain.story.model.StoryPlot;
 import com.ddj.owing.domain.story.model.StoryPlotNode;
 import com.ddj.owing.domain.story.model.dto.StoryPlotAppearedCastDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotAppearedCastCreateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotCreateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotPositionUpdateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryFolderRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
-import com.ddj.owing.global.util.OpenAiUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StoryPlotService {
+	private final StoryPageRepository storyPageRepository;
 	private final StoryPlotRepository storyPlotRepository;
 	private final StoryFolderRepository storyFolderRepository;
 	private final StoryPlotNodeRepository storyPlotNodeRepository;
@@ -179,18 +177,16 @@ public class StoryPlotService {
 			.toList();
 	}
 
-	// TODO 등장인물 추출
-	public List<CastingSummaryDto> extractCasts(Long storyPlotId, Long projectId) {
-		List<CastingSummaryDto> castingSummaryList = castingNodeRepository.findAllSummaryByProjectId(projectId);
+	public List<CastingSummaryDto> extractCasts(Long storyPlotId) {
 		StoryPlot storyPlot = storyPlotRepository.findById(storyPlotId)
 				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NOT_FOUND));
+		Long projectId = storyPlot.getStoryFolder().getProjectId();
+		List<CastingSummaryDto> castingSummaryList = castingNodeRepository.findAllSummaryByProjectId(projectId);
 
-		// TODO storyPlot에서 본문만 추출하여 storyPlotTextList에 저장
-		List<String> storyPlotTextList = new ArrayList<>();
-		String castExtractPrompt = openAiUtil.creatPrompt(storyPlotTextList, castingSummaryList);
-		List<CastingSummaryDto> extractedCastSummaryList = openAiUtil.extractCast(castExtractPrompt);
+		String storyPlotText = storyPageRepository.findAllTextListByStoryPlotId(storyPlotId);
+		Prompt castExtractPrompt = openAiUtil.creatPrompt(storyPlotText, castingSummaryList);
 
-		return extractedCastSummaryList;
+		return openAiUtil.extractCast(castExtractPrompt);
 	}
 
 	@Transactional
@@ -209,5 +205,14 @@ public class StoryPlotService {
 			log.warn("예상치 못한 출연 관계가 다수 삭제되었습니다. 예상 삭제 수: 1, 실제 삭제된 수: {}. storyPlotId: {}, castId: {}",
 				deletedAppearedCount, storyPlotId, castId);
 		}
+	}
+
+	public String checkStoryConflict(Long storyPlotId, String targetStory) {
+		String baseStory = storyPageRepository.findAllTextListByStoryPlotId(storyPlotId);
+
+		StoryPlotConflictCheckDto storyPlotConflictCheckDto = new StoryPlotConflictCheckDto(baseStory, targetStory);
+		Prompt prompt = openAiUtil.createPrompt(storyPlotConflictCheckDto);
+
+		return openAiUtil.checkStoryConflict(prompt);
 	}
 }

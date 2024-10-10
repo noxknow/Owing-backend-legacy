@@ -59,10 +59,10 @@ public class UniverseFileService {
                 .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
 
         String prompt = openAiUtil.createPrompt(universeFileRequestDto);
-        String jsonString = openAiUtil.createImage(prompt);
-        String imageUrl = Parser.extractUrl(jsonString);
+        String result = openAiUtil.createImage(prompt);
+        String imageBase64 = Parser.extractUrl(result);
 
-        return ResponseEntity.ok(imageUrl);
+        return ResponseEntity.ok(imageBase64);
     }
 
     /**
