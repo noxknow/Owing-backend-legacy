@@ -3,14 +3,14 @@ package com.ddj.owing.domain.universe.model.dto;
 import com.ddj.owing.domain.universe.model.UniverseFolder;
 
 public record UniverseFolderUpdateRequestDto(
-        String title,
+        String name,
         String description
 ) {
 
     public UniverseFolder toEntity() {
 
         return UniverseFolder.builder()
-                .title(title)
+                .name(name)
                 .description(description)
                 .build();
     }

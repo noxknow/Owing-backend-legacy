@@ -1,9 +1,23 @@
 package com.ddj.owing.domain.universe.model;
 
-import com.ddj.owing.global.entity.BaseTimeEntity;
-import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.SoftDelete;
+
+import com.ddj.owing.global.entity.BaseTimeEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Builder
@@ -22,7 +36,7 @@ public class UniverseFile extends BaseTimeEntity {
     private UniverseFolder universeFolder;
 
     @Column
-    private String title;
+    private String name;
 
     @Lob
     @Column(columnDefinition = "TEXT")

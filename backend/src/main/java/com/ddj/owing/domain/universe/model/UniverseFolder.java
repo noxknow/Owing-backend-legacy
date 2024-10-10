@@ -1,12 +1,25 @@
 package com.ddj.owing.domain.universe.model;
 
-import com.ddj.owing.domain.universe.model.dto.UniverseFolderUpdateRequestDto;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SoftDelete;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.SoftDelete;
+
+import com.ddj.owing.domain.universe.model.dto.UniverseFolderUpdateRequestDto;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -23,7 +36,7 @@ public class UniverseFolder {
     private Long projectId; // todo: Project Entity
 
     @Column
-    private String title;
+    private String name;
 
     @Lob
     @Column
@@ -33,7 +46,7 @@ public class UniverseFolder {
     private List<UniverseFile> universeFiles = new ArrayList<>();
 
     public void updateFolder(UniverseFolderUpdateRequestDto universeFolderUpdateRequestDto) {
-        this.title = universeFolderUpdateRequestDto.title();
+        this.name = universeFolderUpdateRequestDto.name();
         this.description = universeFolderUpdateRequestDto.description();
     }
 }

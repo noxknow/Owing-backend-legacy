@@ -4,7 +4,7 @@ import com.ddj.owing.domain.universe.model.UniverseFile;
 
 public record UniverseFileResponseDto(
         Long id,
-        String title,
+        String name,
         String description,
         String imageUrl
 ) {
@@ -13,7 +13,7 @@ public record UniverseFileResponseDto(
 
         return new UniverseFileResponseDto(
                 file.getId(),
-                file.getTitle(),
+                file.getName(),
                 file.getDescription(),
                 file.getImageUrl()
         );
