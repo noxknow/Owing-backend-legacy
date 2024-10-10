@@ -1,20 +1,23 @@
 package com.ddj.owing.domain.story.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
-import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
-import com.ddj.owing.domain.project.error.exception.ProjectException;
-import com.ddj.owing.domain.project.model.ProjectNode;
-import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
-import com.ddj.owing.global.util.OpenAiUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.model.CastingNode;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
+import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
+import com.ddj.owing.domain.project.error.exception.ProjectException;
+import com.ddj.owing.domain.project.model.ProjectNode;
+import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
 import com.ddj.owing.domain.story.error.code.StoryFolderErrorCode;
 import com.ddj.owing.domain.story.error.code.StoryPlotErrorCode;
 import com.ddj.owing.domain.story.error.exception.StoryFolderException;
@@ -31,6 +34,7 @@ import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryFolderRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
+import com.ddj.owing.global.util.OpenAiUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -131,7 +135,7 @@ public class StoryPlotService {
 			return StoryPlotDto.from(storyPlot);
 		}
 
-		if (newPosition < 1 || newPosition > newFolder.getStoryPlots().size() + 1) {
+		if (newPosition < 0 || newPosition > newFolder.getStoryPlots().size()) {
 			throw StoryPlotException.of(StoryPlotErrorCode.INVALID_POSITION);
 		}
 

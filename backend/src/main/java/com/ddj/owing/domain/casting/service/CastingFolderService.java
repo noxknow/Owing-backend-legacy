@@ -78,7 +78,7 @@ public class CastingFolderService {
 		}
 
 		Integer maxPosition = castingFolderRepository.findMaxOrderByProjectId(castingFolder.getProjectId());
-		if (newPosition < 1 || newPosition > maxPosition) {
+		if (newPosition < 0 || newPosition > maxPosition) {
 			throw CastingFolderException.of(CastingFolderErrorCode.INVALID_POSITION);
 		}
 
