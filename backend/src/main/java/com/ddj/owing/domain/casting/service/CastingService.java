@@ -81,9 +81,9 @@ public class CastingService {
 		String imageUrl = Parser.extractPresignedUrl(preSignedUrl);
 
 		Casting casting = castingImageRequestDto.toEntity(castingFolder, position, imageUrl);
-		Casting savedCasting = castingRepository.save(casting);
+		castingRepository.save(casting);
 
-		CastingNode castingNode = castingImageRequestDto.toNodeEntity(savedCasting, imageUrl);
+		CastingNode castingNode = castingImageRequestDto.toNodeEntity(casting);
 		ProjectNode projectNode = projectNodeRepository.findById(castingFolder.getProjectId())
 				.orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NODE_NOT_FOUND));
 		castingNode.linkProjectNode(projectNode);

@@ -33,15 +33,15 @@ public record CastingImageRequestDto(
                 .build();
     }
 
-    public CastingNode toNodeEntity(Casting savedCasting, String imageUrl) {
+    public CastingNode toNodeEntity(Casting casting) {
 
         return CastingNode.builder()
-                .id(savedCasting.getId())
+                .id(casting.getId())
                 .name(name)
                 .age(age)
                 .gender(gender)
                 .role(role)
-                .imageUrl(imageUrl)
+                .imageUrl(casting.getImageUrl())
                 .coordX(coordX)
                 .coordY(coordY)
                 .build();
