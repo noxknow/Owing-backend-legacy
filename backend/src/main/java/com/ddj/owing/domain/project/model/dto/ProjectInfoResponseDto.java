@@ -14,7 +14,7 @@ public record ProjectInfoResponseDto(
         return new ProjectInfoResponseDto(
                 project.getTitle(),
                 project.getUpdatedAt(),
-                project.getCoverImage()
+                project.getImageUrl()
         );
     }
 }

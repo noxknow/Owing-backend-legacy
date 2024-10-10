@@ -42,13 +42,13 @@ public class Project extends BaseTimeEntity {
 
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String coverImage;
+    private String imageUrl;
 
     public void update(ProjectUpdateRequestDto updateRequestDto) {
         this.title = updateRequestDto.title();
         this.description = updateRequestDto.description();
         this.category = updateRequestDto.category();
         this.genres = updateRequestDto.genres();
-        this.coverImage = updateRequestDto.coverImage();
+        this.imageUrl = updateRequestDto.imageUrl();
     }
 }
