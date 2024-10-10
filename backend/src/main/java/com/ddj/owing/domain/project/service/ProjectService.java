@@ -10,8 +10,10 @@ import com.ddj.owing.domain.project.error.exception.ProjectException;
 import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
+import com.ddj.owing.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +31,18 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectNodeRepository projectNodeRepository;
+    private final S3FileUtil s3FileUtil;
     private final OpenAiUtil openAiUtil;
-    private final StoryPlotNodeRepository storyPlotNodeRepository;
 
+    @Value("${cloud.aws.s3.directory.project}")
+    private String projectDirectory;
+
+    /**
+     * 최신 프로젝트 3개를 불러오는 메서드
+     *
+     * @return 최신 프로젝트 3개의 정보를 담은 List<ProjectInfoResponseDto>를 ResponseEntity로 반환
+     * @throws ProjectException 프로젝트가 존재하지 않으면 예외를 발생
+     */
     public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
 
         List<Project> projects = projectRepository.findTop3ByOrderByUpdatedAtDesc();
@@ -47,36 +58,53 @@ public class ProjectService {
         return ResponseEntity.ok(projectInfoResponseDto);
     }
 
+    /**
+     * OpenAI API 를 이용해 프로젝트 이미지를 생성하는 메서드
+     *
+     * @param projectRequestDto 프로젝트 요청 정보를 담은 DTO
+     * @return 생성된 이미지의 URL 을 ResponseEntity 로 반환
+     */
     @Transactional
     public ResponseEntity<String> generateProjectImage(ProjectRequestDto projectRequestDto) {
 
         String prompt = openAiUtil.createPrompt(projectRequestDto);
         String jsonString = openAiUtil.createImage(prompt);
         String imageUrl = Parser.extractUrl(jsonString);
-        Project project = projectRequestDto.toEntity(imageUrl);
-
-        projectRepository.save(project);
 
         return ResponseEntity.ok(imageUrl);
+    }
+
+    /**
+     * 프로젝트를 생성하는 메서드, S3에 업로드할 파일을 위한 Presigned URL을 반환
+     *
+     * @param projectCreateDto 프로젝트 생성 요청 정보를 담은 DTO
+     * @return 생성된 프로젝트 정보를 담은 ProjectCreateResponseDto를 ResponseEntity로 반환
+     * @throws ProjectException 잘못된 장르 개수일 경우 예외 발생
+     */
+    @Transactional
+    public ResponseEntity<ProjectCreateResponseDto> createProject(ProjectCreateRequestDto projectCreateDto) {
+
+        if (MAX_GENRE_COUNT < projectCreateDto.genres().size()) {
+            throw ProjectException.of(ProjectErrorCode.INVALID_GENRE_COUNT);
+        }
+
+        String fileName = "project-image.png";
+        String preSignedUrl = s3FileUtil.getPreSignedUrl(projectDirectory, fileName);
+        String imageUrl = Parser.extractPresignedUrl(preSignedUrl);
+
+        Project project = projectCreateDto.toEntity(imageUrl);
+        projectRepository.save(project);
+
+        ProjectNode projectNode = projectCreateDto.toNode(project.getId());
+        projectNodeRepository.save(projectNode);
+
+        return ResponseEntity.ok(ProjectCreateResponseDto.fromEntity(project, preSignedUrl));
     }
 
     public ProjectDetailResponseDto findProject(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND));
         return ProjectDetailResponseDto.from(project);
-    }
-
-    @Transactional
-    public ProjectCreateResponseDto createProject(ProjectCreateRequestDto projectCreateDto) {
-        if (MAX_GENRE_COUNT < projectCreateDto.genres().size()) {
-            throw ProjectException.of(ProjectErrorCode.INVALID_GENRE_COUNT);
-        }
-        Project project = projectCreateDto.toEntity();
-        Project savedProject = projectRepository.save(project);
-
-        ProjectNode projectNode = projectCreateDto.toNode(savedProject.getId());
-        projectNodeRepository.save(projectNode);
-        return new ProjectCreateResponseDto(savedProject.getId());
     }
 
     @Transactional
