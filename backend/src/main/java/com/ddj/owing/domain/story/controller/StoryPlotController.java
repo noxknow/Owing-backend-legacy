@@ -1,8 +1,10 @@
 package com.ddj.owing.domain.story.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
+import com.ddj.owing.domain.story.model.dto.storyPlot.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ddj.owing.domain.story.model.dto.StoryPlotAppearedCastDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotAppearedCastCreateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotCreateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotPositionUpdateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.service.StoryPlotService;
 
 import lombok.RequiredArgsConstructor;
@@ -51,14 +48,14 @@ public class StoryPlotController {
 
 	@PutMapping("/{storyPlotId}")
 	public ResponseEntity<StoryPlotDto> updateStoryPlot(@PathVariable Long storyPlotId,
-		/*@Valid*/ @RequestBody StoryPlotUpdateDto storyPlotUpdateDto) {
+			/*@Valid*/ @RequestBody StoryPlotUpdateDto storyPlotUpdateDto) {
 		StoryPlotDto updatedStory = storyPlotService.updateStoryPlot(storyPlotId, storyPlotUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
 	@PatchMapping("/{storyPlotId}")
 	public ResponseEntity<StoryPlotDto> updateStoryPlotPosition(@PathVariable Long storyPlotId,
-		@RequestBody StoryPlotPositionUpdateDto storyPlotPositionUpdateDto) {
+																@RequestBody StoryPlotPositionUpdateDto storyPlotPositionUpdateDto) {
 		StoryPlotDto updatedStory = storyPlotService.updateStoryPlotPosition(storyPlotId, storyPlotPositionUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
@@ -71,11 +68,11 @@ public class StoryPlotController {
 
 	@PostMapping("/{storyPlotId}/appearedCast")
 	public ResponseEntity<List<StoryPlotAppearedCastDto>> createAppearedCast(
-		@PathVariable Long storyPlotId,
-		@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
+			@PathVariable Long storyPlotId,
+			@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
 	) {
 		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(storyPlotId,
-			storyPlotAppearedCastCreateDto);
+				storyPlotAppearedCastCreateDto);
 		return ResponseEntity.ok(appearedCastList);
 	}
 
@@ -89,5 +86,11 @@ public class StoryPlotController {
 	public ResponseEntity<List<CastingSummaryDto>> extractCasting(@PathVariable Long id) {
 		List<CastingSummaryDto> extractedCastList = storyPlotService.extractCasts(id);
 		return ResponseEntity.ok(extractedCastList);
+	}
+
+	@PostMapping("/{storyPlotId}/findStoryConflict")
+	public ResponseEntity<String> checkStoryConflict(@PathVariable Long storyPlotId, @RequestBody StoryPlotConflictCheckTargetDto targetDto) {
+		String checkResult = storyPlotService.checkStoryConflict(storyPlotId, targetDto.targetStory());
+		return ResponseEntity.ok(checkResult);
 	}
 }

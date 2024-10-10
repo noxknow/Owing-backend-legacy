@@ -7,6 +7,7 @@ import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
 import com.ddj.owing.domain.project.error.exception.ProjectException;
 import com.ddj.owing.domain.project.model.ProjectNode;
 import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
+import com.ddj.owing.domain.story.model.dto.storyPlot.*;
 import com.ddj.owing.domain.story.repository.StoryPageRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -25,11 +26,6 @@ import com.ddj.owing.domain.story.model.StoryFolder;
 import com.ddj.owing.domain.story.model.StoryPlot;
 import com.ddj.owing.domain.story.model.StoryPlotNode;
 import com.ddj.owing.domain.story.model.dto.StoryPlotAppearedCastDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotAppearedCastCreateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotCreateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotPositionUpdateDto;
-import com.ddj.owing.domain.story.model.dto.storyPlot.StoryPlotUpdateDto;
 import com.ddj.owing.domain.story.repository.StoryFolderRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotNodeRepository;
 import com.ddj.owing.domain.story.repository.StoryPlotRepository;
@@ -206,5 +202,14 @@ public class StoryPlotService {
 			log.warn("예상치 못한 출연 관계가 다수 삭제되었습니다. 예상 삭제 수: 1, 실제 삭제된 수: {}. storyPlotId: {}, castId: {}",
 				deletedAppearedCount, storyPlotId, castId);
 		}
+	}
+
+	public String checkStoryConflict(Long storyPlotId, String targetStory) {
+		String baseStory = storyPageRepository.findAllTextListByStoryPlotId(storyPlotId);
+
+		StoryPlotConflictCheckDto storyPlotConflictCheckDto = new StoryPlotConflictCheckDto(baseStory, targetStory);
+		Prompt prompt = openAiUtil.createPrompt(storyPlotConflictCheckDto);
+
+		return openAiUtil.checkStoryConflict(prompt);
 	}
 }
