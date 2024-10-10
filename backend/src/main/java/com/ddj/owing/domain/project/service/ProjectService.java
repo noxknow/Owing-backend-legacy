@@ -67,7 +67,7 @@ public class ProjectService {
 
         String prompt = openAiUtil.createPrompt(projectRequestDto);
         String result = openAiUtil.createImage(prompt);
-        String imageBase64 = Parser.extractUrl(result);
+        String imageBase64 = Parser.extractBase64(result);
 
         return ResponseEntity.ok(imageBase64);
     }
