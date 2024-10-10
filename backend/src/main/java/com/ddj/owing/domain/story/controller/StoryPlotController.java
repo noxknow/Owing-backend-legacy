@@ -2,6 +2,7 @@ package com.ddj.owing.domain.story.controller;
 
 import java.util.List;
 
+import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,8 +86,8 @@ public class StoryPlotController {
 	}
 
 	@GetMapping("/{id}/extractCasting")
-	public ResponseEntity<Void> extractCasting(@PathVariable Long id) {
-		storyPlotService.extractCasts(id);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<List<CastingSummaryDto>> extractCasting(@PathVariable Long id) {
+		List<CastingSummaryDto> extractedCastList = storyPlotService.extractCasts(id);
+		return ResponseEntity.ok(extractedCastList);
 	}
 }
