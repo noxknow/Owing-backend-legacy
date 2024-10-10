@@ -7,7 +7,7 @@ import com.ddj.owing.domain.universe.model.UniverseFolder;
 
 public record UniverseFolderResponseDto(
 	Long id,
-	String title,
+	String name,
 	String description,
 	List<UniverseFileResponseDto> files
 ) {
@@ -20,7 +20,7 @@ public record UniverseFolderResponseDto(
 
 		return new UniverseFolderResponseDto(
 			universeFolder.getId(),
-			universeFolder.getTitle(),
+			universeFolder.getName(),
 			universeFolder.getDescription(),
 			files
 		);

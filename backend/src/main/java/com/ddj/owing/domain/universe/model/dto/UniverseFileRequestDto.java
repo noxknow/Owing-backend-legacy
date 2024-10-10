@@ -1,7 +1,7 @@
 package com.ddj.owing.domain.universe.model.dto;
 
 public record UniverseFileRequestDto(
-        Long universeFolderId,
+        Long folderId,
         String title,
         String description
 ) {

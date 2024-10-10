@@ -5,7 +5,7 @@ import com.ddj.owing.domain.universe.model.UniverseFolder;
 
 public record UniverseFileImageRequestDto(
         Long universeFolderId,
-        String title,
+        String name,
         String description
 ) {
 
@@ -13,7 +13,7 @@ public record UniverseFileImageRequestDto(
 
         return UniverseFile.builder()
                 .universeFolder(universeFolder)
-                .title(title)
+                .name(name)
                 .description(description)
                 .imageUrl(imageUrl)
                 .build();
