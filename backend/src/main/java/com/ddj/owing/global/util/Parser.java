@@ -23,4 +23,23 @@ public class Parser {
             return null;
         }
     }
+
+    /**
+     * 주어진 PreSigned URL에서 쿼리 파라미터를 제외한 URL을 추출하는 메서드
+     *
+     * @param preSignedUrl 쿼리 파라미터가 포함된 PreSigned URL
+     * @return 쿼리 파라미터를 제외한 URL
+     */
+    public static String extractPresignedUrl(String preSignedUrl) {
+
+        String urlPattern = "([^?]+)";
+        Pattern pattern = Pattern.compile(urlPattern);
+        Matcher matcher = pattern.matcher(preSignedUrl);
+
+        if (matcher.find()) {
+            return matcher.group(0);
+        } else {
+            return null;
+        }
+    }
 }
