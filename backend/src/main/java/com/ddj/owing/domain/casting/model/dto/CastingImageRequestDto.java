@@ -1,8 +1,11 @@
 package com.ddj.owing.domain.casting.model.dto;
 
 import com.ddj.owing.domain.casting.model.Casting;
+import com.ddj.owing.domain.casting.model.CastingFolder;
 import com.ddj.owing.domain.casting.model.CastingNode;
+import lombok.Builder;
 
+@Builder
 public record CastingImageRequestDto(
         String name,
         Long age,
@@ -11,10 +14,11 @@ public record CastingImageRequestDto(
         String detail,
         String imageUrl,
         Integer coordX,
-        Integer coordY
+        Integer coordY,
+        Long folderId
 ) {
 
-    public Casting toEntity() {
+    public Casting toEntity(CastingFolder castingFolder, Integer position) {
 
         return Casting.builder()
                 .name(name)
@@ -25,6 +29,8 @@ public record CastingImageRequestDto(
                 .imageUrl(imageUrl)
                 .coordX(coordX)
                 .coordY(coordY)
+                .castingFolder(castingFolder)
+                .position(position)
                 .build();
     }
 

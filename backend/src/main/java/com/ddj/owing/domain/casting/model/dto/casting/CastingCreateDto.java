@@ -26,7 +26,7 @@ public record CastingCreateDto(
 			.gender(gender)
 			.role(role)
 			.detail(detail)
-			.coverImage(imageUrl)
+			.imageUrl(imageUrl)
 			.coordX(coordX)
 			.coordY(coordY)
 			.castingFolder(castingFolder)

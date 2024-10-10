@@ -27,6 +27,7 @@ public class Content {
 	@JdbcTypeCode(SqlTypes.JSON)
 	private String styles;
 
+	@Builder.Default
 	private Map<String, Object> additionalFields = new HashMap<>();
 
 	@JsonAnyGetter

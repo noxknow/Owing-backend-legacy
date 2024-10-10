@@ -1,30 +1,14 @@
 package com.ddj.owing.domain.casting.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionCreateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingCoordUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingCreateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingGraphDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingInfoUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingRelationshipDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
+import com.ddj.owing.domain.casting.model.dto.CastingImageRequestDto;
+import com.ddj.owing.domain.casting.model.dto.CastingImageResponseDto;
+import com.ddj.owing.domain.casting.model.dto.casting.*;
 import com.ddj.owing.domain.casting.service.CastingService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,12 +35,6 @@ public class CastingController {
 	@GetMapping
 	public ResponseEntity<List<CastingDto>> getCastingList(@RequestParam Long folderId) {
 		List<CastingDto> casting = castingService.getCastingList(folderId);
-		return ResponseEntity.ok(casting);
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<CastingDto> getCastingById(@PathVariable Long id) {
-		CastingDto casting = castingService.getCasting(id);
 		return ResponseEntity.ok(casting);
 	}
 

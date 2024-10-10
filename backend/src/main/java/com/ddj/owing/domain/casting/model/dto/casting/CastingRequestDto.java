@@ -18,7 +18,7 @@ public record CastingRequestDto(
 			.gender(this.gender())
 			.role(this.role())
 			.detail(this.detail())
-			.coverImage(imageUrl)
+			.imageUrl(imageUrl)
 			.build();
 	}
 }

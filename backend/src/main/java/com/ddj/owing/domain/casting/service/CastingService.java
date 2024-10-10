@@ -1,40 +1,20 @@
 package com.ddj.owing.domain.casting.service;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.code.CastingFolderErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.error.exception.CastingFolderException;
-import com.ddj.owing.domain.casting.model.Casting;
-import com.ddj.owing.domain.casting.model.CastingFolder;
-import com.ddj.owing.domain.casting.model.CastingNode;
-import com.ddj.owing.domain.casting.model.CastingRelationship;
-import com.ddj.owing.domain.casting.model.ConnectionType;
+import com.ddj.owing.domain.casting.model.*;
+import com.ddj.owing.domain.casting.model.dto.CastingImageRequestDto;
+import com.ddj.owing.domain.casting.model.dto.CastingImageResponseDto;
 import com.ddj.owing.domain.casting.model.dto.CastingRelationshipInfoDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionCreateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingCoordUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingCreateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingGraphDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingInfoUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingPositionUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingRelationshipDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
+import com.ddj.owing.domain.casting.model.dto.casting.*;
 import com.ddj.owing.domain.casting.repository.CastingFolderRepository;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
-import com.ddj.owing.domain.universe.model.UniverseFile;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
 import com.ddj.owing.global.util.S3FileUtil;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -49,13 +29,12 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class CastingService {
 
-	private final CastingRepository castingRepository;
+	private final S3FileUtil s3FileUtil;
 	private final OpenAiUtil openAiUtil;
 
+	private final CastingRepository castingRepository;
 	private final CastingNodeRepository castingNodeRepository;
 	private final CastingFolderRepository castingFolderRepository;
-    private final S3FileUtil s3FileUtil;
-    private final OpenAiUtil openAiUtil;
 
     @Value("${cloud.aws.s3.directory.casting}")
     private String castingDirectory;
@@ -89,6 +68,7 @@ public class CastingService {
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 		return CastingDto.from(casting);
 	}
+
     /**
      * 캐릭터 정보를 저장하고 파일 생성 요청을 위한 Presigned URL을 반환하는 메서드
      *
@@ -98,7 +78,12 @@ public class CastingService {
     @Transactional
     public ResponseEntity<CastingImageResponseDto> createCharacter(CastingImageRequestDto castingImageRequestDto) {
 
-        Casting casting = castingImageRequestDto.toEntity();
+		CastingFolder castingFolder = castingFolderRepository.findById(castingImageRequestDto.folderId())
+			.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
+
+		Integer position = castingRepository.findMaxOrderByCastingFolderId(castingImageRequestDto.folderId()) + 1;
+
+        Casting casting = castingImageRequestDto.toEntity(castingFolder, position);
         Casting savedCasting = castingRepository.save(casting);
 
         CastingNode castingNode = castingImageRequestDto.toNodeEntity(savedCasting);
@@ -111,37 +96,21 @@ public class CastingService {
         return ResponseEntity.ok(castingImageResponseDto);
     }
 
-    public CastingDto getCasting(Long id) {
-        Casting casting = castingRepository.findById(id)
-                .orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-        return CastingDto.from(casting);
-    }
-
-//    @Transactional
-//    public CastingDto createCasting(CastingCreateDto castingCreateDto) {
-//        Casting casting = castingCreateDto.toEntity();
-//        Casting savedCasting = castingRepository.save(casting);
+//	@Transactional
+//	public CastingDto createCasting(CastingCreateDto castingCreateDto) {
+//		CastingFolder castingFolder = castingFolderRepository.findById(castingCreateDto.folderId())
+//			.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
 //
-//        CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
-//        CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+//		Integer position = castingRepository.findMaxOrderByCastingFolderId(castingCreateDto.folderId()) + 1;
 //
-//        return CastingDto.from(savedCastingNode);
-//    }
-	@Transactional
-	public CastingDto createCasting(CastingCreateDto castingCreateDto) {
-		CastingFolder castingFolder = castingFolderRepository.findById(castingCreateDto.folderId())
-			.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
-
-		Integer position = castingRepository.findMaxOrderByCastingFolderId(castingCreateDto.folderId()) + 1;
-
-		Casting casting = castingCreateDto.toEntity(castingFolder, position);
-		Casting savedCasting = castingRepository.save(casting);
-
-		CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
-		CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
-
-		return CastingDto.from(savedCastingNode);
-	}
+//		Casting casting = castingCreateDto.toEntity(castingFolder, position);
+//		Casting savedCasting = castingRepository.save(casting);
+//
+//		CastingNode castingNode = castingCreateDto.toNodeEntity(savedCasting);
+//		CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+//
+//		return CastingDto.from(savedCastingNode);
+//	}
 
 	@Transactional
 	public CastingDto updateCastingInfo(Long id, CastingInfoUpdateDto castingInfoUpdateDto) {
