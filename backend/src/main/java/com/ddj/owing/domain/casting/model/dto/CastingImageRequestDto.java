@@ -12,13 +12,12 @@ public record CastingImageRequestDto(
         String gender,
         String role,
         String detail,
-        String imageUrl,
         Integer coordX,
         Integer coordY,
         Long folderId
 ) {
 
-    public Casting toEntity(CastingFolder castingFolder, Integer position) {
+    public Casting toEntity(CastingFolder castingFolder, Integer position, String imageUrl) {
 
         return Casting.builder()
                 .name(name)
@@ -34,7 +33,7 @@ public record CastingImageRequestDto(
                 .build();
     }
 
-    public CastingNode toNodeEntity(Casting savedCasting) {
+    public CastingNode toNodeEntity(Casting savedCasting, String imageUrl) {
 
         return CastingNode.builder()
                 .id(savedCasting.getId())
