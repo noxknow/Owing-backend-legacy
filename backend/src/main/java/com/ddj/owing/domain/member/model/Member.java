@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.member.model;
 
+import com.ddj.owing.domain.member.model.dto.MemberUpdateRequestDto;
 import org.hibernate.annotations.SoftDelete;
 
 import com.ddj.owing.global.entity.BaseTimeEntity;
@@ -32,4 +33,10 @@ public class Member extends BaseTimeEntity {
 	private String profileImage;
 	private String oauthId;
 	private OauthProvider oauthProvider;
+
+	public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+		this.name = memberUpdateRequestDto.name();
+		this.nickname = memberUpdateRequestDto.nickname();
+		this.profileImage = memberUpdateRequestDto.profileImage();
+	}
 }
