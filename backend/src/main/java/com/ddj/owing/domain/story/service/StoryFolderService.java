@@ -78,7 +78,7 @@ public class StoryFolderService {
 		}
 
 		Integer maxPosition = storyFolderRepository.findMaxOrderByProjectId(storyFolder.getProjectId());
-		if (newPosition < 1 || newPosition > maxPosition) {
+		if (newPosition < 0 || newPosition > maxPosition) {
 			throw StoryFolderException.of(StoryFolderErrorCode.INVALID_POSITION);
 		}
 

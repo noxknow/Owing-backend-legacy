@@ -1,6 +1,9 @@
 package com.ddj.owing.domain.story.service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
 import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
@@ -130,7 +133,7 @@ public class StoryPlotService {
 			return StoryPlotDto.from(storyPlot);
 		}
 
-		if (newPosition < 1 || newPosition > newFolder.getStoryPlots().size() + 1) {
+		if (newPosition < 0 || newPosition > newFolder.getStoryPlots().size()) {
 			throw StoryPlotException.of(StoryPlotErrorCode.INVALID_POSITION);
 		}
 
