@@ -25,16 +25,15 @@ public class ProjectController {
         return projectService.generateProjectImage(projectRequestDto);
     }
 
+    @PostMapping
+    public ResponseEntity<ProjectCreateResponseDto> createProject(@RequestBody ProjectCreateRequestDto projectCreateRequestDto) {
+        return projectService.createProject(projectCreateRequestDto);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDetailResponseDto> getProject(@PathVariable Long id) {
         ProjectDetailResponseDto projectDetail = projectService.findProject(id);
         return ResponseEntity.ok(projectDetail);
-    }
-
-    @PostMapping
-    public ResponseEntity<ProjectCreateResponseDto> createProject(@RequestBody ProjectCreateRequestDto projectCreateRequestDto) {
-        ProjectCreateResponseDto projectCreateResponse = projectService.createProject(projectCreateRequestDto);
-        return ResponseEntity.ok(projectCreateResponse);
     }
 
     @PutMapping("/{id}")
