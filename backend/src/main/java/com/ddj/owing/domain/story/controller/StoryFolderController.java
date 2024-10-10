@@ -34,9 +34,9 @@ public class StoryFolderController {
 		return ResponseEntity.ok(stories);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<StoryFolderDto> getStoryFolder(@PathVariable Long id) {
-		StoryFolderDto storyFolder = storyFolderService.getStoryFolder(id);
+	@GetMapping("/{storyFolderId}")
+	public ResponseEntity<StoryFolderDto> getStoryFolder(@PathVariable Long storyFolderId) {
+		StoryFolderDto storyFolder = storyFolderService.getStoryFolder(storyFolderId);
 		return ResponseEntity.ok(storyFolder);
 	}
 
@@ -47,23 +47,24 @@ public class StoryFolderController {
 		return ResponseEntity.ok(createdStory);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<StoryFolderDto> updateStoryFolder(@PathVariable Long id,
+	@PutMapping("/{storyFolderId}")
+	public ResponseEntity<StoryFolderDto> updateStoryFolder(@PathVariable Long storyFolderId,
 		/*@Valid*/ @RequestBody StoryFolderUpdateDto storyFolderUpdateDto) {
-		StoryFolderDto updatedStory = storyFolderService.updateStoryFolder(id, storyFolderUpdateDto);
+		StoryFolderDto updatedStory = storyFolderService.updateStoryFolder(storyFolderId, storyFolderUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<StoryFolderDto> updateStoryFolderPosition(@PathVariable Long id,
+	@PatchMapping("/{storyFolderId}")
+	public ResponseEntity<StoryFolderDto> updateStoryFolderPosition(@PathVariable Long storyFolderId,
 		@RequestBody StoryFolderPositionUpdateDto storyFolderPositionUpdateDto) {
-		StoryFolderDto updatedStory = storyFolderService.updateStoryFolderPosition(id, storyFolderPositionUpdateDto);
+		StoryFolderDto updatedStory = storyFolderService.updateStoryFolderPosition(storyFolderId,
+			storyFolderPositionUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteStoryFolder(@PathVariable Long id) {
-		storyFolderService.deleteStoryFolder(id);
+	@DeleteMapping("/{storyFolderId}")
+	public ResponseEntity<Void> deleteStoryFolder(@PathVariable Long storyFolderId) {
+		storyFolderService.deleteStoryFolder(storyFolderId);
 		return ResponseEntity.noContent().build();
 	}
 }

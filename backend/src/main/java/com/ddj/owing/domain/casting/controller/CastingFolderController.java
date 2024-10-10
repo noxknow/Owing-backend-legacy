@@ -34,9 +34,9 @@ public class CastingFolderController {
 		return ResponseEntity.ok(stories);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<CastingFolderDto> getCastingFolder(@PathVariable Long id) {
-		CastingFolderDto castingFolder = castingFolderService.getCastingFolder(id);
+	@GetMapping("/{castingFolderId}")
+	public ResponseEntity<CastingFolderDto> getCastingFolder(@PathVariable Long castingFolderId) {
+		CastingFolderDto castingFolder = castingFolderService.getCastingFolder(castingFolderId);
 		return ResponseEntity.ok(castingFolder);
 	}
 
@@ -47,24 +47,25 @@ public class CastingFolderController {
 		return ResponseEntity.ok(createdCasting);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<CastingFolderDto> updateCastingFolder(@PathVariable Long id,
+	@PutMapping("/{castingFolderId}")
+	public ResponseEntity<CastingFolderDto> updateCastingFolder(@PathVariable Long castingFolderId,
 		/*@Valid*/ @RequestBody CastingFolderUpdateDto castingFolderUpdateDto) {
-		CastingFolderDto updatedCasting = castingFolderService.updateCastingFolder(id, castingFolderUpdateDto);
+		CastingFolderDto updatedCasting = castingFolderService.updateCastingFolder(castingFolderId,
+			castingFolderUpdateDto);
 		return ResponseEntity.ok(updatedCasting);
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<CastingFolderDto> updateCastingFolderPosition(@PathVariable Long id,
+	@PatchMapping("/{castingFolderId}")
+	public ResponseEntity<CastingFolderDto> updateCastingFolderPosition(@PathVariable Long castingFolderId,
 		@RequestBody CastingFolderPositionUpdateDto castingFolderPositionUpdateDto) {
-		CastingFolderDto updatedCasting = castingFolderService.updateCastingFolderPosition(id,
+		CastingFolderDto updatedCasting = castingFolderService.updateCastingFolderPosition(castingFolderId,
 			castingFolderPositionUpdateDto);
 		return ResponseEntity.ok(updatedCasting);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteCastingFolder(@PathVariable Long id) {
-		castingFolderService.deleteCastingFolder(id);
+	@DeleteMapping("/{castingFolderId}")
+	public ResponseEntity<Void> deleteCastingFolder(@PathVariable Long castingFolderId) {
+		castingFolderService.deleteCastingFolder(castingFolderId);
 		return ResponseEntity.noContent().build();
 	}
 }

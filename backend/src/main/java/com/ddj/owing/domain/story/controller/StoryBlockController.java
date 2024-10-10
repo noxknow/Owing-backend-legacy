@@ -29,14 +29,14 @@ public class StoryBlockController {
 	private final StoryBlockService storyBlockService;
 
 	@GetMapping
-	public ResponseEntity<List<StoryBlockDto>> getStoryBlockList(@RequestParam Long plotId) {
-		List<StoryBlockDto> stories = storyBlockService.getStoryBlockList(plotId);
+	public ResponseEntity<List<StoryBlockDto>> getStoryBlockList(@RequestParam Long storyPlotId) {
+		List<StoryBlockDto> stories = storyBlockService.getStoryBlockList(storyPlotId);
 		return ResponseEntity.ok(stories);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<StoryBlockDto> getStoryBlock(@PathVariable Long id) {
-		StoryBlockDto storyFolder = storyBlockService.getStoryBlock(id);
+	@GetMapping("/{storyBlockId}")
+	public ResponseEntity<StoryBlockDto> getStoryBlock(@PathVariable Long storyBlockId) {
+		StoryBlockDto storyFolder = storyBlockService.getStoryBlock(storyBlockId);
 		return ResponseEntity.ok(storyFolder);
 	}
 
@@ -46,23 +46,24 @@ public class StoryBlockController {
 		return ResponseEntity.ok(createdStory);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<StoryBlockDto> updateStoryBlock(@PathVariable Long id,
+	@PutMapping("/{storyBlockId}")
+	public ResponseEntity<StoryBlockDto> updateStoryBlock(@PathVariable Long storyBlockId,
 		/*@Valid*/ @RequestBody StoryBlockUpdateDto storyBlockUpdateDto) {
-		StoryBlockDto updatedStory = storyBlockService.updateStoryBlock(id, storyBlockUpdateDto);
+		StoryBlockDto updatedStory = storyBlockService.updateStoryBlock(storyBlockId, storyBlockUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<StoryBlockDto> updateStoryBlockPosition(@PathVariable Long id,
+	@PatchMapping("/{storyBlockId}")
+	public ResponseEntity<StoryBlockDto> updateStoryBlockPosition(@PathVariable Long storyBlockId,
 		@RequestBody StoryBlockPositionUpdateDto storyBlockPositionUpdateDto) {
-		StoryBlockDto updatedStory = storyBlockService.updateStoryBlockPosition(id, storyBlockPositionUpdateDto);
+		StoryBlockDto updatedStory = storyBlockService.updateStoryBlockPosition(storyBlockId,
+			storyBlockPositionUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteStoryBlock(@PathVariable Long id) {
-		storyBlockService.deleteStoryBlock(id);
+	@DeleteMapping("/{storyBlockId}")
+	public ResponseEntity<Void> deleteStoryBlock(@PathVariable Long storyBlockId) {
+		storyBlockService.deleteStoryBlock(storyBlockId);
 		return ResponseEntity.noContent().build();
 	}
 }
