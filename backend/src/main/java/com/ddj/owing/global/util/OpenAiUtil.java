@@ -1,10 +1,13 @@
 package com.ddj.owing.global.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
+import com.ddj.owing.global.error.code.OpenAiErrorCode;
+import com.ddj.owing.global.error.exception.OpenAiException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -13,7 +16,6 @@ import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.openai.api.OpenAiApi.ChatCompletionRequest.ResponseFormat;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ public class OpenAiUtil {
 
 	private final ImageModel imageModel;
 	private final ChatModel chatModel;
+	private final ObjectMapper objectMapper;
 
 	/**
 	 * OpenAI API 를 이용해 이미지를 생성하는 메서드
@@ -57,9 +60,17 @@ public class OpenAiUtil {
 	 */
 	public List<CastingSummaryDto> extractCast(Prompt prompt) {
 		ChatResponse chatResponse = chatModel.call(prompt);
-		String string = chatResponse.getResult().getOutput().getContent();
+		String extractResult = chatResponse.getResult().getOutput().getContent();
+        try {
+			Map<String, ArrayList<CastingSummaryDto>> mappedResponse =
+					objectMapper.readValue(extractResult, new TypeReference<>() {});
 
-		return new ArrayList<>();
+			return mappedResponse.values().stream().findFirst()
+					.orElseThrow(() -> OpenAiException.of(OpenAiErrorCode.CASTING_EXTRACT_FAIL));
+
+        } catch (JsonProcessingException e) {
+            throw OpenAiException.of(OpenAiErrorCode.CASTING_PARSE_FAIL);
+        }
 	}
 
 	/**
