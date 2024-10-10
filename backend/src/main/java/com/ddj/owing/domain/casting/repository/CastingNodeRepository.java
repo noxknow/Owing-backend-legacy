@@ -59,5 +59,5 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
             "WHERE n1.deletedAt IS NULL " +
             "AND n2.deletedAt IS NULL " +
             "RETURN n2.id AS id, n2.name AS name, n2.gender AS gender")
-    List<CastingSummaryDto> findAllSummaryByProjectId(Long StoryPlotId);
+    List<CastingSummaryDto> findAllSummaryByProjectId(Long projectId);
 }

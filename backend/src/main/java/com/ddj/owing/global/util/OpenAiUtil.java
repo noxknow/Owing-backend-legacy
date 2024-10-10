@@ -5,10 +5,16 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.image.ImageMessage;
 import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
+import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.openai.api.OpenAiApi.ChatCompletionRequest.ResponseFormat;
 import org.springframework.stereotype.Component;
 
 import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
@@ -22,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class OpenAiUtil {
 
 	private final ImageModel imageModel;
+	private final ChatModel chatModel;
 
 	/**
 	 * OpenAI API 를 이용해 이미지를 생성하는 메서드
@@ -48,9 +55,10 @@ public class OpenAiUtil {
 	 * @param prompt 원고와 캐릭터 정보가 담긴 프롬프트
 	 * @return 추출된 캐릭터 요약 정보
 	 */
-	public List<CastingSummaryDto> extractCast(String prompt) {
-		// TODO 출연 캐릭터 추출 프롬프트 실행
-		// TODO CastingSummaryDto로 매핑하여 반환
+	public List<CastingSummaryDto> extractCast(Prompt prompt) {
+		ChatResponse chatResponse = chatModel.call(prompt);
+		String string = chatResponse.getResult().getOutput().getContent();
+
 		return new ArrayList<>();
 	}
 
@@ -166,22 +174,30 @@ public class OpenAiUtil {
 	 * @param castingSummaryList 프로젝트에 포함된 모든 캐릭터의 요약 정보(id, name, gender)
 	 * @return 원고에 출연한 캐릭터 추출 프롬프트
 	 */
-	public String creatPrompt(List<String> storyPlotTextList, List<CastingSummaryDto> castingSummaryList) {
-		return String.format(
+	public Prompt creatPrompt(String storyPlotTextList, List<CastingSummaryDto> castingSummaryList) {
+		String promptStr = String.format(
 				"아래 <원고>를 꼼꼼히 읽고, <캐릭터 정보>를 참고하여 원고에 출연한 캐릭터의 정보를 JSON 리스트로 작성해주세요. " +
 				"각 캐릭터의 id, name, gender 정보를 포함해야 합니다. 출력 양식은 <JSON list 예시>를 참고하세요. " +
 				"필요한 정보는 다음과 같습니다: \n" +
-						"<원고>: \n[%s]\n" +
-						"<캐릭터 정보>: \n[%s]\n" +
-						"<JSON list 예시>: \n[%s]\n" +
-						"필수 준수 사항:\n" +
-						"1. 출력해야 할 JSON 리스트는 위와 같은 형식을 따라야 한다.\n" +
-						"2. 원고에 등장한 캐릭터만 JSON 리스트에 포함되어야 한다.\n" +
-						"3. 캐릭터가 여러 번 등장하더라도 JSON 리스트에는 중복되지 않게 하나만 포함한다.\n" +
-						"4. 원고에 등장하는 캐릭터가 없다면, 빈 JSON 리스트 ([])를 반환한다.",
+					"<원고>: \n[%s]\n" +
+					"<캐릭터 정보>: \n[%s]\n" +
+					"<JSON list 예시>: \n[%s]\n" +
+				"필수 준수 사항:\n" +
+				"1. 출력해야 할 JSON 리스트는 위와 같은 형식을 따라야 한다.\n" +
+				"2. 원고에 등장한 캐릭터만 JSON 리스트에 포함되어야 한다.\n" +
+				"3. 캐릭터가 여러 번 등장하더라도 JSON 리스트에는 중복되지 않게 하나만 포함한다.\n" +
+				"4. 원고에 등장하는 캐릭터가 없다면, 빈 JSON 리스트 ([])를 반환한다.",
 				storyPlotTextList.toString(),
 				castingSummaryList.toString(),
 				"[ { \"id\": 1, \"name\": \"John Doe\", \"gender\": \"male\" }, { \"id\": 2, \"name\": \"Jane Doe\", \"gender\": \"female\" }, ... ]"
 		);
+
+		OpenAiChatOptions chatOptions = OpenAiChatOptions.builder()
+				.withModel("gpt-4o-mini")
+				.withTemperature(0.8F)
+				.withResponseFormat(new ResponseFormat("json_object"))
+				.build();
+		Prompt prompt = new Prompt(promptStr, chatOptions);
+		return prompt;
 	}
 }

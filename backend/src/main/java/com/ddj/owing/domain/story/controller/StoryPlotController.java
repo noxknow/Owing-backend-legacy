@@ -83,4 +83,10 @@ public class StoryPlotController {
 		storyPlotService.deleteAppearedCast(storyPlotId, castId);
 		return ResponseEntity.ok().build();
 	}
+
+	@GetMapping("/{id}/extractCasting")
+	public ResponseEntity<Void> extractCasting(@PathVariable Long id) {
+		storyPlotService.extractCasts(id);
+		return ResponseEntity.ok().build();
+	}
 }
