@@ -62,6 +62,38 @@ public class CastingService {
         return ResponseEntity.ok(imageUrl);
     }
 
+	/**
+	 * 캐릭터 정보를 저장하고 파일 생성 요청을 위한 Presigned URL을 반환하는 메서드
+	 *
+	 * @param castingImageRequestDto 캐릭터 생성 정보를 담고 있는 DTO
+	 * @return 생성된 파일에 대한 Presigned URL을 ResponseEntity로 반환
+	 */
+	@Transactional
+	public ResponseEntity<CastingImageResponseDto> createCharacter(CastingImageRequestDto castingImageRequestDto) {
+
+		CastingFolder castingFolder = castingFolderRepository.findById(castingImageRequestDto.folderId())
+				.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
+
+		Integer position = castingRepository.findMaxOrderByCastingFolderId(castingImageRequestDto.folderId()) + 1;
+
+		String fileName = "casting-image.png";
+		String preSignedUrl = s3FileUtil.getPreSignedUrl(castingDirectory, fileName);
+		String imageUrl = Parser.extractPresignedUrl(preSignedUrl);
+
+		Casting casting = castingImageRequestDto.toEntity(castingFolder, position, imageUrl);
+		Casting savedCasting = castingRepository.save(casting);
+
+		CastingNode castingNode = castingImageRequestDto.toNodeEntity(savedCasting, imageUrl);
+		ProjectNode projectNode = projectNodeRepository.findById(castingFolder.getProjectId())
+				.orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NODE_NOT_FOUND));
+		castingNode.linkProjectNode(projectNode);
+
+		castingNodeRepository.save(castingNode);
+		CastingImageResponseDto castingImageResponseDto = CastingImageResponseDto.fromEntity(casting, preSignedUrl);
+
+		return ResponseEntity.ok(castingImageResponseDto);
+	}
+
 	public List<CastingDto> getCastingList(Long folderId) {
 		return castingRepository.findByCastingFolderIdOrderByPositionAsc(folderId)
 			.stream()
@@ -74,37 +106,6 @@ public class CastingService {
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 		return CastingDto.from(casting);
 	}
-
-    /**
-     * 캐릭터 정보를 저장하고 파일 생성 요청을 위한 Presigned URL을 반환하는 메서드
-     *
-     * @param castingImageRequestDto 캐릭터 생성 정보를 담고 있는 DTO
-     * @return 생성된 파일에 대한 Presigned URL을 ResponseEntity로 반환
-     */
-    @Transactional
-    public ResponseEntity<CastingImageResponseDto> createCharacter(CastingImageRequestDto castingImageRequestDto) {
-
-		CastingFolder castingFolder = castingFolderRepository.findById(castingImageRequestDto.folderId())
-			.orElseThrow(() -> CastingFolderException.of(CastingFolderErrorCode.FOLDER_NOT_FOUND));
-
-		Integer position = castingRepository.findMaxOrderByCastingFolderId(castingImageRequestDto.folderId()) + 1;
-
-        Casting casting = castingImageRequestDto.toEntity(castingFolder, position);
-        Casting savedCasting = castingRepository.save(casting);
-
-        CastingNode castingNode = castingImageRequestDto.toNodeEntity(savedCasting);
-		ProjectNode projectNode = projectNodeRepository.findById(castingFolder.getProjectId())
-				.orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NODE_NOT_FOUND));
-		castingNode.linkProjectNode(projectNode);
-
-		CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
-
-        String fileName = "casting-image.png";
-        String preSignedUrl = s3FileUtil.getPreSignedUrl(castingDirectory, fileName);
-        CastingImageResponseDto castingImageResponseDto = CastingImageResponseDto.fromEntity(casting, preSignedUrl);
-
-        return ResponseEntity.ok(castingImageResponseDto);
-    }
 
 //	@Transactional
 //	public CastingDto createCasting(CastingCreateDto castingCreateDto) {
