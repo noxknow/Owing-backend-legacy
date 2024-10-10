@@ -56,10 +56,10 @@ public class CastingService {
     public ResponseEntity<String> generateCharacterImage(CastingRequestDto castingRequestDto) {
 
         String prompt = openAiUtil.createPrompt(castingRequestDto);
-        String jsonString = openAiUtil.createImage(prompt);
-        String imageUrl = Parser.extractUrl(jsonString);
+        String result = openAiUtil.createImage(prompt);
+        String imageBase64 = Parser.extractBase64(result);
 
-        return ResponseEntity.ok(imageUrl);
+        return ResponseEntity.ok(imageBase64);
     }
 
 	/**

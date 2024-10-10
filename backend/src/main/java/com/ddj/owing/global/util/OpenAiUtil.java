@@ -16,7 +16,9 @@ import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.openai.OpenAiImageOptions;
 import org.springframework.ai.openai.api.OpenAiApi.ChatCompletionRequest.ResponseFormat;
+import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.stereotype.Component;
 
 import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
@@ -42,13 +44,19 @@ public class OpenAiUtil {
 	public String createImage(String prompt) {
 
 		ImageMessage imageMessage = new ImageMessage(prompt, 1.0f);
-		ImagePrompt imagePrompt = new ImagePrompt(Collections.singletonList(imageMessage), null);
+		OpenAiImageOptions imageOptions = OpenAiImageOptions.builder()
+				.withModel(OpenAiImageApi.ImageModel.DALL_E_3.getValue())
+				.withResponseFormat("b64_json")
+				.withQuality("hd")
+				.build();
+
+		ImagePrompt imagePrompt = new ImagePrompt(imageMessage, imageOptions);
 		ImageResponse response = imageModel.call(imagePrompt);
 
 		if (response.getResults() != null && !response.getResults().isEmpty()) {
 			return response.getResult().getOutput().toString();
 		} else {
-			throw new RuntimeException("이미지 생성에 실패했습니다");
+			throw OpenAiException.of(OpenAiErrorCode.IMAGE_GENERATION_FAIL);
 		}
 	}
 
