@@ -1,5 +1,16 @@
 package com.ddj.owing.domain.casting.service;
 
+import java.util.List;
+import java.util.Set;
+
+import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
+import com.ddj.owing.domain.project.error.exception.ProjectException;
+import com.ddj.owing.domain.project.model.ProjectNode;
+import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.code.CastingFolderErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
@@ -17,12 +28,6 @@ import com.ddj.owing.global.util.Parser;
 import com.ddj.owing.global.util.S3FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,7 @@ public class CastingService {
 	private final CastingRepository castingRepository;
 	private final CastingNodeRepository castingNodeRepository;
 	private final CastingFolderRepository castingFolderRepository;
+	private final ProjectNodeRepository projectNodeRepository;
 
     @Value("${cloud.aws.s3.directory.casting}")
     private String castingDirectory;
@@ -87,7 +93,11 @@ public class CastingService {
         Casting savedCasting = castingRepository.save(casting);
 
         CastingNode castingNode = castingImageRequestDto.toNodeEntity(savedCasting);
-        CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
+		ProjectNode projectNode = projectNodeRepository.findById(castingFolder.getProjectId())
+				.orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NODE_NOT_FOUND));
+		castingNode.linkProjectNode(projectNode);
+
+		CastingNode savedCastingNode = castingNodeRepository.save(castingNode);
 
         String fileName = "casting-image.png";
         String preSignedUrl = s3FileUtil.getPreSignedUrl(castingDirectory, fileName);
