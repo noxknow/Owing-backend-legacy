@@ -1,5 +1,10 @@
 package com.ddj.owing.domain.universe.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ddj.owing.domain.universe.error.code.UniverseFileErrorCode;
 import com.ddj.owing.domain.universe.error.code.UniverseFolderErrorCode;
 import com.ddj.owing.domain.universe.error.exception.UniverseFileException;
@@ -13,11 +18,8 @@ import com.ddj.owing.domain.universe.repository.UniverseFolderRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
 import com.ddj.owing.global.util.Parser;
 import com.ddj.owing.global.util.S3FileUtil;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +57,7 @@ public class UniverseFileService {
     @Transactional
     public ResponseEntity<String> generateUniverseImage(UniverseFileRequestDto universeFileRequestDto) {
 
-        UniverseFolder universeFolder = universeFolderRepository.findById(universeFileRequestDto.universeFolderId())
+        UniverseFolder universeFolder = universeFolderRepository.findById(universeFileRequestDto.folderId())
                 .orElseThrow(() -> UniverseFolderException.of(UniverseFolderErrorCode.UNIVERSE_FOLDER_NOT_FOUND));
 
         String prompt = openAiUtil.createPrompt(universeFileRequestDto);
