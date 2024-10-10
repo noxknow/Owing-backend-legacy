@@ -31,14 +31,14 @@ public class StoryPlotController {
 	private final StoryPlotService storyPlotService;
 
 	@GetMapping
-	public ResponseEntity<List<StoryPlotDto>> getStoryPlotList(@RequestParam Long folderId) {
-		List<StoryPlotDto> stories = storyPlotService.getStoryPlotList(folderId);
+	public ResponseEntity<List<StoryPlotDto>> getStoryPlotList(@RequestParam Long storyFolderId) {
+		List<StoryPlotDto> stories = storyPlotService.getStoryPlotList(storyFolderId);
 		return ResponseEntity.ok(stories);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<StoryPlotDto> getStoryPlotById(@PathVariable Long id) {
-		StoryPlotDto storyFolder = storyPlotService.getStoryPlot(id);
+	@GetMapping("/{storyPlotId}")
+	public ResponseEntity<StoryPlotDto> getStoryPlotById(@PathVariable Long storyPlotId) {
+		StoryPlotDto storyFolder = storyPlotService.getStoryPlot(storyPlotId);
 		return ResponseEntity.ok(storyFolder);
 	}
 
@@ -48,39 +48,39 @@ public class StoryPlotController {
 		return ResponseEntity.ok(createdStory);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<StoryPlotDto> updateStoryPlot(@PathVariable Long id,
+	@PutMapping("/{storyPlotId}")
+	public ResponseEntity<StoryPlotDto> updateStoryPlot(@PathVariable Long storyPlotId,
 		/*@Valid*/ @RequestBody StoryPlotUpdateDto storyPlotUpdateDto) {
-		StoryPlotDto updatedStory = storyPlotService.updateStoryPlot(id, storyPlotUpdateDto);
+		StoryPlotDto updatedStory = storyPlotService.updateStoryPlot(storyPlotId, storyPlotUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<StoryPlotDto> updateStoryPlotPosition(@PathVariable Long id,
+	@PatchMapping("/{storyPlotId}")
+	public ResponseEntity<StoryPlotDto> updateStoryPlotPosition(@PathVariable Long storyPlotId,
 		@RequestBody StoryPlotPositionUpdateDto storyPlotPositionUpdateDto) {
-		StoryPlotDto updatedStory = storyPlotService.updateStoryPlotPosition(id, storyPlotPositionUpdateDto);
+		StoryPlotDto updatedStory = storyPlotService.updateStoryPlotPosition(storyPlotId, storyPlotPositionUpdateDto);
 		return ResponseEntity.ok(updatedStory);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteStoryPlot(@PathVariable Long id) {
-		storyPlotService.deleteStoryPlot(id);
+	@DeleteMapping("/{storyPlotId}")
+	public ResponseEntity<Void> deleteStoryPlot(@PathVariable Long storyPlotId) {
+		storyPlotService.deleteStoryPlot(storyPlotId);
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/{id}/appearedCast")
+	@PostMapping("/{storyPlotId}/appearedCast")
 	public ResponseEntity<List<StoryPlotAppearedCastDto>> createAppearedCast(
-		@PathVariable Long id,
+		@PathVariable Long storyPlotId,
 		@RequestBody StoryPlotAppearedCastCreateDto storyPlotAppearedCastCreateDto
 	) {
-		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(id,
+		List<StoryPlotAppearedCastDto> appearedCastList = storyPlotService.registerCasts(storyPlotId,
 			storyPlotAppearedCastCreateDto);
 		return ResponseEntity.ok(appearedCastList);
 	}
 
-	@DeleteMapping("/{id}/appearedCast/{castId}")
-	public ResponseEntity<Void> deleteAppearedCast(@PathVariable Long id, @PathVariable Long castId) {
-		storyPlotService.deleteAppearedCast(id, castId);
+	@DeleteMapping("/{storyPlotId}/appearedCast/{castId}")
+	public ResponseEntity<Void> deleteAppearedCast(@PathVariable Long storyPlotId, @PathVariable Long castId) {
+		storyPlotService.deleteAppearedCast(storyPlotId, castId);
 		return ResponseEntity.ok().build();
 	}
 }

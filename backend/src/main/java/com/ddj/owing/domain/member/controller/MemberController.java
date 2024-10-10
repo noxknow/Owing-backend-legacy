@@ -1,34 +1,43 @@
 package com.ddj.owing.domain.member.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ddj.owing.domain.member.model.dto.MemberInfoResponseDto;
 import com.ddj.owing.domain.member.model.dto.MemberUpdateRequestDto;
 import com.ddj.owing.domain.member.service.MemberService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+	private final MemberService memberService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MemberInfoResponseDto> getMember(@PathVariable Long id) {
-        MemberInfoResponseDto memberInfo = memberService.findMember(id);
-        return ResponseEntity.ok(memberInfo);
-    }
+	@GetMapping("/{memberId}")
+	public ResponseEntity<MemberInfoResponseDto> getMember(@PathVariable Long memberId) {
+		MemberInfoResponseDto memberInfo = memberService.findMember(memberId);
+		return ResponseEntity.ok(memberInfo);
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MemberInfoResponseDto> updateMember(@PathVariable Long id, @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
-        MemberInfoResponseDto memberInfo = memberService.updateMember(id, memberUpdateRequestDto);
-        return ResponseEntity.ok(memberInfo);
-    }
+	@PutMapping("/{memberId}")
+	public ResponseEntity<MemberInfoResponseDto> updateMember(@PathVariable Long memberId,
+		@RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
+		MemberInfoResponseDto memberInfo = memberService.updateMember(memberId, memberUpdateRequestDto);
+		return ResponseEntity.ok(memberInfo);
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.ok().build();
-    }
+	@DeleteMapping("/{memberId}")
+	public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
+		memberService.deleteMember(memberId);
+		return ResponseEntity.ok().build();
+	}
 }
