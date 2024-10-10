@@ -1,7 +1,7 @@
 package com.ddj.owing.domain.universe.controller;
 
 import com.ddj.owing.domain.universe.model.UniverseFolder;
-import com.ddj.owing.domain.universe.model.dto.UniverseFolderCreateDto;
+import com.ddj.owing.domain.universe.model.dto.UniverseFolderCreateRequestDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderResponseDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderUpdateRequestDto;
 import com.ddj.owing.domain.universe.service.UniverseFolderService;
@@ -19,19 +19,19 @@ public class UniverseFolderController {
     private final UniverseFolderService universeFolderService;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> createFolder(@RequestBody UniverseFolderCreateDto universeFolderCreateDto) {
-        return universeFolderService.createFolder(universeFolderCreateDto);
+    public ResponseEntity<Void> createFolder(@RequestBody UniverseFolderCreateRequestDto universeFolderCreateRequestDto) {
+        return universeFolderService.createFolder(universeFolderCreateRequestDto);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<UniverseFolder>> getAllFolders() {
+    public ResponseEntity<List<UniverseFolderResponseDto>> getAllFolders() {
         return universeFolderService.getAllFolders();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UniverseFolderResponseDto> getFolderById(@PathVariable("id") Long id) {
-        return universeFolderService.getFolderById(id);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<UniverseFolderResponseDto> getFolderById(@PathVariable("id") Long id) {
+//        return universeFolderService.getFolderById(id);
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteFolder(@PathVariable("id") Long id) {

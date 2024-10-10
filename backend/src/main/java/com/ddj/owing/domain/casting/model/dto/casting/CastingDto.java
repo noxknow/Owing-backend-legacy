@@ -39,7 +39,7 @@ public record CastingDto(
 			.gender(casting.getGender())
 			.role(casting.getRole())
 			.detail(casting.getDetail())
-			.imageUrl(casting.getCoverImage())
+			.imageUrl(casting.getImageUrl())
 			.coordX(casting.getCoordX())
 			.coordY(casting.getCoordY())
 			.build();

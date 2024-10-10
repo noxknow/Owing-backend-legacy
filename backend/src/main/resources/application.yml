@@ -6,6 +6,20 @@ springdoc:
     path: ${SPRING_DOCS_PATH}
   packageToScan: Owing
 
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME}
+      directory:
+        project: ${DIRECTORY_PROJECT}
+        casting: ${DIRECTORY_CASTING}
+        universe: ${DIRECTORY_UNIVERSE}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+
 spring:
   config:
     import: optional:file:.env[.properties]
