@@ -3,6 +3,7 @@ package com.ddj.owing.domain.casting.repository;
 import com.ddj.owing.domain.casting.model.CastingNode;
 import com.ddj.owing.domain.casting.model.CastingRelationship;
 import com.ddj.owing.domain.casting.model.dto.CastingRelationshipInfoDto;
+import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
@@ -39,19 +40,24 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
             "RETURN count(DISTINCT r)")
     Integer deleteConnectionByUuid(String uuid);
 
-    // TODO: projectId 추가 @Query("MATCH (n:Cast{projectId: $projectId}) "
-    @Query("MATCH (n:Cast) " +
-            "WHERE n.deletedAt IS NULL " +
-            "return n")
+    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:Cast) " +
+            "WHERE n1.deletedAt IS NULL " +
+                "AND n2.deletedAt IS NULL " +
+            "RETURN n2")
     List<CastingNode> findAllByProjectId(Long projectId);
 
-    // TODO: projectId 추가 @Query("MATCH (n1:Cast{projectId: $projectId})-[r]-(n2:Cast{projectId: $projectId}) "
-    @Query("MATCH (n1:Cast)-[r]-(n2:Cast) " +
-            "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
+    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:Cast)-[r2]-(n3:Cast) " +
+            "WHERE n1.deletedAt IS NULL " +
+                "AND n2.deletedAt IS NULL " +
+                "AND n3.deletedAt IS NULL " +
             "RETURN DISTINCT " +
-            "type(r) as type, r.uuid AS uuid, r.label AS label, r.sourceId AS sourceId, " +
-            "r.targetId AS targetId, r.sourceHandle AS sourceHandle, r.targetHandle AS targetHandle")
+                "type(r2) as type, r2.uuid AS uuid, r2.label AS label, r2.sourceId AS sourceId, " +
+                "r2.targetId AS targetId, r2.sourceHandle AS sourceHandle, r2.targetHandle AS targetHandle")
     List<CastingRelationshipInfoDto> findAllConnectionByProjectId(Long projectId);
 
-
+    @Query("MATCH (n1:Project{id: $projectId})-[r1:INCLUDED]->(n2:Cast) " +
+            "WHERE n1.deletedAt IS NULL " +
+            "AND n2.deletedAt IS NULL " +
+            "RETURN n2.id AS id, n2.name AS name, n2.gender AS gender")
+    List<CastingSummaryDto> findAllSummaryByProjectId(Long StoryPlotId);
 }

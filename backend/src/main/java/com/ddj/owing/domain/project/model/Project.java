@@ -6,7 +6,9 @@ import com.ddj.owing.domain.project.model.enums.Category;
 import com.ddj.owing.domain.project.model.enums.Genre;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SoftDelete;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Set;
@@ -16,6 +18,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@SoftDelete
 public class Project extends BaseTimeEntity {
 
     @Id

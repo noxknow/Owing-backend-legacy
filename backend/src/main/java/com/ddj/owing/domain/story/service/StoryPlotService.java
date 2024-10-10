@@ -1,10 +1,13 @@
 package com.ddj.owing.domain.story.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import com.ddj.owing.domain.casting.model.dto.casting.CastingSummaryDto;
+import com.ddj.owing.domain.project.error.code.ProjectErrorCode;
+import com.ddj.owing.domain.project.error.exception.ProjectException;
+import com.ddj.owing.domain.project.model.ProjectNode;
+import com.ddj.owing.domain.project.repository.ProjectNodeRepository;
+import com.ddj.owing.global.util.OpenAiUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,8 @@ public class StoryPlotService {
 	private final StoryFolderRepository storyFolderRepository;
 	private final StoryPlotNodeRepository storyPlotNodeRepository;
 	private final CastingNodeRepository castingNodeRepository;
+	private final ProjectNodeRepository projectNodeRepository;
+	private final OpenAiUtil openAiUtil;
 
 	private StoryPlot findById(Long id) {
 		return storyPlotRepository.findById(id)
@@ -70,7 +75,12 @@ public class StoryPlotService {
 		StoryPlot storyPlot = storyPlotCreateDto.toEntity(storyFolder, position);
 		StoryPlot savedStoryPlot = storyPlotRepository.save(storyPlot);
 
+		ProjectNode projectNode = projectNodeRepository.findById(storyFolder.getProjectId())
+				.orElseThrow(() -> ProjectException.of(ProjectErrorCode.PROJECT_NODE_NOT_FOUND));
+
 		StoryPlotNode storyPlotNode = storyPlotCreateDto.toNode(savedStoryPlot.getId());
+		storyPlotNode.linkProject(projectNode);
+
 		storyPlotNodeRepository.save(storyPlotNode);
 
 		return StoryPlotDto.from(savedStoryPlot);
@@ -166,10 +176,17 @@ public class StoryPlotService {
 	}
 
 	// TODO 등장인물 추출
-	public void extractCasts(Long id) {
-		// 기존 캐릭터 정보(이름, id), StoryPlot -> Gen Ai
-		// Gen Ai -> 출연한 캐릭터 정보(이름, id)
-		// 해당 값을 사용자에게 Return
+	public List<CastingSummaryDto> extractCasts(Long storyPlotId, Long projectId) {
+		List<CastingSummaryDto> castingSummaryList = castingNodeRepository.findAllSummaryByProjectId(projectId);
+		StoryPlot storyPlot = storyPlotRepository.findById(storyPlotId)
+				.orElseThrow(() -> StoryPlotException.of(StoryPlotErrorCode.PLOT_NOT_FOUND));
+
+		// TODO storyPlot에서 본문만 추출하여 storyPlotTextList에 저장
+		List<String> storyPlotTextList = new ArrayList<>();
+		String castExtractPrompt = openAiUtil.creatPrompt(storyPlotTextList, castingSummaryList);
+		List<CastingSummaryDto> extractedCastSummaryList = openAiUtil.extractCast(castExtractPrompt);
+
+		return extractedCastSummaryList;
 	}
 
 	@Transactional
