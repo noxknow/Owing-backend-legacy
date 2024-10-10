@@ -20,7 +20,7 @@ public record ProjectRequestDto(
                 .description(description)
                 .category(category)
                 .genres(genres)
-                .coverImage(imageUrl)
+                .imageUrl(imageUrl)
                 .build();
     }
 }

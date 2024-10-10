@@ -10,6 +10,6 @@ public record ProjectUpdateRequestDto(
         String description,
         Category category,
         Set<Genre> genres,
-        String coverImage
+        String imageUrl
 ) {
 }

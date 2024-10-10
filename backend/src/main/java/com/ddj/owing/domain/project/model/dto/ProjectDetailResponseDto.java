@@ -23,7 +23,7 @@ public record ProjectDetailResponseDto(
                 project.getDescription(),
                 project.getCategory(),
                 project.getGenres(),
-                project.getCoverImage(),
+                project.getImageUrl(),
                 project.getCreatedAt(),
                 project.getUpdatedAt()
         );

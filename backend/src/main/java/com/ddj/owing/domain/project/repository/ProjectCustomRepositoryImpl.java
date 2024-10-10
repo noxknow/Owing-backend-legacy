@@ -24,4 +24,13 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                 .limit(3)
                 .fetch();
     }
+
+    @Override
+    public List<Project> findAllByOrderByUpdatedAtDesc() {
+
+        return jpaQueryFactory
+                .selectFrom(project)
+                .orderBy(project.updatedAt.desc())
+                .fetch();
+    }
 }

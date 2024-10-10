@@ -16,25 +16,24 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/load")
-    public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
+    public ResponseEntity<ProjectInfoListResponseDto> loadProject() {
         return projectService.loadProject();
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/generate/image")
     public ResponseEntity<String> generateProjectImage(@RequestBody ProjectRequestDto projectRequestDto) {
         return projectService.generateProjectImage(projectRequestDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProjectCreateResponseDto> createProject(@RequestBody ProjectCreateRequestDto projectCreateRequestDto) {
+        return projectService.createProject(projectCreateRequestDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDetailResponseDto> getProject(@PathVariable Long id) {
         ProjectDetailResponseDto projectDetail = projectService.findProject(id);
         return ResponseEntity.ok(projectDetail);
-    }
-
-    @PostMapping
-    public ResponseEntity<ProjectCreateResponseDto> createProject(@RequestBody ProjectCreateRequestDto projectCreateRequestDto) {
-        ProjectCreateResponseDto projectCreateResponse = projectService.createProject(projectCreateRequestDto);
-        return ResponseEntity.ok(projectCreateResponse);
     }
 
     @PutMapping("/{id}")

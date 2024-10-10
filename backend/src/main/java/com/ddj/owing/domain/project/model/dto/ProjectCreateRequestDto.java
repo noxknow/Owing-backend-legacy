@@ -11,17 +11,17 @@ public record ProjectCreateRequestDto(
         String title,
         String description,
         Category category,
-        Set<Genre> genres,
-        String coverImage
+        Set<Genre> genres
 ) {
 
-    public Project toEntity() {
+    public Project toEntity(String imageUrl) {
+
         return Project.builder()
                 .title(title)
                 .description(description)
                 .category(category)
                 .genres(genres)
-                .coverImage(coverImage)
+                .imageUrl(imageUrl)
                 .build();
     }
 

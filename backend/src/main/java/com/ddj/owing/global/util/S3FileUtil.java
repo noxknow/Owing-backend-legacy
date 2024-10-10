@@ -67,7 +67,7 @@ public class S3FileUtil {
 
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 2;
+        expTimeMillis += 1000 * 60 * 10;
         expiration.setTime(expTimeMillis);
 
         return expiration;

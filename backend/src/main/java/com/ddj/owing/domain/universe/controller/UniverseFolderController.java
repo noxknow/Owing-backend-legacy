@@ -1,6 +1,5 @@
 package com.ddj.owing.domain.universe.controller;
 
-import com.ddj.owing.domain.universe.model.UniverseFolder;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderCreateRequestDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderResponseDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderUpdateRequestDto;
