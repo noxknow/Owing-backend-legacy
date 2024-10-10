@@ -16,11 +16,11 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/load")
-    public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
+    public ResponseEntity<ProjectInfoListResponseDto> loadProject() {
         return projectService.loadProject();
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/generate/image")
     public ResponseEntity<String> generateProjectImage(@RequestBody ProjectRequestDto projectRequestDto) {
         return projectService.generateProjectImage(projectRequestDto);
     }
