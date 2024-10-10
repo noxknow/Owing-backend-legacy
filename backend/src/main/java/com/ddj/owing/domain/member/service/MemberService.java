@@ -34,4 +34,9 @@ public class MemberService {
         MemberInfoResponseDto updatedMemberInfo = MemberInfoResponseDto.from(member);
         return updatedMemberInfo;
     }
+
+    @Transactional
+    public void deleteMember(Long id) {
+        memberRepository.deleteById(id);
+    }
 }
