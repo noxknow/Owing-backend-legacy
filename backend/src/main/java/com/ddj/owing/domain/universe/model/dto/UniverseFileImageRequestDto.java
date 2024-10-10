@@ -6,11 +6,10 @@ import com.ddj.owing.domain.universe.model.UniverseFolder;
 public record UniverseFileImageRequestDto(
         Long universeFolderId,
         String title,
-        String description,
-        String imageUrl
+        String description
 ) {
 
-    public UniverseFile toEntity(UniverseFolder universeFolder) {
+    public UniverseFile toEntity(UniverseFolder universeFolder, String imageUrl) {
 
         return UniverseFile.builder()
                 .universeFolder(universeFolder)
