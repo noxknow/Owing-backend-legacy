@@ -7,7 +7,7 @@ import lombok.Builder;
 public record ProjectCreateResponseDto(
         Long id,
         String title,
-        String imageUrl
+        String presignedUrl
 ) {
 
     public static ProjectCreateResponseDto fromEntity (Project project, String presignedUrl) {
@@ -15,7 +15,7 @@ public record ProjectCreateResponseDto(
         return ProjectCreateResponseDto.builder()
                 .id(project.getId())
                 .title(project.getTitle())
-                .imageUrl(presignedUrl)
+                .presignedUrl(presignedUrl)
                 .build();
     }
 }
