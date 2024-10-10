@@ -38,24 +38,22 @@ public class ProjectService {
     private String projectDirectory;
 
     /**
-     * 최신 프로젝트 3개를 불러오는 메서드
+     * 프로젝트 정보를 불러오는 메서드
      *
-     * @return 최신 프로젝트 3개의 정보를 담은 List<ProjectInfoResponseDto>를 ResponseEntity로 반환
-     * @throws ProjectException 프로젝트가 존재하지 않으면 예외를 발생
+     * @return 프로젝트 정보 리스트를 담은 ProjectInfoListResponseDto를 ResponseEntity로 반환
+     * @throws ProjectException 프로젝트가 존재하지 않을 경우 발생
      */
-    public ResponseEntity<List<ProjectInfoResponseDto>> loadProject() {
+    public ResponseEntity<ProjectInfoListResponseDto> loadProject() {
 
-        List<Project> projects = projectRepository.findTop3ByOrderByUpdatedAtDesc();
+        List<Project> projects = projectRepository.findAllByOrderByUpdatedAtDesc();
 
         if (projects.isEmpty()) {
             throw ProjectException.of(ProjectErrorCode.PROJECT_NOT_FOUND);
         }
 
-        List<ProjectInfoResponseDto> projectInfoResponseDto = projects.stream()
-                .map(ProjectInfoResponseDto::from)
-                .collect(Collectors.toList());
+        ProjectInfoListResponseDto projectInfoListResponseDto = ProjectInfoListResponseDto.fromEntity(projects);
 
-        return ResponseEntity.ok(projectInfoResponseDto);
+        return ResponseEntity.ok(projectInfoListResponseDto);
     }
 
     /**
