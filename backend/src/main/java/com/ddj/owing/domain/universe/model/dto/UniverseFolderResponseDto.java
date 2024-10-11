@@ -1,5 +1,6 @@
 package com.ddj.owing.domain.universe.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,10 @@ public record UniverseFolderResponseDto(
 
 	public static UniverseFolderResponseDto fromEntity(UniverseFolder universeFolder) {
 
-		List<UniverseFileResponseDto> files = universeFolder.getUniverseFiles().stream()
-			.map(UniverseFileResponseDto::fromEntity)
-			.collect(Collectors.toList());
+		List<UniverseFileResponseDto> files = universeFolder.getUniverseFiles() == null ? new ArrayList<>() :
+			universeFolder.getUniverseFiles().stream()
+				.map(UniverseFileResponseDto::fromEntity)
+				.collect(Collectors.toList());
 
 		return new UniverseFolderResponseDto(
 			universeFolder.getId(),
