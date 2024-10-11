@@ -4,18 +4,18 @@ import com.ddj.owing.domain.universe.model.UniverseFile;
 import com.ddj.owing.domain.universe.model.UniverseFolder;
 
 public record UniverseFileImageRequestDto(
-        Long universeFolderId,
-        String name,
-        String description
+	Long folderId,
+	String name,
+	String description
 ) {
 
-    public UniverseFile toEntity(UniverseFolder universeFolder, String imageUrl) {
+	public UniverseFile toEntity(UniverseFolder universeFolder, String imageUrl) {
 
-        return UniverseFile.builder()
-                .universeFolder(universeFolder)
-                .name(name)
-                .description(description)
-                .imageUrl(imageUrl)
-                .build();
-    }
+		return UniverseFile.builder()
+			.universeFolder(universeFolder)
+			.name(name)
+			.description(description)
+			.imageUrl(imageUrl)
+			.build();
+	}
 }
