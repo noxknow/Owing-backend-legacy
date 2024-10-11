@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ddj.owing.domain.universe.model.dto.UniverseFolderCreateRequestDto;
@@ -27,14 +28,14 @@ public class UniverseFolderController {
 	private final UniverseFolderService universeFolderService;
 
 	@PostMapping
-	public ResponseEntity<Void> createFolder(
+	public ResponseEntity<UniverseFolderResponseDto> createFolder(
 		@RequestBody UniverseFolderCreateRequestDto universeFolderCreateRequestDto) {
 		return universeFolderService.createFolder(universeFolderCreateRequestDto);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<UniverseFolderResponseDto>> getAllFolders() {
-		return universeFolderService.getAllFolders();
+	public ResponseEntity<List<UniverseFolderResponseDto>> getAllFolders(@RequestParam Long projectId) {
+		return universeFolderService.getAllFolders(projectId);
 	}
 
 	//    @GetMapping("/{id}")
