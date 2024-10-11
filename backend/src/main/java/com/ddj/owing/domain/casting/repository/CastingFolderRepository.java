@@ -15,7 +15,7 @@ public interface CastingFolderRepository extends JpaRepository<CastingFolder, Lo
 	@Query("update CastingFolder sf set sf.position = sf.position - 1 where sf.position > :position and sf.projectId = :projectId")
 	void decrementPositionAfter(Integer position, Long projectId);
 
-	@Query("SELECT COALESCE(MAX(position), 0) FROM CastingFolder WHERE projectId = :projectId")
+	@Query("SELECT COALESCE(MAX(position) + 1, 0) FROM CastingFolder WHERE projectId = :projectId")
 	Integer findMaxOrderByProjectId(Long projectId);
 
 	@Modifying

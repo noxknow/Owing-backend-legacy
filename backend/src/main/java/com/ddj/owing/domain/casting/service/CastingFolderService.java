@@ -44,7 +44,7 @@ public class CastingFolderService {
 	@Transactional
 	public CastingFolderDto createCastingFolder(CastingFolderCreateDto castingFolderCreateDto) {
 		// todo: permission
-		Integer position = castingFolderRepository.findMaxOrderByProjectId(castingFolderCreateDto.projectId()) + 1;
+		Integer position = castingFolderRepository.findMaxOrderByProjectId(castingFolderCreateDto.projectId());
 		CastingFolder castingFolder = castingFolderCreateDto.toEntity(position);
 		return CastingFolderDto.from(castingFolderRepository.save(castingFolder));
 	}

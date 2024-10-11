@@ -44,7 +44,7 @@ public class StoryFolderService {
 	@Transactional
 	public StoryFolderDto createStoryFolder(StoryFolderCreateDto storyFolderCreateDto) {
 		// todo: permission
-		Integer position = storyFolderRepository.findMaxOrderByProjectId(storyFolderCreateDto.projectId()) + 1;
+		Integer position = storyFolderRepository.findMaxOrderByProjectId(storyFolderCreateDto.projectId());
 		StoryFolder storyFolder = storyFolderCreateDto.toEntity(position);
 		return StoryFolderDto.from(storyFolderRepository.save(storyFolder));
 	}
