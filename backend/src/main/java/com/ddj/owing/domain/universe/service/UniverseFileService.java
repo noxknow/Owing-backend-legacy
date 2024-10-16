@@ -13,6 +13,7 @@ import com.ddj.owing.domain.universe.model.UniverseFile;
 import com.ddj.owing.domain.universe.model.UniverseFolder;
 import com.ddj.owing.domain.universe.model.dto.UniverseFileImageRequestDto;
 import com.ddj.owing.domain.universe.model.dto.UniverseFileRequestDto;
+import com.ddj.owing.domain.universe.model.dto.UniverseFileResponseDto;
 import com.ddj.owing.domain.universe.repository.UniverseFileRepository;
 import com.ddj.owing.domain.universe.repository.UniverseFolderRepository;
 import com.ddj.owing.global.util.OpenAiUtil;
@@ -87,5 +88,26 @@ public class UniverseFileService {
 		universeFileRepository.save(universeFile);
 
 		return ResponseEntity.ok(preSignedUrl);
+	}
+
+	@Transactional
+	public UniverseFileResponseDto updateUniverseFile(Long universeId, UniverseFileRequestDto universeFileRequestDto) {
+
+		UniverseFile universeFile = universeFileRepository.findById(universeId)
+			.orElseThrow(() -> UniverseFileException.of(UniverseFileErrorCode.UNIVERSE_FILE_NOT_FOUND));
+
+		universeFile.update(universeFileRequestDto.name(), universeFileRequestDto.description());
+		universeFile = universeFileRepository.save(universeFile);
+
+		return UniverseFileResponseDto.fromEntity(universeFile);
+	}
+
+	@Transactional
+	public void deleteUniverseFile(Long universeId) {
+
+		UniverseFile universeFile = universeFileRepository.findById(universeId)
+			.orElseThrow(() -> UniverseFileException.of(UniverseFileErrorCode.UNIVERSE_FILE_NOT_FOUND));
+
+		universeFileRepository.delete(universeFile);
 	}
 }
