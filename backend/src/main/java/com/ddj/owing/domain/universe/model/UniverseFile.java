@@ -27,22 +27,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UniverseFile extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "universe_folder_id", nullable = false)
-    private UniverseFolder universeFolder;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "universe_folder_id", nullable = false)
+	private UniverseFolder universeFolder;
 
-    @Column
-    private String name;
+	@Column
+	private String name;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String description;
+	@Lob
+	@Column(columnDefinition = "TEXT")
+	private String description;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+	@Lob
+	@Column(columnDefinition = "TEXT")
+	private String imageUrl;
+
+	public void update(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
 }
