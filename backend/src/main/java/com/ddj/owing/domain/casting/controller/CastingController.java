@@ -91,7 +91,7 @@ public class CastingController {
 	}
 
 	@PutMapping("/relationship/{uuid}")
-	public ResponseEntity<CastingRelationshipDto> updateRelationshipName(@PathVariable String uuid,
+	public ResponseEntity<CastingRelationshipDto> updateRelationship(@PathVariable String uuid,
 		CastingConnectionUpdateDto castingConnectionUpdateDto) {
 		CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid,
 			castingConnectionUpdateDto);

@@ -3,6 +3,7 @@ package com.ddj.owing.domain.casting.service;
 import java.util.List;
 import java.util.Set;
 
+import com.ddj.owing.domain.casting.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,6 @@ import com.ddj.owing.domain.casting.error.code.CastingErrorCode;
 import com.ddj.owing.domain.casting.error.code.CastingFolderErrorCode;
 import com.ddj.owing.domain.casting.error.exception.CastingException;
 import com.ddj.owing.domain.casting.error.exception.CastingFolderException;
-import com.ddj.owing.domain.casting.model.Casting;
-import com.ddj.owing.domain.casting.model.CastingFolder;
-import com.ddj.owing.domain.casting.model.CastingNode;
-import com.ddj.owing.domain.casting.model.CastingRelationship;
-import com.ddj.owing.domain.casting.model.ConnectionType;
 import com.ddj.owing.domain.casting.model.dto.CastingImageRequestDto;
 import com.ddj.owing.domain.casting.model.dto.CastingImageResponseDto;
 import com.ddj.owing.domain.casting.model.dto.CastingRelationshipInfoDto;
@@ -279,7 +275,9 @@ public class CastingService {
 			castingRelationship.getUuid(),
 			connectionCreateDto.sourceId(),
 			connectionCreateDto.targetId(),
-			connectionCreateDto.connectionType()
+			connectionCreateDto.connectionType(),
+			ConnectionHandle.of(connectionCreateDto.sourceHandleStr()),
+			ConnectionHandle.of(connectionCreateDto.targetHandleStr())
 		);
 	}
 
@@ -293,19 +291,30 @@ public class CastingService {
 	 */
 	@Transactional
 	public CastingRelationshipDto updateConnectionName(String uuid, CastingConnectionUpdateDto connectionUpdateDto) {
-		CastingNode fromCasting = castingNodeRepository.findById(connectionUpdateDto.sourceId())
+		CastingNode sourceCasting = castingNodeRepository.findById(connectionUpdateDto.sourceId())
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-		CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.targetId())
+		CastingNode targetCasting = castingNodeRepository.findById(connectionUpdateDto.targetId())
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
 		boolean isNameUpdated = false;
 		switch (connectionUpdateDto.connectionType()) {
-			case ConnectionType.DIRECTIONAL ->
-				isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(uuid, fromCasting.getId(),
-					toCasting.getId(), connectionUpdateDto.label()).isPresent();
+			case ConnectionType.DIRECTIONAL -> isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(
+					uuid,
+					sourceCasting.getId(),
+					targetCasting.getId(),
+					connectionUpdateDto.label(),
+					connectionUpdateDto.sourceHandle().name(),
+					connectionUpdateDto.targetHandle().name()
+			).isPresent();
 			case ConnectionType.BIDIRECTIONAL ->
-				isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(uuid, fromCasting.getId(),
-					toCasting.getId(), connectionUpdateDto.label()).isPresent();
+				isNameUpdated = castingNodeRepository.updateBidirectionalConnectionName(
+						uuid,
+						sourceCasting.getId(),
+						targetCasting.getId(),
+						connectionUpdateDto.label(),
+						connectionUpdateDto.sourceHandle().name(),
+						connectionUpdateDto.targetHandle().name()
+				).isPresent();
 		}
 
 		if (!isNameUpdated) {
@@ -316,7 +325,9 @@ public class CastingService {
 			uuid,
 			connectionUpdateDto.sourceId(),
 			connectionUpdateDto.targetId(),
-			connectionUpdateDto.connectionType()
+			connectionUpdateDto.connectionType(),
+			connectionUpdateDto.sourceHandle(),
+			connectionUpdateDto.targetHandle()
 		);
 	}
 
