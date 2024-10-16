@@ -4,6 +4,7 @@ import com.ddj.owing.domain.casting.model.Casting;
 import com.ddj.owing.domain.casting.model.CastingFolder;
 import com.ddj.owing.domain.casting.model.CastingNode;
 
+import com.ddj.owing.domain.casting.model.Position;
 import lombok.Builder;
 
 @Builder
@@ -14,12 +15,11 @@ public record CastingCreateDto(
 	String role,
 	String detail,
 	String imageUrl,
-	Integer coordX,
-	Integer coordY,
+	Position position,
 	Long folderId
 ) {
 
-	public Casting toEntity(CastingFolder castingFolder, Integer position) {
+	public Casting toEntity(CastingFolder castingFolder, Integer folderPosition) {
 		return Casting.builder()
 			.name(name)
 			.age(age)
@@ -27,10 +27,10 @@ public record CastingCreateDto(
 			.role(role)
 			.detail(detail)
 			.imageUrl(imageUrl)
-			.coordX(coordX)
-			.coordY(coordY)
+			.coordX(position.x())
+			.coordY(position.y())
 			.castingFolder(castingFolder)
-			.position(position)
+			.position(folderPosition)
 			.build();
 	}
 
@@ -42,8 +42,8 @@ public record CastingCreateDto(
 			.gender(gender)
 			.role(role)
 			.imageUrl(imageUrl)
-			.coordX(coordX)
-			.coordY(coordY)
+			.coordX(position.x())
+			.coordY(position.y())
 			.build();
 	}
 }
