@@ -168,15 +168,15 @@ public class CastingService {
 		Casting casting = castingRepository.findById(id)
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 		casting.updateCoord(
-			coordUpdateDto.coordX(),
-			coordUpdateDto.coordY()
+			coordUpdateDto.position().x(),
+			coordUpdateDto.position().y()
 		);
 
 		CastingNode castingNode = castingNodeRepository.findById(id)
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
 		castingNode.updateCoord(
-			coordUpdateDto.coordX(),
-			coordUpdateDto.coordY()
+			coordUpdateDto.position().x(),
+			coordUpdateDto.position().y()
 		);
 		CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
 
