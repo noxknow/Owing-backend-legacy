@@ -293,9 +293,9 @@ public class CastingService {
 	 */
 	@Transactional
 	public CastingRelationshipDto updateConnectionName(String uuid, CastingConnectionUpdateDto connectionUpdateDto) {
-		CastingNode fromCasting = castingNodeRepository.findById(connectionUpdateDto.fromId())
+		CastingNode fromCasting = castingNodeRepository.findById(connectionUpdateDto.sourceId())
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
-		CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.toId())
+		CastingNode toCasting = castingNodeRepository.findById(connectionUpdateDto.targetId())
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
 		boolean isNameUpdated = false;
@@ -314,8 +314,8 @@ public class CastingService {
 
 		return new CastingRelationshipDto(
 			uuid,
-			connectionUpdateDto.fromId(),
-			connectionUpdateDto.toId(),
+			connectionUpdateDto.sourceId(),
+			connectionUpdateDto.targetId(),
 			connectionUpdateDto.connectionType()
 		);
 	}
