@@ -39,7 +39,7 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
             "r.sourceHandle AS sourceHandle, r.targetHandle AS targetHandle")
     Optional<CastingRelationship> updateBidirectionalConnectionName(String uuid, Long sourceId, Long targetId, String label, String sourceHandle, String targetHandle);
 
-    @Query("MATCH (n1:Cast)-[r:CONNECTION|BI_CONNECTION{uuid: 'string'}]-(n2:Cast) " +
+    @Query("MATCH (n1:Cast)-[r:CONNECTION|BI_CONNECTION{uuid: $uuid}]-(n2:Cast) " +
             "DELETE r " +
             "RETURN count(DISTINCT r)")
     Integer deleteConnectionByUuid(String uuid);

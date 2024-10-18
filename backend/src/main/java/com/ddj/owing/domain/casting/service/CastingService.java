@@ -276,8 +276,8 @@ public class CastingService {
 			connectionCreateDto.sourceId(),
 			connectionCreateDto.targetId(),
 			connectionCreateDto.connectionType(),
-			ConnectionHandle.of(connectionCreateDto.sourceHandle()),
-			ConnectionHandle.of(connectionCreateDto.targetHandle())
+			connectionCreateDto.sourceHandle(),
+			connectionCreateDto.targetHandle()
 		);
 	}
 

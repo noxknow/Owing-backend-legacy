@@ -50,33 +50,33 @@ public class CastingNode extends BaseTimeGraph {
         this.projectNode = projectNode;
     }
 
-    public void addConnection(String uuid, CastingNode targetCastingNode, String label, String sourceHandleStr, String targetHandleStr) {
+    public void addConnection(String uuid, CastingNode targetCastingNode, String label, ConnectionHandle sourceHandle, ConnectionHandle targetHandle) {
         if (ObjectUtils.isEmpty(targetCastingNode)) {
             throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
         }
 
         CastingRelationship outConnection = new CastingRelationship(
                 uuid, label, targetCastingNode,
-                this.id, sourceHandleStr,
-                targetCastingNode.getId(), targetHandleStr
+                this.id, sourceHandle,
+                targetCastingNode.getId(), targetHandle
         );
         this.outConnections.add(outConnection);
     }
 
-    public void addBiConnection(String uuid, CastingNode targetCastingNode, String label, String sourceHandleStr, String targetHandleStr) {
+    public void addBiConnection(String uuid, CastingNode targetCastingNode, String label, ConnectionHandle sourceHandle, ConnectionHandle targetHandle) {
         if (ObjectUtils.isEmpty(targetCastingNode)) {
             throw CastingException.of(CastingErrorCode.INVALID_ARGS_FOR_UPDATE);
         }
 
         CastingRelationship outBiConnection = new CastingRelationship(
                 uuid, label, targetCastingNode,
-                this.id, sourceHandleStr,
-                targetCastingNode.getId(), targetHandleStr
+                this.id, sourceHandle,
+                targetCastingNode.getId(), targetHandle
         );
         CastingRelationship inBiConnection = new CastingRelationship(
                 uuid, label, this,
-                this.id, sourceHandleStr,
-                targetCastingNode.getId(), targetHandleStr
+                this.id, sourceHandle,
+                targetCastingNode.getId(), targetHandle
         );
 
         this.outBiConnections.add(outBiConnection);
