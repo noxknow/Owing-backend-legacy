@@ -8,7 +8,7 @@ public record CastingConnectionCreateDto(
 	Long targetId,
 	String label,
 	ConnectionType connectionType,
-	String sourceHandleStr,
-	String targetHandleStr
+	String sourceHandle,
+	String targetHandle
 ) {
 }
