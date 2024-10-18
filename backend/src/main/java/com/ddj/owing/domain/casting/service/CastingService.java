@@ -247,16 +247,16 @@ public class CastingService {
 				connectionCreateDto.uuid(),
 				targetCasting,
 				connectionCreateDto.label(),
-				connectionCreateDto.sourceHandleStr(),
-				connectionCreateDto.targetHandleStr()
+				connectionCreateDto.sourceHandle(),
+				connectionCreateDto.targetHandle()
 			);
 		} else {
 			sourceCasting.addBiConnection(
 				connectionCreateDto.uuid(),
 				targetCasting,
 				connectionCreateDto.label(),
-				connectionCreateDto.sourceHandleStr(),
-				connectionCreateDto.targetHandleStr()
+				connectionCreateDto.sourceHandle(),
+				connectionCreateDto.targetHandle()
 			);
 		}
 
@@ -276,8 +276,8 @@ public class CastingService {
 			connectionCreateDto.sourceId(),
 			connectionCreateDto.targetId(),
 			connectionCreateDto.connectionType(),
-			ConnectionHandle.of(connectionCreateDto.sourceHandleStr()),
-			ConnectionHandle.of(connectionCreateDto.targetHandleStr())
+			connectionCreateDto.sourceHandle(),
+			connectionCreateDto.targetHandle()
 		);
 	}
 

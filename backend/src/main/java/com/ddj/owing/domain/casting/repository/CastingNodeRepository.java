@@ -24,22 +24,22 @@ public interface CastingNodeRepository extends Neo4jRepository<CastingNode, Long
     @Query("MATCH (n1:Cast{id: $sourceId})-[r:CONNECTION{uuid: $uuid}]->(n2:Cast{id: $targetId}) " +
             "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
             "SET r.label = $label " +
-            "SET r.sourceHandle = $sourceHandleStr " +
-            "SET r.targetHandle = $targetHandleStr " +
+            "SET r.sourceHandle = $sourceHandle " +
+            "SET r.targetHandle = $targetHandle " +
             "RETURN r.uuid AS uuid, r.label AS label, r.sourceId AS sourceId, r.targetId AS targetId, " +
             "r.sourceHandle AS sourceHandle, r.targetHandle AS targetHandle")
-    Optional<CastingRelationship> updateDirectionalConnectionName(String uuid, Long sourceId, Long targetId, String label, String sourceHandleStr, String targetHandleStr);
+    Optional<CastingRelationship> updateDirectionalConnectionName(String uuid, Long sourceId, Long targetId, String label, String sourceHandle, String targetHandle);
 
     @Query("MATCH (n1:Cast{id: $sourceId})-[r:BI_CONNECTION{uuid: $uuid}]-(n2:Cast{id: $targetId}) " +
             "WHERE n1.deletedAt IS NULL AND n2.deletedAt IS NULL " +
             "SET r.label = $label " +
-            "SET r.sourceHandle = $sourceHandleStr " +
-            "SET r.targetHandle = $targetHandleStr " +
+            "SET r.sourceHandle = $sourceHandle " +
+            "SET r.targetHandle = $targetHandle " +
             "RETURN r.uuid AS uuid, r.label AS label, r.sourceId AS sourceId, r.targetId AS targetId, " +
             "r.sourceHandle AS sourceHandle, r.targetHandle AS targetHandle")
-    Optional<CastingRelationship> updateBidirectionalConnectionName(String uuid, Long sourceId, Long targetId, String label, String sourceHandleStr, String targetHandleStr);
+    Optional<CastingRelationship> updateBidirectionalConnectionName(String uuid, Long sourceId, Long targetId, String label, String sourceHandle, String targetHandle);
 
-    @Query("MATCH (n1:Cast)-[r:CONNECTION|BI_CONNECTION{uuid: 'string'}]-(n2:Cast) " +
+    @Query("MATCH (n1:Cast)-[r:CONNECTION|BI_CONNECTION{uuid: $uuid}]-(n2:Cast) " +
             "DELETE r " +
             "RETURN count(DISTINCT r)")
     Integer deleteConnectionByUuid(String uuid);

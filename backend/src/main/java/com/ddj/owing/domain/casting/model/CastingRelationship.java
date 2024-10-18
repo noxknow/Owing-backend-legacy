@@ -27,16 +27,16 @@ public class CastingRelationship {
     @TargetNode
     private CastingNode castingNode;
 
-    CastingRelationship(String uuid, String label, CastingNode castingNode, Long sourceId, String sourceHandleStr, Long targetId, String targetHandleStr) {
+    CastingRelationship(String uuid, String label, CastingNode castingNode, Long sourceId, ConnectionHandle sourceHandle, Long targetId, ConnectionHandle targetHandle) {
         this.uuid = uuid;
         this.label = label;
         this.castingNode = castingNode;
 
         this.sourceId = sourceId;
-        this.sourceHandle = ConnectionHandle.of(sourceHandleStr);
+        this.sourceHandle = sourceHandle;
 
         this.targetId = targetId;
-        this.targetHandle = ConnectionHandle.of(targetHandleStr);
+        this.targetHandle = targetHandle;
     }
 
     public void updateLabel(String label) {
