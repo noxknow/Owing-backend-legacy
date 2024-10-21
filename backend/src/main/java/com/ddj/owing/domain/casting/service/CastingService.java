@@ -223,7 +223,7 @@ public class CastingService {
 	/**
 	 * Casting간 Relation을 생성하는 메서드
 	 *
-	 * @param connectionCreateDto connectionType()을 통해 단방향, 양방향 지정
+	 * @param connectionCreateDto type()을 통해 단방향, 양방향 지정
 	 * @return
 	 */
 	@Transactional
@@ -233,7 +233,7 @@ public class CastingService {
 		CastingNode targetCasting = castingNodeRepository.findById(connectionCreateDto.targetId())
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
-		boolean isDirectional = ConnectionType.DIRECTIONAL.equals(connectionCreateDto.connectionType());
+		boolean isDirectional = ConnectionType.DIRECTIONAL.equals(connectionCreateDto.type());
 		if (isDirectional) {
 			sourceCasting.addConnection(
 				connectionCreateDto.uuid(),
@@ -267,7 +267,7 @@ public class CastingService {
 			castingRelationship.getUuid(),
 			connectionCreateDto.sourceId(),
 			connectionCreateDto.targetId(),
-			connectionCreateDto.connectionType(),
+			connectionCreateDto.type(),
 			connectionCreateDto.sourceHandle(),
 			connectionCreateDto.targetHandle()
 		);
@@ -289,7 +289,7 @@ public class CastingService {
 			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
 
 		boolean isNameUpdated = false;
-		switch (connectionUpdateDto.connectionType()) {
+		switch (connectionUpdateDto.type()) {
 			case ConnectionType.DIRECTIONAL -> isNameUpdated = castingNodeRepository.updateDirectionalConnectionName(
 					uuid,
 					sourceCasting.getId(),
@@ -317,7 +317,7 @@ public class CastingService {
 			uuid,
 			connectionUpdateDto.sourceId(),
 			connectionUpdateDto.targetId(),
-			connectionUpdateDto.connectionType(),
+			connectionUpdateDto.type(),
 			connectionUpdateDto.sourceHandle(),
 			connectionUpdateDto.targetHandle()
 		);

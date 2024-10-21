@@ -7,7 +7,7 @@ public record CastingRelationshipDto(
 	String uuid,
 	Long sourceId,
 	Long targetId,
-	ConnectionType connectionType,
+	ConnectionType type,
 	ConnectionHandle sourceHandle,
 	ConnectionHandle targetHandle
 ) {

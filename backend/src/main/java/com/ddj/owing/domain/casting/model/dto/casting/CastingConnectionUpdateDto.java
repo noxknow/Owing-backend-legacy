@@ -7,7 +7,7 @@ public record CastingConnectionUpdateDto(
 	Long sourceId,
 	Long targetId,
 	String label,
-	ConnectionType connectionType,
+	ConnectionType type,
 	ConnectionHandle sourceHandle,
 	ConnectionHandle targetHandle
 ) {
