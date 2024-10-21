@@ -5,7 +5,7 @@ import java.util.List;
 import com.ddj.owing.domain.casting.model.dto.CastingRelationshipInfoDto;
 
 public record CastingGraphDto(
-	List<CastingDto> nodes,
+	List<CastingNodeDto> nodes,
 	List<CastingRelationshipInfoDto> edges
 ) {
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ddj.owing.domain.casting.model.*;
+import com.ddj.owing.domain.casting.model.dto.casting.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,6 @@ import com.ddj.owing.domain.casting.error.exception.CastingFolderException;
 import com.ddj.owing.domain.casting.model.dto.CastingImageRequestDto;
 import com.ddj.owing.domain.casting.model.dto.CastingImageResponseDto;
 import com.ddj.owing.domain.casting.model.dto.CastingRelationshipInfoDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionCreateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingConnectionUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingCoordUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingGraphDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingInfoUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingPositionUpdateDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingRelationshipDto;
-import com.ddj.owing.domain.casting.model.dto.casting.CastingRequestDto;
 import com.ddj.owing.domain.casting.repository.CastingFolderRepository;
 import com.ddj.owing.domain.casting.repository.CastingNodeRepository;
 import com.ddj.owing.domain.casting.repository.CastingRepository;
@@ -345,9 +337,9 @@ public class CastingService {
 	}
 
 	public CastingGraphDto getGraph(Long projectId) {
-		List<CastingDto> castingNodeList =
+		List<CastingNodeDto> castingNodeList =
 			castingNodeRepository.findAllByProjectId(projectId).stream()
-				.map(casting -> CastingDto.from(casting)).toList();
+				.map(CastingNodeDto::from).toList();
 		List<CastingRelationshipInfoDto> castingConnectionList =
 			castingNodeRepository.findAllConnectionByProjectId(projectId);
 
