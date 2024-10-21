@@ -131,7 +131,7 @@ public class CastingService {
 		casting.updateInfo(
 			castingInfoUpdateDto.name(),
 			castingInfoUpdateDto.age(),
-			castingInfoUpdateDto.name(),
+			castingInfoUpdateDto.gender(),
 			castingInfoUpdateDto.role(),
 			castingInfoUpdateDto.detail(),
 			castingInfoUpdateDto.imageUrl()
@@ -142,7 +142,7 @@ public class CastingService {
 		castingNode.updateInfo(
 			castingInfoUpdateDto.name(),
 			castingInfoUpdateDto.age(),
-			castingInfoUpdateDto.name(),
+			castingInfoUpdateDto.gender(),
 			castingInfoUpdateDto.role(),
 			castingInfoUpdateDto.imageUrl()
 		);
