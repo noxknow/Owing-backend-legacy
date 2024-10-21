@@ -229,9 +229,9 @@ public class CastingService {
 	@Transactional
 	public CastingRelationshipDto createConnection(CastingConnectionCreateDto connectionCreateDto) {
 		CastingNode sourceCasting = castingNodeRepository.findById(connectionCreateDto.sourceId())
-			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
 		CastingNode targetCasting = castingNodeRepository.findById(connectionCreateDto.targetId())
-			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
 
 		boolean isDirectional = ConnectionType.DIRECTIONAL.equals(connectionCreateDto.type());
 		if (isDirectional) {
@@ -284,9 +284,9 @@ public class CastingService {
 	@Transactional
 	public CastingRelationshipDto updateConnectionName(String uuid, CastingConnectionUpdateDto connectionUpdateDto) {
 		CastingNode sourceCasting = castingNodeRepository.findById(connectionUpdateDto.sourceId())
-			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
 		CastingNode targetCasting = castingNodeRepository.findById(connectionUpdateDto.targetId())
-			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NOT_FOUND));
+			.orElseThrow(() -> CastingException.of(CastingErrorCode.CASTING_NODE_NOT_FOUND));
 
 		boolean isNameUpdated = false;
 		switch (connectionUpdateDto.type()) {
