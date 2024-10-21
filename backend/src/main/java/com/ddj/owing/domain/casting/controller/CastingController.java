@@ -85,14 +85,17 @@ public class CastingController {
 
 	@PostMapping("/relationship")
 	public ResponseEntity<CastingRelationshipDto> createRelationship(
-		CastingConnectionCreateDto castingConnectionCreateDto) {
+		@RequestBody CastingConnectionCreateDto castingConnectionCreateDto
+	) {
 		CastingRelationshipDto castingRelationshipDto = castingService.createConnection(castingConnectionCreateDto);
 		return ResponseEntity.ok(castingRelationshipDto);
 	}
 
 	@PutMapping("/relationship/{uuid}")
-	public ResponseEntity<CastingRelationshipDto> updateRelationship(@PathVariable String uuid,
-		CastingConnectionUpdateDto castingConnectionUpdateDto) {
+	public ResponseEntity<CastingRelationshipDto> updateRelationship(
+			@PathVariable String uuid,
+			@RequestBody CastingConnectionUpdateDto castingConnectionUpdateDto
+	) {
 		CastingRelationshipDto castingRelationshipDto = castingService.updateConnectionName(uuid,
 			castingConnectionUpdateDto);
 		return ResponseEntity.ok(castingRelationshipDto);
