@@ -146,9 +146,9 @@ public class CastingService {
 			castingInfoUpdateDto.role(),
 			castingInfoUpdateDto.imageUrl()
 		);
-		CastingNode updatedCastingNode = castingNodeRepository.save(castingNode);
+		castingNodeRepository.save(castingNode);
 
-		return CastingDto.from(updatedCastingNode);
+		return CastingDto.from(casting);
 	}
 
 	@Transactional
